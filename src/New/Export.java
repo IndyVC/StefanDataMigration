@@ -14,7 +14,12 @@ import Bedrijven.Eigenaar;
 import Bedrijven.Fabrikant;
 import Bedrijven.Vestiging;
 import Bestellingen.BestelVoorstel;
+import Bestellingen.Bestelbon;
+import Bestellingen.UitgaandeBestelling;
+import Boekhouding.BetalingsVoorwaarde;
+import Boekhouding.Dagboek;
 import Import.Import;
+import Leveringen.LeveranciersGroep;
 import Producten.ReceptProduct;
 import Utils.DB;
 import java.util.ArrayList;
@@ -23,15 +28,13 @@ import java.util.List;
 /**
  *
  * @author Indy Van Canegem
- * 
- * UITLEG:
- * Alles wordt opgehaald door Import klasse.
- * Alles wordt gemuteerd door de Mapper klasse.
- * Alles wordt weggeschreven door de Export klasse.
- * 
- * UITLEG EXPORT KLASSE:
- * Verwijder commentaar NOOIT! Je moet weten of het de eerste keer is dat een bepaalde klasse wordt 
- * weggeschreven, zodat de boolean deleteAllPrevious op true staat. Daarna mag dit NIET meer.
+ *
+ * UITLEG: Alles wordt opgehaald door Import klasse. Alles wordt gemuteerd door
+ * de Mapper klasse. Alles wordt weggeschreven door de Export klasse.
+ *
+ * UITLEG EXPORT KLASSE: Verwijder commentaar NOOIT! Je moet weten of het de
+ * eerste keer is dat een bepaalde klasse wordt weggeschreven, zodat de boolean
+ * deleteAllPrevious op true staat. Daarna mag dit NIET meer.
  */
 public class Export {
 
@@ -40,7 +43,12 @@ public class Export {
     public static List<OntvangstAdres> newOntvangstAdressen;
     public static List<BestelVoorstel> newBestelvoorstellen;
     private static List<ReceptProduct> newReceptProducten;
-    
+    private static List<UitgaandeBestelling> newUitgaandBestellingen;
+    private static List<Bestelbon> newBestelbonnen;
+    private static List<LeveranciersGroep> newLeveranciersGroepen;
+    private static List<BetalingsVoorwaarde> newBetalingsVoorwaardes;
+    private static List<Dagboek> newDagboeken;
+
     public static void export() {
         Import.readOld();
         System.out.println("EXPORT BEDRIJF START");
@@ -53,6 +61,8 @@ public class Export {
         exportReceptProducten();
         System.out.println("EXPORT BESTELVOORSTELLEN");
         exportBestelvoorstellen();
+        System.out.println("EXPORT BESTELBONNEN EN UITGAANDEBESTELLINGEN");
+        exportBestelbonnenUitgaandeBestellingen();
 
     }
 
@@ -88,42 +98,88 @@ public class Export {
             });
         });
     }
-    
+
     //EERSTE KEER FABRIKANTEN
-    public static void exportFabrikanten(){
+    public static void exportFabrikanten() {
         newFabrikanten = Mapper.oldFabrikantToNewFabrikant();
         DB.insert(newFabrikanten, "Fabrikanten", Fabrikant.class, true, false);
     }
-    
+
     //EERSTE KEER ONTVANGSTADRESSEN
-    public static void exportOntvangstAdressen(){
+    public static void exportOntvangstAdressen() {
         newOntvangstAdressen = Mapper.oldLeveringsAdresToOntvangstAdres();
         List<Adres> adressen = new ArrayList();
- 
-        newOntvangstAdressen.forEach(ontvangstAdres->{
+
+        newOntvangstAdressen.forEach(ontvangstAdres -> {
             adressen.add(ontvangstAdres.Adres);
         });
-        
+
         DB.insert(adressen, "Adressen", Adres.class, false, true);
         DB.insert(newOntvangstAdressen, "OntvangstAdressen", OntvangstAdres.class, true, false);
     }
-    
+
     //EERSTE KEER BESTELVOORSTELLEN
-    public static void exportBestelvoorstellen(){
+    public static void exportBestelvoorstellen() {
         newBestelvoorstellen = Mapper.oldBestelVoorstelToNewBestelVoorstel();
         DB.insert(newBestelvoorstellen, "BestelVoorstellen", BestelVoorstel.class, true, true);
     }
-    
+
     //EERSTE KEER OMSCRHIJVING = RECEPTPRODUCTEN
-    public static void exportReceptProducten(){
+    public static void exportReceptProducten() {
         newReceptProducten = Mapper.oldReceptproductToNewReceptproduct();
         List<Omschrijving> omschrijvingen = new ArrayList();
-        newReceptProducten.forEach(e->{
+        newReceptProducten.forEach(e -> {
             omschrijvingen.add(e.Omschrijving);
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, true, true);
-
         DB.insert(newReceptProducten, "ReceptProducten", ReceptProduct.class, true, false);
     }
-    
+
+    //EERSTE KEER UITGAANDEBESTELLING EN BESTELBON
+    public static void exportBestelbonnenUitgaandeBestellingen() {
+        newUitgaandBestellingen = Mapper.oldBestelbonDetailsToNewUitgaandeBestelling();
+        newBestelbonnen = Mapper.oldBestelbonHoofdingToNewBestelbon();
+
+        DB.insert(newUitgaandBestellingen, "UitgaandeBestellingen", UitgaandeBestelling.class, true, true);
+        DB.insert(newBestelbonnen, "Bestelbonnen", Bestelbon.class, true, false);
+    }
+
+    //EERSTE KEER LEVERANCIERSGROEPEN
+    public static void exportLeveranciersGroepen() {
+        newLeveranciersGroepen = Mapper.oldLeveranciersgroepToNewLeveranciersgroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newLeveranciersGroepen.forEach(groep -> {
+            omschrijvingen.add(groep.Omschrijving);
+        });
+
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newLeveranciersGroepen, "LeveranciersGroepen", LeveranciersGroep.class, true, false);
+
+    }
+
+    //EERSTE KEER BETALINGSVOOWAARDES
+    public static void exportBetalingsVoorwaardes() {
+        newBetalingsVoorwaardes = Mapper.oldBetalingsVoorwaardeToNewBetalingsVoorwaarde();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newBetalingsVoorwaardes.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newBetalingsVoorwaardes, "BetalingsVoorwaarden", BetalingsVoorwaarde.class, true, false);
+    }
+
+    public static void exportDagboeken() {
+        newDagboeken = Mapper.oldDagboekToNewDagboek();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newDagboeken.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newDagboeken, "Dagboeken", Dagboek.class, true, false);
+
+    }
 }

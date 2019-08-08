@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,8 @@ public class Util {
     }
 
     public static Date Date(String string) {
+        java.sql.Date sqlDate;
+
         if (!Util.empty(string)) {
             String[] waste = string.split(" ");
             String[] parts = waste[0].split("/");
@@ -42,17 +45,21 @@ public class Util {
                     String hour = parts2[0];
                     String minutes = parts2[1];
                     String seconds = parts2[2];
-                    utilDate = new java.util.Date(Util.Int(year), Util.Int(month), Util.Int(day), Util.Int(hour), Util.Int(minutes), Util.Int(seconds));
+                    Calendar c = Calendar.getInstance();
+                    c.set(Util.Int(year), Util.Int(month), Util.Int(day), Util.Int(hour), Util.Int(minutes), Util.Int(seconds));
+                    sqlDate = new Date(c.getTimeInMillis());
                 } else {
                     String hour = parts2[0];
                     String minutes = parts2[1];
-                    utilDate = new java.util.Date(Util.Int(year), Util.Int(month), Util.Int(day), Util.Int(hour), Util.Int(minutes), 0);
+                    Calendar c = Calendar.getInstance();
+                    c.set(Util.Int(year), Util.Int(month), Util.Int(day), Util.Int(hour), Util.Int(minutes), 0);
+                    sqlDate = new Date(c.getTimeInMillis());
                 }
             } else {
-                utilDate = new Date(Util.Int(year), Util.Int(month), Util.Int(day));
+                Calendar c = Calendar.getInstance();
+                c.set(Util.Int(year), Util.Int(month), Util.Int(day));
+                sqlDate = new Date(c.getTimeInMillis());
             }
-
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
             return sqlDate;
         }
         return null;

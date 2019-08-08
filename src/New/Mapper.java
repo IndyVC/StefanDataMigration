@@ -10,12 +10,27 @@ import Adressen.OntvangstAdres;
 import Algemeen.Omschrijving;
 import Bedrijven.BankRekeningNummer;
 import Bedrijven.Vestiging;
+import Bestellingen.Klant;
 import Bestellingen.UitgaandeBestelling;
+import Boekhouding.AlgemeneRekening;
+import Boekhouding.BetalingsVoorwaarde;
+import Boekhouding.BoekhoudRekening;
+import Boekhouding.Dagboek;
 import Import.Import;
+import Leveringen.Leverancier;
+import Leveringen.LeveranciersGroep;
 import Old.Boekhouding.Bankinstelling;
 import Producten.ReceptProduct;
+import enums.BtwCode;
 import enums.Eenheid;
+import enums.InhoudLeveringsbonnen;
 import enums.Land;
+import enums.LeveringsFrequenties;
+import enums.MuntEenheid;
+import enums.Solvabiliteit;
+import enums.Taal;
+import enums.VerpakkingsEenheid;
+import enums.Webshop_API;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,24 +124,104 @@ public class Mapper {
         return newBestelvoorstellen;
     }
 
-    public static List<Bestellingen.Bestelbon> oldBestelbonToNewBestelbon() {
+    public static List<Bestellingen.Bestelbon> oldBestelbonHoofdingToNewBestelbon() {
         List<Bestellingen.Bestelbon> newBestelbonnen = new ArrayList();
-        List<Bestellingen.UitgaandeBestelling> newUitgaandeBestelling = new ArrayList();
 
         List<Old.Bestelling.BestelbonHoofding> bestelbonnenhoofding = Import.getBestelbonnenhoofding().stream().map(old -> (Old.Bestelling.BestelbonHoofding) old).collect(Collectors.toList());
-        List<Old.Bestelling.BestelbonDetail> bestelbonnendetails = Import.getBestelbonnenhoofding().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList());
 
         for (Old.Bestelling.BestelbonHoofding hoofding : bestelbonnenhoofding) {
-
             Bedrijven.Vestiging vestiging = oldBedrijfToNewBedrijf().stream().filter(e -> e.getBedrijfId() == hoofding.getId_bedrijf()).findFirst().get().Vestigingen.get(0);
             Adressen.OntvangstAdres ontvangstAdres = oldLeveringsAdresToOntvangstAdres().stream().filter(e -> e.getId() == hoofding.getId_leveradres()).findFirst().get();
-
-            for (Old.Bestelling.BestelbonDetail detail : bestelbonnendetails) {
-                newUitgaandeBestelling.add(new UitgaandeBestelling(0, detail.getInserted(), null, detail.getOpmerking(), detail.getAfgewerkt(), detail.getVolgnummer(), detail.getHoeveelheid(), detail.getEenheid(), detail.getEenheidsprijs(), detail.getAantal_eenheden_verpakking(), detail.getAantal_verpakkingen_colli(), detail.getEenheidsgewicht(), detail.getTotaal(), detail.getGeleverde_hoeveelheid()));
-            }
-
-            newBestelbonnen.add(new Bestellingen.Bestelbon(hoofding.getId_bestelbon(), vestiging, ontvangstAdres, ReceptProduct))
+            newBestelbonnen.add(new Bestellingen.Bestelbon(hoofding.getId_bestelbon(), vestiging, ontvangstAdres));
         }
+
+        return newBestelbonnen;
+    }
+
+    public static List<Bestellingen.UitgaandeBestelling> oldBestelbonDetailsToNewUitgaandeBestelling() {
+        List<Bestellingen.UitgaandeBestelling> newUitgaandeBestelling = new ArrayList();
+        List<Old.Bestelling.BestelbonDetail> bestelbonnendetails = Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList());
+
+        for (Old.Bestelling.BestelbonDetail detail : bestelbonnendetails) {
+            ReceptProduct receptProduct = oldReceptproductToNewReceptproduct().stream().filter(r -> r.getId() == detail.getId_receptproduct()).findFirst().orElse(new ReceptProduct());
+            newUitgaandeBestelling.add(new UitgaandeBestelling(0, detail.getUpdated(), detail.getUpdated(), detail.getOpmerking(), detail.getAfgewerkt(), detail.getVolgnummer(), detail.getHoeveelheid(), convertVerpakkingsEenheid(detail.getEenheid()), detail.getEenheidsprijs(), detail.getAantal_eenheden_verpakking(), detail.getAantal_verpakkingen_colli(), detail.getEenheidsgewicht(), detail.getTotaal(), detail.getGeleverde_hoeveelheid(), receptProduct));
+        }
+
+        //Bestelbon zijn List opvullen.
+        oldBestelbonHoofdingToNewBestelbon().forEach(bon -> {
+            List<UitgaandeBestelling> bestellingen = new ArrayList();
+
+            for (int i = 0; i < newUitgaandeBestelling.size(); i++) {
+                if (bestelbonnendetails.get(i).getId_bestelbon() == bon.getId()) {
+                    bestellingen.add(newUitgaandeBestelling.get(i));
+                }
+            }
+            bon.setUitgaandeBestellingen(bestellingen);
+        });
+
+        return newUitgaandeBestelling;
+
+    }
+
+    public static List<Old.Leverancier> oldLeverantierToNewLeverancier() {
+        List<Old.Leverancier> leveranciers = Import.getLeveranciers().stream().map(old -> (Old.Leverancier) old).collect(Collectors.toList());
+        List<Old.Aanspreektitel> aansprekingen = Import.getAansprekingen().stream().map(old -> (Old.Aanspreektitel) old).collect(Collectors.toList());
+        List<Leveringen.Leverancier> newLeveranciers = new ArrayList();
+
+        for (Old.Leverancier l : leveranciers) {
+            String aanspreking = aansprekingen.stream().filter(a -> a.getId_aanspreektitel() == l.getId_aanspreking()).findFirst().get().getOmschrijvingn();
+            //GENERATE ID voor ADRES
+            Adressen.Adres adres = new Adres(0, l.getStraat(), l.getHuisnummer(), "", l.getPostcode(), l.getWoonplaats(), Land.values()[l.getId_land() - 1]);
+            Leveringen.LeveranciersGroep leveranciersgroep = oldLeveranciersgroepToNewLeveranciersgroep().stream().filter(groep -> groep.getId() == l.getId_leveranciersgroep()).findFirst().get();
+            BetalingsVoorwaarde betalingsVoorwaarde = oldBetalingsVoorwaardeToNewBetalingsVoorwaarde().stream().filter(voorwaarde -> voorwaarde.getBetalingsVoorwaardeId() == l.getId_betalingsvoorwaarde()).findFirst().get();
+            Boekhouding.Dagboek dagboek = oldDagboekToNewDagboek().stream().filter(boek->boek.getId() == l.getId_dagboek()).findFirst().get();
+            Boekhouding.AlgemeneRekening algemeneRekening = new AlgemeneRekening(Omschrijving, 0, aanspreking, true, true, true, true, true)
+            
+            Leveringen.Leverancier newLeverancier
+                    = new Leverancier(l.getId_leverancier(), aanspreking, l.getNaam(), adres, Taal.values()[l.getId_taalcode()], leveranciersgroep, l.getBlokkeren(),
+                            l.getNaam_contactpersoon(), l.getTelefoonnummer(), l.getGsmnummer(), l.getFaxnummer(), l.getEmailadres(), l.getUrl(), l.getVertegenwoordiger_naam(), l.getVertegenwoordiger_telefoonnummer(),
+                            l.getVertegenwoordiger_gsmnummer(), l.getVertegenwoordiger_faxnummer(), l.getVertegenwoordiger_emailadres(), l.getVertegenwoordiger_afspraak_datum(), l.getInfo(), l.getId_klant(), l.getBestellingen_telefoonnummer(),
+                            l.getBestellingen_faxnummer(), l.getBestellingen_emailadres(), l.getUrl(), Webshop_API.values()[l.getId_webshop_api() - 1], l.getTekst_bestelbon(),
+                            l.getBegindatum_verlofperiode1(), l.getEinddatum_verlofperiode1(), LeveringsFrequenties.values()[l.getId_leveringsfrequentie() - 1],
+                            MuntEenheid.values()[l.getId_munt() - 1], betalingsVoorwaarde, l.getPercentage_handelskorting(), l.getPercentage_financiele_korting(), l.getBedrag_kredietlimiet(), l.getAankoopprijzen_inclusief_btw(), l.getNul_prijzen_bij_levering(), betalingsVoorwaarde.getBetalingsVoorwaardeCode(),
+                             dagboek, AlgemeneRekening, BtwCode.Export,
+                            OndernemingsNummer, RechtspersonenRegister, BankNummer, AlgemeneInfo, Linken, Verloven, leverancierOpeningstijden, Leveranciers, LeverancierLeveringsDagen, LeveringsDagen);
+        }
+    }
+
+    public static List<Leveringen.LeveranciersGroep> oldLeveranciersgroepToNewLeveranciersgroep() {
+        List<Old.Leveranciersgroep> leveranciersgroepen = Import.getLeveranciersgroepen().stream().map(old -> (Old.Leveranciersgroep) old).collect(Collectors.toList());
+        List<Leveringen.LeveranciersGroep> newLeveranciersGroepen = new ArrayList();
+
+        leveranciersgroepen.forEach(groep -> {
+            newLeveranciersGroepen.add(new LeveranciersGroep(groep.getId_leveranciersgroep(), new Omschrijving(0, groep.getOmschrijvingn(), groep.getOmschrijvingf(), "")));
+        });
+
+        return newLeveranciersGroepen;
+    }
+
+    public static List<Boekhouding.BetalingsVoorwaarde> oldBetalingsVoorwaardeToNewBetalingsVoorwaarde() {
+        List<Old.Boekhouding.Betalingsvoorwaarde> betalingsvoorwaardes = Import.getBetalingsvoorwaardes().stream().map(old -> (Old.Boekhouding.Betalingsvoorwaarde) old).collect(Collectors.toList());
+        List<Boekhouding.BetalingsVoorwaarde> newBetalingsVoorwaardes = new ArrayList();
+
+        betalingsvoorwaardes.forEach(v -> {
+            newBetalingsVoorwaardes.add(new BetalingsVoorwaarde(new Omschrijving(0, v.getOmschrijvingn(), v.getOmschrijvingf(), ""), v.getId_betalingsvoorwaarde(), v.getCodeboekhouding(), "/", v.getAantaldagen(), Boolean.valueOf(v.getCodeberekenenvervaldatum())));
+        });
+
+        return newBetalingsVoorwaardes;
+
+    }
+
+    public static List<Boekhouding.Dagboek> oldDagboekToNewDagboek() {
+        List<Old.Dagboek> dagboeken = Import.getDagboeken().stream().map(boek -> (Old.Dagboek) boek).collect(Collectors.toList());
+        List<Boekhouding.Dagboek> newDagboeken = new ArrayList();
+
+        dagboeken.forEach(dagboek -> {
+            newDagboeken.add(new Dagboek(dagboek.getId_dagboek(), new Omschrijving(0, dagboek.getOmschrijvingn(), dagboek.getOmschrijvingf(), ""), dagboek.getCodeboekhouding(), new AlgemeneRekening(), new AlgemeneRekening(), new AlgemeneRekening(), new AlgemeneRekening(), false));
+        });
+
+        return newDagboeken;
+
     }
 
     private static Eenheid convertRecepteenheid(int id) {
@@ -151,8 +246,13 @@ public class Mapper {
                 return Eenheid.Kolijoule;
         }
     }
-    
-    private static Eenheid convertEenheid(String eenheid){
-        
+
+    private static VerpakkingsEenheid convertVerpakkingsEenheid(String eenheid) {
+        switch (eenheid) {
+            case "KG":
+                return VerpakkingsEenheid.Eenheid;
+            default:
+                return VerpakkingsEenheid.Verpakking;
+        }
     }
 }

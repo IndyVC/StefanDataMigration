@@ -11,6 +11,7 @@ import New.New;
 import Producten.ReceptProduct;
 import enums.Eenheid;
 import enums.Land;
+import enums.VerpakkingsEenheid;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.sql.SQLException;
@@ -89,6 +90,7 @@ public class DB {
             PreparedStatement statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
 
             disableDatabaseConstraints(connection);
+
             if (generateId) {
                 enableIdentityGeneration(connection, tableName);
             } else {
@@ -111,6 +113,8 @@ public class DB {
                                 statement.setInt(i, Land.valueOf(field.get(obj).toString()).ordinal());
                             } else if (field.get(obj) instanceof Eenheid) {
                                 statement.setInt(i, Eenheid.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof VerpakkingsEenheid) {
+                                statement.setInt(i, VerpakkingsEenheid.valueOf(field.get(obj).toString()).ordinal());
                             }
                         } else if (field.getType() == int.class) {
                             statement.setInt(i, field.getInt(obj));
@@ -120,11 +124,19 @@ public class DB {
                             statement.setBoolean(i, field.getBoolean(obj));
                         } else if (field.getType() == double.class) {
                             statement.setDouble(i, field.getDouble(obj));
+                        }else if(field.getType() == Date.class){
+                            Date date = (Date) field.get(obj);
+                            statement.setDate(i, date!=null?date:new Date(0));
                         } else if (List.class.isAssignableFrom(field.getType())) {
                             //SKIP!
                         } else if (New.class.isAssignableFrom(type)) {
                             New idClass = (New) field.get(obj);
-                            int id = idClass.getId();
+                            int id;
+                            if (idClass != null) {
+                                id = idClass.getId();
+                            } else {
+                                id = -1;
+                            }
                             statement.setInt(i, id);
                         } else {
                             throw new IllegalArgumentException("DATA TYPE IS NOT SUPPORTED YET, ADD IT!!!");

@@ -6,9 +6,12 @@
 package Bestellingen;
 
 import Adressen.Adres;
+import Adressen.OntvangstAdres;
 import Bedrijven.Vestiging;
 import New.New;
 import Producten.ReceptProduct;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,18 +20,19 @@ import Producten.ReceptProduct;
 public class Bestelbon implements New {
     
     public int BestelbonId;
-    public Vestiging Vestgiging;
-    public Adres LeveringsAdres;
-    public ReceptProduct ReceptProduct;
-
+    public Vestiging Vestiging;
+    public OntvangstAdres OntvangstAdres;
+    public List<UitgaandeBestelling> UitgaandeBestellingen;
+            
     public Bestelbon() {
+        UitgaandeBestellingen = new ArrayList();
     }
 
-    public Bestelbon(int BestelbonId, Vestiging Vestgiging, Adres LeveringsAdres, ReceptProduct ReceptProduct) {
+    public Bestelbon(int BestelbonId, Vestiging Vestgiging, OntvangstAdres LeveringsAdres) {
+        this();
         this.BestelbonId = BestelbonId;
-        this.Vestgiging = Vestgiging;
-        this.LeveringsAdres = LeveringsAdres;
-        this.ReceptProduct = ReceptProduct;
+        this.Vestiging = Vestgiging;
+        this.OntvangstAdres = LeveringsAdres;
     }
 
     public int getBestelbonId() {
@@ -40,28 +44,29 @@ public class Bestelbon implements New {
     }
 
     public Vestiging getVestgiging() {
-        return Vestgiging;
+        return Vestiging;
     }
 
     public void setVestgiging(Vestiging Vestgiging) {
-        this.Vestgiging = Vestgiging;
+        this.Vestiging = Vestgiging;
     }
 
-    public Adres getLeveringsAdres() {
-        return LeveringsAdres;
+    public OntvangstAdres getOntvangstAdres() {
+        return OntvangstAdres;
     }
 
-    public void setLeveringsAdres(Adres LeveringsAdres) {
-        this.LeveringsAdres = LeveringsAdres;
+    public void setOntvangstAdres(OntvangstAdres OntvangstAdres) {
+        this.OntvangstAdres = OntvangstAdres;
     }
 
-    public ReceptProduct getReceptProduct() {
-        return ReceptProduct;
+    public List<UitgaandeBestelling> getUitgaandeBestellingen() {
+        return UitgaandeBestellingen;
     }
 
-    public void setReceptProduct(ReceptProduct ReceptProduct) {
-        this.ReceptProduct = ReceptProduct;
+    public void setUitgaandeBestellingen(List<UitgaandeBestelling> UitgaandeBestellingen) {
+        this.UitgaandeBestellingen = UitgaandeBestellingen;
     }
+
 
     @Override
     public void setId(int id) {

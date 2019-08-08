@@ -97,7 +97,8 @@ public class Klant implements New{
     public Klant() {
     }
 
-    public Klant(String naam, String roepnaam, String naamVerantwoordelijke, boolean seizoensKlant, String beginSeizoensPeriode, String eindeSeizoensPeriode, String titelverdeellijstenRaster, String telefoonNr1, String gsmNr, String email, String website, BoekhoudRekening boekhoudRekening, String webshopId, String ondernemingsNr, MuntEenheid muntEenheid, boolean domiciliëring, boolean bedragInTekst, Solvabiliteit solvabiliteit, boolean prijzenGroeperenOpFactuur, boolean nettoPrijzenOpFactuur, boolean prijzenExlusiefBtwOpFactuur, boolean klantGeblokkeerd, Dagboek dagboek, boolean factuurElektronischVerzenden, String bewaarMapElektronischeFacturenEnCreditNotas, FacturatiePeriode facturatiePeriode, BetalingsVoorwaarde betalingsVoorwaarde, InhoudLeveringsbonnen inhoudLeveringsbonnen, boolean gratisAantallenOpLeveringsbonnen, boolean kortingsPercentagesOpLeveringsbonnen, boolean nettoTeBetalenOpLeveringsbonnen, boolean verkoopprijzenExlusiefBtwOpLeveringsbonnen, int aantalExemplarenLeveringsbonnen, int aantalExemplarenFacturen, boolean opvolgenLeeggoed, boolean afdrukkenEtikettenVerpakkingen, boolean afdrukkenKlantOpVerdeellijst, boolean klantAfdrukkenOpverdeelEtiketten, String titelVerdeellijst, KlantVerdeelGroep verdeelGroep, String telefoonNr2) {
+    public Klant(int klantId,String naam, String roepnaam, String naamVerantwoordelijke, boolean seizoensKlant, String beginSeizoensPeriode, String eindeSeizoensPeriode, String titelverdeellijstenRaster, String telefoonNr1, String gsmNr, String email, String website, BoekhoudRekening boekhoudRekening, String webshopId, String ondernemingsNr, MuntEenheid muntEenheid, boolean domiciliëring, boolean bedragInTekst, Solvabiliteit solvabiliteit, boolean prijzenGroeperenOpFactuur, boolean nettoPrijzenOpFactuur, boolean prijzenExlusiefBtwOpFactuur, boolean klantGeblokkeerd, Dagboek dagboek, boolean factuurElektronischVerzenden, String bewaarMapElektronischeFacturenEnCreditNotas, FacturatiePeriode facturatiePeriode, BetalingsVoorwaarde betalingsVoorwaarde, InhoudLeveringsbonnen inhoudLeveringsbonnen, boolean gratisAantallenOpLeveringsbonnen, boolean kortingsPercentagesOpLeveringsbonnen, boolean nettoTeBetalenOpLeveringsbonnen, boolean verkoopprijzenExlusiefBtwOpLeveringsbonnen, int aantalExemplarenLeveringsbonnen, int aantalExemplarenFacturen, boolean opvolgenLeeggoed, boolean afdrukkenEtikettenVerpakkingen, boolean afdrukkenKlantOpVerdeellijst, boolean klantAfdrukkenOpverdeelEtiketten, String titelVerdeellijst, KlantVerdeelGroep verdeelGroep, String telefoonNr2) {
+        KlantId = klantId;
         Naam = naam;
         Roepnaam = roepnaam;
         NaamVerantwoordelijke = naamVerantwoordelijke;
@@ -139,13 +140,6 @@ public class Klant implements New{
         KlantAfdrukkenOpverdeelEtiketten = klantAfdrukkenOpverdeelEtiketten;
         TitelVerdeellijst = titelVerdeellijst;
         Verdeelgroep = verdeelGroep;
-        EmailAdressenOntvangersFacturenAsString = EmailAdressenOntvangersFacturen.stream().collect(Collectors.joining(","));
-        OpmerkingenAsString = Opmerkingen.stream().collect(Collectors.joining(","));
-        OpeningsTijden = KlantOpeningstijden.stream().map(e -> e.Openingstijd).collect(Collectors.toList());
-        Verlofs = KlantVerlof.stream().map(e -> e.Verlof).collect(Collectors.toList());
-        Kortingen = KlantKortingen.stream().map(e -> e.Korting).collect(Collectors.toList());
-        BereikbaarOpDagen = KlantBereikbaarOpDagen.stream().map(e->e.BereikbaarheidOpDag).collect(Collectors.toList());
-        Adressen = KlantAdressen.stream().map(e->e.Adres).collect(Collectors.toList());
     }
 
     public int getKlantId() {
