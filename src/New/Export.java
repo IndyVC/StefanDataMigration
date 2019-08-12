@@ -21,6 +21,7 @@ import Bestellingen.Bestelbon;
 import Bestellingen.UitgaandeBestelling;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.AnalytischeRekening;
+import Boekhouding.Bank;
 import Boekhouding.BetalingsVoorwaarde;
 import Boekhouding.Dagboek;
 import Import.Import;
@@ -38,9 +39,12 @@ import Producten.ReceptProduct;
 import Utils.DB;
 import Voorraden.VoorraadPlaats;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -77,15 +81,17 @@ public class Export {
     private static List<AankoopProduct> newAankoopproducten;
     private static List<Verpakking> newVerpakkingen;
     private static List<AnalytischeRekening> newAnalytischeRekeningen;
+    private static List<Bank> newBanken;
 
     public static void export() {
         Import.readOld();
-        /*System.out.println("EXPORT BEDRIJF START");
+        System.out.println("EXPORT BBANK");
+        exportBanken();
+        System.out.println("EXPORT BEDRIJF");
         exportBedrijf();
-        
         System.out.println("EXPORT ONTVANGSTADRESSEN");
         exportOntvangstAdressen();
-        System.out.println("EXPORT RECEPTPRODUCTEN (RECEPTPRODUCTEN NIET VOLLEDIG)");
+        System.out.println("EXPORT RECEPTPRODUCTEN (LISTS NOG NIET OPGEVULD)");
         exportReceptProducten();
         System.out.println("EXPORT BESTELVOORSTELLEN");
         exportBestelvoorstellen();
@@ -97,9 +103,8 @@ public class Export {
         exportBetalingsVoorwaardes();
         System.out.println("EXPORT DAGBOEKEN");
         exportDagboeken();
-        
         System.out.println("EXPORT LEVERANCIERS");
-        exportLeveranciers();*/
+        exportLeveranciers();
         System.out.println("EXPORT FABRIKANTEN START");
         exportFabrikanten();
         System.out.println("EXPORT ALGEMENE REKENINGEN");
@@ -120,6 +125,12 @@ public class Export {
         exportProductcategorieën();
         System.out.println("EXPORT AANKOOPPRODUCTEN");
         exportAankoopproducten();
+    }
+
+    //EERSTE KEER BANKEN
+    public static void exportBanken() {
+        newBanken = Mapper.oldBankinstellingToNewBank();
+        DB.insert(newBanken, "Banken", Bank.class, true, false);
     }
 
     //EERSTE KEER BEDRIJVEN, ADRESSEN, VESTIGINGEN, EIGENAARS, BANKREKENINGNUMMERS
@@ -143,10 +154,9 @@ public class Export {
         });
 
         DB.insert(bedrijfAdressen, "Adressen", Adres.class, true, false);
-        //VESTIGING ZIJN ADRES WIJST NAAR DIE VAN HET BEDRIJF IN DIT GEVAL.
-        DB.insert(vestigingen, "Vestigingen", Vestiging.class, true, false);
-        DB.insert(eigenaars, "Eigenaars", Eigenaar.class, true, true); //EIGENAAR bestond nog niet, dus generate ID.
-        DB.insert(bankRekeningNummers, "BankRekeningNummers", BankRekeningNummer.class, true, false);
+        DB.insert(vestigingen, "Vestiging", Vestiging.class, true, false);
+        DB.insert(eigenaars, "Eigenaar", Eigenaar.class, true, true); //EIGENAAR bestond nog niet, dus generate ID.
+        DB.insert(bankRekeningNummers, "BankRekeningNummers", BankRekeningNummer.class, true, true);
         eigenaars.forEach(eigenaar -> {
             eigenaar.Bedrijven.forEach(bedrijf -> {
                 String query = String.format("UPDATE %s set EigenaarId = %d where BedrijfId = %d;", "Bedrijven", eigenaar.getId(), bedrijf.getId());
@@ -258,7 +268,7 @@ public class Export {
         List<Openingstijd> openingstijden = new ArrayList();
         List<LeveringsDag> leveringsdagen = new ArrayList();
 
-        DB.insert(newLeveranciers, "Leveranciers", Leverancier.class, true, false);
+        DB.insert(newLeveranciers, "Leverancier", Leverancier.class, true, false);
         newLeveranciers.forEach(leverancier -> {
             leverancier.getVerloven().forEach(v -> verloven.add(v));
             leverancier.getOpeningstijden().forEach(v -> openingstijden.add(v));
@@ -269,6 +279,8 @@ public class Export {
         DB.insert(openingstijden, "Openingstijd", Openingstijd.class, true, true);
         DB.insert(leveringsdagen, "LeveringsDag", LeveringsDag.class, true, true);
 
+        System.out.println("LONG OPERATION!");
+        /*
         newLeveranciers.forEach(leverancier -> {
             leverancier.getVerloven().forEach(verlof -> {
                 String query = String.format("UPDATE %s set LeverancierId = %d where VerlofId = %d;", "Verlof", leverancier.getId(), verlof.getId());
@@ -282,7 +294,11 @@ public class Export {
                 String query = String.format("UPDATE %s set LeverancierId = %d where LeveringsDagId = %d;", "LeveringsDag", leverancier.getId(), leveringsdag.getId());
                 DB.executeCustomQuery(query, "LeveringsDag");
             });
-        });
+        })
+         */
+
+        System.out.println("DONE OPERATION!");
+
     }
 
     //EERSTE KEER BESTELGROEPEN
@@ -342,6 +358,8 @@ public class Export {
         List<AlgemeneRekening> algemeneRekeningen = new ArrayList();
 
         newProductgroepen.forEach(groep -> {
+            List<ProductSubGroep> subGroepen = Mapper.oldProductSubGroepToNewProductSubGroep().stream().filter(e -> e.getProductGroep().getId() == groep.getProductGroepId()).collect(Collectors.toList());
+            groep.setProductSubGroepen(subGroepen);
             omschrijvingen.add(groep.getOmschrijving());
             algemeneRekeningen.add(groep.getAlgemeneRekening());
         });
@@ -387,7 +405,7 @@ public class Export {
             fabrikanten.add(e.getStandaardFabrikantFabrikant());
             bestelGroepen.add(e.getBestelGroep());
             etiketten.add(e.getStandaardEtiketEtiket());
-            voorraadPlaatsen.add(e.getStandaardVoorraadPlaats());
+            voorraadPlaatsen.add(e.getStandaardVoorraadPlaatsVoorraadPlaats());
             analytischeRekeningen.add(e.getStandaardAnalytischeRekeningAnalytischeRekening());
         });
 
@@ -408,8 +426,8 @@ public class Export {
 
         newAnalytischeRekeningen = new ArrayList();
         List<Integer> idAR = new ArrayList();
-        analytischeRekeningen.forEach(e->{
-            if(!idAR.contains(Integer.valueOf(e.getId()))){
+        analytischeRekeningen.forEach(e -> {
+            if (!idAR.contains(Integer.valueOf(e.getId()))) {
                 newAnalytischeRekeningen.add(e);
             }
             idAR.add(e.getId());
@@ -417,12 +435,12 @@ public class Export {
 
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
-        DB.insert(removeDuplicates(productSubgroepen, newProductSubGroep), "ProductSubGroep", ProductSubGroep.class, true, false);
-        DB.insert(removeDuplicates(productGroepen, newProductgroepen), "ProductGroep", ProductGroep.class, true, false);
-        DB.insert(removeDuplicates(standaardVerpakkingen, newVerpakkingen), "Verpakkingen", Verpakking.class, true, false);
-        DB.insert(removeDuplicates(colliVerpakkingen, newVerpakkingen), "Verpakkingen", Verpakking.class, false, false);
+        DB.insert(removeDuplicates(productSubgroepen, newProductSubGroep), "ProductSubGroep", ProductSubGroep.class, false, false);
+        DB.insert(removeDuplicates(productGroepen, newProductgroepen), "ProductGroep", ProductGroep.class, false, false);
+        DB.insert(removeDuplicates(standaardVerpakkingen, newVerpakkingen), "Verpakking", Verpakking.class, true, false);
+        DB.insert(removeDuplicates(colliVerpakkingen, newVerpakkingen), "Verpakking", Verpakking.class, false, false);
         DB.insert(removeDuplicates(fabrikanten, newFabrikanten), "Fabrikanten", Fabrikant.class, false, false);
-        DB.insert(removeDuplicates(bestelGroepen, newBestelgroepen), "BestelGroepen", BestelGroep.class, true, false);
+        DB.insert(removeDuplicates(bestelGroepen, newBestelgroepen), "BestelGroepen", BestelGroep.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
         DB.insert(removeDuplicates(analytischeRekeningen, newAnalytischeRekeningen), "AnalytischeRekeningen", AnalytischeRekening.class, true, false);
@@ -459,14 +477,14 @@ public class Export {
             receptProducten.add(e.getReceptProduct());
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
-        DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, true);
+        DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
         DB.insert(removeDuplicates(productSubgroepen, newProductSubGroep), "ProductSubGroep", ProductSubGroep.class, false, false);
         DB.insert(removeDuplicates(productgroepen, newProductgroepen), "ProductGroep", ProductGroep.class, false, false);
         DB.insert(removeDuplicates(fabrikanten, newFabrikanten), "Fabrikanten", Fabrikant.class, false, false);
         DB.insert(removeDuplicates(bestelgroepen, newBestelgroepen), "BestelGroepen", BestelGroep.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
-        DB.insert(removeDuplicates(analytischeRekeningen, newAnalytischeRekeningen), "AnalytischeRekeningen", AnalytischeRekening.class, false, true);
+        DB.insert(removeDuplicates(analytischeRekeningen, newAnalytischeRekeningen), "AnalytischeRekeningen", AnalytischeRekening.class, false, false);
         DB.insert(removeDuplicates(productCategorien, newProductcategorieën), "ProductCategorie", ProductCategorie.class, false, false);
         DB.insert(removeDuplicates(receptProducten, newReceptProducten), "ReceptProducten", ReceptProduct.class, false, false);
 

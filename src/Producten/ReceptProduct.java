@@ -44,6 +44,7 @@ public class ReceptProduct implements New{
 
     public ReceptProduct() {
         setId(-1);
+        setReceptEenheid(ReceptEenheid.Gram);
     }
 
     public ReceptProduct(int ReceptProductId, Omschrijving Omschrijving, Eenheid ReceptEenheid, boolean ZichtbaarBijReceptBasisProduct, boolean ZichtbaarBijReceptVoorbereidProduct, boolean ZichtbaarBijReceptAfgewerktProduct, boolean ZichtbaarBijReceptVerkoopProduct, boolean DefaultHulpstof, boolean MoetGewogenWorden, double MaximaalWeeggewicht, double RelatieveWeegmarge, double AbsoluteWeegmarge, boolean Blokkeren) {

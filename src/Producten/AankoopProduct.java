@@ -21,6 +21,7 @@ import enums.BtwCode;
 import enums.Eenheid;
 import enums.MuntEenheid;
 import enums.VerpakkingsEenheid;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public class AankoopProduct implements New{
     public MuntEenheid PrijsEenheid;
     public boolean EtiketIntern;
     public Etiket Etiket;
-    public long Gtin;
+    public String Gtin;
     public EtiketTekst EtiketTekst;
     public Fabrikant Fabrikant;
     public double VerliesPercentage;
@@ -82,7 +83,7 @@ public class AankoopProduct implements New{
     public AankoopProduct() {
     }
 
-    public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, double EenhedenPerVerpakking, double VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, double MinimumBestelHoeveelheid, double TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, long Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct) {
+    public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, double EenhedenPerVerpakking, double VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, double MinimumBestelHoeveelheid, double TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, String Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct) {
         this.AankoopProductId = AankoopProductId;
         this.Omschrijving = Omschrijving;
         this.ProductCategorie = ProductCategorie;
@@ -416,11 +417,11 @@ public class AankoopProduct implements New{
         this.Etiket = Etiket;
     }
 
-    public long getGtin() {
+    public String getGtin() {
         return Gtin;
     }
 
-    public void setGtin(long Gtin) {
+    public void setGtin(String Gtin) {
         this.Gtin = Gtin;
     }
 

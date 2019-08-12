@@ -77,7 +77,7 @@ public class DB {
                 System.out.println("SKIP: Generate ID");
             } else {
                 if (List.class.isAssignableFrom(field.getType())) {
-                    System.out.println("SKIP: No lists!");
+                    //System.out.println("SKIP: No lists!");
                 } else {
                     if (New.class.isAssignableFrom(field.getType())) {
                         columns.add(field.getName() + "Id");
@@ -251,14 +251,12 @@ public class DB {
 
     public static void executeCustomQuery(String query, String tableName) {
         try {
-            System.out.println("CUSTOM QUERY ON " + tableName);
             Connection connection = getConnection();
 
             PreparedStatement statement = connection.prepareStatement(query);
             disableDatabaseConstraints(connection);
             statement.executeUpdate();
             statement.closeOnCompletion();
-            System.out.println("DONE CUSTOM QUERY ON " + tableName);
 
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);

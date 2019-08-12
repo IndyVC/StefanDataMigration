@@ -38,7 +38,7 @@ public class ProductCategorie implements New{
     public Etiket StandaardEtiketEtiket;
     public VerpakkingsEenheid StandaardEenheidOpEtiket;
     public VerpakkingsEenheid StandaardVoorraadEenheid;
-    public VoorraadPlaats StandaardVoorraadPlaats;
+    public VoorraadPlaats StandaardVoorraadPlaatsVoorraadPlaats;
     public BtwCode StandaardBtwCode;
     public VerpakkingsEenheid StandaardPrijsEenheid;
     public AlgemeneRekening StandaardAlgemeneRekeningAlgemeneRekening;
@@ -75,7 +75,7 @@ public class ProductCategorie implements New{
         this.StandaardEtiketEtiket = StandaardEtiket;
         this.StandaardEenheidOpEtiket = StandaardEenheidOpEtiket;
         this.StandaardVoorraadEenheid = StandaardVoorraadEenheid;
-        this.StandaardVoorraadPlaats = StandaardVoorraadPlaats;
+        this.StandaardVoorraadPlaatsVoorraadPlaats = StandaardVoorraadPlaats;
         this.StandaardBtwCode = StandaardBtwCode;
         this.StandaardPrijsEenheid = StandaardPrijsEenheid;
         this.StandaardAlgemeneRekeningAlgemeneRekening = StandaardAlgemeneRekening;
@@ -201,12 +201,12 @@ public class ProductCategorie implements New{
         this.StandaardVoorraadEenheid = StandaardVoorraadEenheid;
     }
 
-    public VoorraadPlaats getStandaardVoorraadPlaats() {
-        return StandaardVoorraadPlaats;
+    public VoorraadPlaats getStandaardVoorraadPlaatsVoorraadPlaats() {
+        return StandaardVoorraadPlaatsVoorraadPlaats;
     }
 
-    public void setStandaardVoorraadPlaats(VoorraadPlaats StandaardVoorraadPlaats) {
-        this.StandaardVoorraadPlaats = StandaardVoorraadPlaats;
+    public void setStandaardVoorraadPlaatsVoorraadPlaats(VoorraadPlaats StandaardVoorraadPlaatsVoorraadPlaats) {
+        this.StandaardVoorraadPlaatsVoorraadPlaats = StandaardVoorraadPlaatsVoorraadPlaats;
     }
 
     public BtwCode getStandaardBtwCode() {

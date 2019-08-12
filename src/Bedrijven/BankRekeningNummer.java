@@ -5,6 +5,7 @@
  */
 package Bedrijven;
 
+import Boekhouding.Bank;
 import New.New;
 
 /**
@@ -15,15 +16,14 @@ public class BankRekeningNummer implements New{
 
     public int BankRekeningNummerId;
     public String RekeningNr;
-    public String AfkortingBankInstelling;
-
+    public Bank bank;
     public BankRekeningNummer() {
     }
 
-    public BankRekeningNummer(int BankRekeningNummerId, String RekeningNr, String AfkortingBankInstelling) {
+    public BankRekeningNummer(int BankRekeningNummerId, String RekeningNr, Bank bank) {
         this.BankRekeningNummerId = BankRekeningNummerId;
         this.RekeningNr = RekeningNr;
-        this.AfkortingBankInstelling = AfkortingBankInstelling;
+        this.bank = bank;
     }
 
     public int getBankRekeningNummerId() {
@@ -34,9 +34,7 @@ public class BankRekeningNummer implements New{
         return RekeningNr;
     }
 
-    public String getAfkortingBankInstelling() {
-        return AfkortingBankInstelling;
-    }
+ 
 
     public void setBankRekeningNummerId(int BankRekeningNummerId) {
         this.BankRekeningNummerId = BankRekeningNummerId;
@@ -46,9 +44,15 @@ public class BankRekeningNummer implements New{
         this.RekeningNr = RekeningNr;
     }
 
-    public void setAfkortingBankInstelling(String AfkortingBankInstelling) {
-        this.AfkortingBankInstelling = AfkortingBankInstelling;
+    public Bank getBank() {
+        return bank;
     }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
+
+
 
     @Override
     public void setId(int id) {

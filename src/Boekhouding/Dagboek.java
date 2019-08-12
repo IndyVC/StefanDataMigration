@@ -17,10 +17,10 @@ public class Dagboek implements New {
     public int DagboekId;
     public Omschrijving Omschrijving;
     public String ExterneCode;
-    public AlgemeneRekening AlgemeneRekeningLeveranciers;
-    public AlgemeneRekening AlgemeneRekeningKortingOntvangen;
-    public AlgemeneRekening AlgemeneRekeningKlanten;
-    public AlgemeneRekening AlgemeneRekeningKortingGegeven;
+    public AlgemeneRekening AlgemeneRekeningLeveranciersAlgemeneRekening;
+    public AlgemeneRekening AlgemeneRekeningKortingOntvangenAlgemeneRekening;
+    public AlgemeneRekening AlgemeneRekeningKlantenAlgemeneRekening;
+    public AlgemeneRekening AlgemeneRekeningKortingGegevenAlgemeneRekening;
     public boolean Blokkeren;
     
     public Dagboek() {
@@ -30,10 +30,10 @@ public class Dagboek implements New {
         this.DagboekId = DagboekId;
         this.Omschrijving = Omschrijving;
         this.ExterneCode = ExterneCode;
-        this.AlgemeneRekeningLeveranciers = AlgemeneRekeningLeveranciers;
-        this.AlgemeneRekeningKortingOntvangen = AlgemeneRekeningKortingOntvangen;
-        this.AlgemeneRekeningKlanten = AlgemeneRekeningKlanten;
-        this.AlgemeneRekeningKortingGegeven = AlgemeneRekeningKortingGegeven;
+        this.AlgemeneRekeningLeveranciersAlgemeneRekening = AlgemeneRekeningLeveranciers;
+        this.AlgemeneRekeningKortingOntvangenAlgemeneRekening = AlgemeneRekeningKortingOntvangen;
+        this.AlgemeneRekeningKlantenAlgemeneRekening = AlgemeneRekeningKlanten;
+        this.AlgemeneRekeningKortingGegevenAlgemeneRekening = AlgemeneRekeningKortingGegeven;
         this.Blokkeren = Blokkeren;
     }
 
@@ -61,36 +61,36 @@ public class Dagboek implements New {
         this.ExterneCode = ExterneCode;
     }
 
-    public AlgemeneRekening getAlgemeneRekeningLeveranciers() {
-        return AlgemeneRekeningLeveranciers;
+    public AlgemeneRekening getAlgemeneRekeningLeveranciersAlgemeneRekening() {
+        return AlgemeneRekeningLeveranciersAlgemeneRekening;
     }
 
-    public void setAlgemeneRekeningLeveranciers(AlgemeneRekening AlgemeneRekeningLeveranciers) {
-        this.AlgemeneRekeningLeveranciers = AlgemeneRekeningLeveranciers;
+    public void setAlgemeneRekeningLeveranciersAlgemeneRekening(AlgemeneRekening AlgemeneRekeningLeveranciersAlgemeneRekening) {
+        this.AlgemeneRekeningLeveranciersAlgemeneRekening = AlgemeneRekeningLeveranciersAlgemeneRekening;
     }
 
-    public AlgemeneRekening getAlgemeneRekeningKortingOntvangen() {
-        return AlgemeneRekeningKortingOntvangen;
+    public AlgemeneRekening getAlgemeneRekeningKortingOntvangenAlgemeneRekening() {
+        return AlgemeneRekeningKortingOntvangenAlgemeneRekening;
     }
 
-    public void setAlgemeneRekeningKortingOntvangen(AlgemeneRekening AlgemeneRekeningKortingOntvangen) {
-        this.AlgemeneRekeningKortingOntvangen = AlgemeneRekeningKortingOntvangen;
+    public void setAlgemeneRekeningKortingOntvangenAlgemeneRekening(AlgemeneRekening AlgemeneRekeningKortingOntvangenAlgemeneRekening) {
+        this.AlgemeneRekeningKortingOntvangenAlgemeneRekening = AlgemeneRekeningKortingOntvangenAlgemeneRekening;
     }
 
-    public AlgemeneRekening getAlgemeneRekeningKlanten() {
-        return AlgemeneRekeningKlanten;
+    public AlgemeneRekening getAlgemeneRekeningKlantenAlgemeneRekening() {
+        return AlgemeneRekeningKlantenAlgemeneRekening;
     }
 
-    public void setAlgemeneRekeningKlanten(AlgemeneRekening AlgemeneRekeningKlanten) {
-        this.AlgemeneRekeningKlanten = AlgemeneRekeningKlanten;
+    public void setAlgemeneRekeningKlantenAlgemeneRekening(AlgemeneRekening AlgemeneRekeningKlantenAlgemeneRekening) {
+        this.AlgemeneRekeningKlantenAlgemeneRekening = AlgemeneRekeningKlantenAlgemeneRekening;
     }
 
-    public AlgemeneRekening getAlgemeneRekeningKortingGegeven() {
-        return AlgemeneRekeningKortingGegeven;
+    public AlgemeneRekening getAlgemeneRekeningKortingGegevenAlgemeneRekening() {
+        return AlgemeneRekeningKortingGegevenAlgemeneRekening;
     }
 
-    public void setAlgemeneRekeningKortingGegeven(AlgemeneRekening AlgemeneRekeningKortingGegeven) {
-        this.AlgemeneRekeningKortingGegeven = AlgemeneRekeningKortingGegeven;
+    public void setAlgemeneRekeningKortingGegevenAlgemeneRekening(AlgemeneRekening AlgemeneRekeningKortingGegevenAlgemeneRekening) {
+        this.AlgemeneRekeningKortingGegevenAlgemeneRekening = AlgemeneRekeningKortingGegevenAlgemeneRekening;
     }
 
     public boolean isBlokkeren() {
