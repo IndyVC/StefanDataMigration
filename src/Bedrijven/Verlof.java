@@ -26,12 +26,10 @@ public class Verlof implements New{
     public Verlof() {
     }
 
-    public Verlof(int VerlofId, Date StartDatum, Date EindDatum, List<KlantVerlof> VerlofKlanten, List<Klant> Klanten) {
+    public Verlof(int VerlofId, Date StartDatum, Date EindDatum) {
         this.VerlofId = VerlofId;
         this.StartDatum = StartDatum;
         this.EindDatum = EindDatum;
-        this.VerlofKlanten = VerlofKlanten;
-        this.Klanten = Klanten;
     }
 
     public int getVerlofId() {

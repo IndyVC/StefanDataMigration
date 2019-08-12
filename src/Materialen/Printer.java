@@ -15,7 +15,7 @@ import enums.Printertype;
  */
 public class Printer implements New{
     public int PrinterId;
-        public Omschrijving LocatieOmschrijving;
+        public Omschrijving LocatieOmschrijvingOmschrijving;
         public Omschrijving Omschrijving;
         public Printertype PrinterType;
         public boolean StandaardVoorBestelbonnen;
@@ -26,7 +26,7 @@ public class Printer implements New{
 
     public Printer(int PrinterId, Omschrijving LocatieOmschrijving, Omschrijving Omschrijving, Printertype PrinterType, boolean StandaardVoorBestelbonnen, boolean StandaardVoorVerzendbonnen) {
         this.PrinterId = PrinterId;
-        this.LocatieOmschrijving = LocatieOmschrijving;
+        this.LocatieOmschrijvingOmschrijving = LocatieOmschrijving;
         this.Omschrijving = Omschrijving;
         this.PrinterType = PrinterType;
         this.StandaardVoorBestelbonnen = StandaardVoorBestelbonnen;
@@ -41,12 +41,12 @@ public class Printer implements New{
         this.PrinterId = PrinterId;
     }
 
-    public Omschrijving getLocatieOmschrijving() {
-        return LocatieOmschrijving;
+    public Omschrijving getLocatieOmschrijvingOmschrijving() {
+        return LocatieOmschrijvingOmschrijving;
     }
 
-    public void setLocatieOmschrijving(Omschrijving LocatieOmschrijving) {
-        this.LocatieOmschrijving = LocatieOmschrijving;
+    public void setLocatieOmschrijvingOmschrijving(Omschrijving LocatieOmschrijvingOmschrijving) {
+        this.LocatieOmschrijvingOmschrijving = LocatieOmschrijvingOmschrijving;
     }
 
     public Omschrijving getOmschrijving() {

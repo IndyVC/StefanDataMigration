@@ -7,14 +7,14 @@ package Materialen;
 
 import Algemeen.Omschrijving;
 import New.New;
-import Old.Printer;
 import enums.EtiketType;
+import java.util.List;
 
 /**
  *
  * @author stefa
  */
-public class Etiket implements New{
+public class Etiket implements New {
 
     public int EtiketId;
     public String BestandsNaam;
@@ -25,12 +25,12 @@ public class Etiket implements New{
     public Etiket() {
     }
 
-    public Etiket(int EtiketId, String BestandsNaam, Omschrijving Omschrijving, EtiketType EtiketType, Printer Printer) {
+    public Etiket(int EtiketId, String BestandsNaam, Omschrijving Omschrijving, EtiketType EtiketType, Printer printer) {
         this.EtiketId = EtiketId;
         this.BestandsNaam = BestandsNaam;
         this.Omschrijving = Omschrijving;
         this.EtiketType = EtiketType;
-        this.Printer = Printer;
+        this.Printer = printer;
     }
 
     public int getEtiketId() {
@@ -75,10 +75,10 @@ public class Etiket implements New{
 
     @Override
     public void setId(int id) {
-        this.EtiketId=id;
+        this.EtiketId = id;
     }
-    
-     @Override
+
+    @Override
     public int getId() {
         return this.EtiketId;
     }

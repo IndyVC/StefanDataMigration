@@ -10,11 +10,9 @@ import Algemeen.Openingstijd;
 import Bedrijven.Verlof;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.BetalingsVoorwaarde;
+import Boekhouding.Dagboek;
 import Boekhouding.Link;
 import New.New;
-import Old.Dagboek;
-import TussenTabellen.LeverancierLeveringsDag;
-import TussenTabellen.LeverancierOpeningstijd;
 import enums.BtwCode;
 import enums.LeveringsFrequenties;
 import enums.MuntEenheid;
@@ -77,15 +75,13 @@ public class Leverancier implements New {
     public String AlgemeneInfo;
     public List<Link> Linken;
     public List<Verlof> Verloven;
-    public List<LeverancierOpeningstijd> leverancierOpeningstijden;
-    public List<Openingstijd> Leveranciers;
-    public List<LeverancierLeveringsDag> LeverancierLeveringsDagen;
+    public List<Openingstijd> Openingstijden;
     public List<LeveringsDag> LeveringsDagen;
 
     public Leverancier() {
     }
 
-    public Leverancier(int LeverancierId, String Aanspreking, String Naam, Adres Adres, Taal Taal, LeveranciersGroep LeveranciersGroep, boolean Blokkeren, String ContactNaam, String ContactTelefoonnummer, String ContactGsmnummer, String ContactFaxnummer, String ContactEmail, String UrlWebsite, String VertegenwoordigerNaam, String VertegenwoordigerTelefoonnummer, String VertegenwoordigerGsmnummer, String VertegenwoordigerFaxnummer, String VertegenwoordigerEmail, Date DatumAfspraak, String Info, String KlantCode, String BestellingTelefoonnummer, String BestellingFaxNummer, String BestellingEmail, String UrlWebshop, Webshop_API WebshopApi, String TekstBestelbon, Date Begindatum, Date Einddatum, LeveringsFrequenties Leveringsfrequentie, MuntEenheid Munteenheid, BetalingsVoorwaarde BetalingsVoorwaarde, double PercentageHandelskorting, double PercentageFinanciëleKorting, double KredietLimiet, boolean PrijzenInclusiefBTW, boolean NulPrijzenBijLevering, String BoekhoudingCode, Dagboek Dagboek, AlgemeneRekening AlgemeneRekening, BtwCode BtwCode, String OndernemingsNummer, String RechtspersonenRegister, String BankNummer, String AlgemeneInfo, List<Link> Linken, List<Verlof> Verloven, List<LeverancierOpeningstijd> leverancierOpeningstijden, List<Openingstijd> Leveranciers, List<LeverancierLeveringsDag> LeverancierLeveringsDagen, List<LeveringsDag> LeveringsDagen) {
+    public Leverancier(int LeverancierId, String Aanspreking, String Naam, Adres Adres, Taal Taal, LeveranciersGroep LeveranciersGroep, boolean Blokkeren, String ContactNaam, String ContactTelefoonnummer, String ContactGsmnummer, String ContactFaxnummer, String ContactEmail, String UrlWebsite, String VertegenwoordigerNaam, String VertegenwoordigerTelefoonnummer, String VertegenwoordigerGsmnummer, String VertegenwoordigerFaxnummer, String VertegenwoordigerEmail, Date DatumAfspraak, String Info, String KlantCode, String BestellingTelefoonnummer, String BestellingFaxNummer, String BestellingEmail, String UrlWebshop, Webshop_API WebshopApi, String TekstBestelbon, Date Begindatum, Date Einddatum, LeveringsFrequenties Leveringsfrequentie, MuntEenheid Munteenheid, BetalingsVoorwaarde BetalingsVoorwaarde, double PercentageHandelskorting, double PercentageFinanciëleKorting, double KredietLimiet, boolean PrijzenInclusiefBTW, boolean NulPrijzenBijLevering, String BoekhoudingCode, Dagboek Dagboek, AlgemeneRekening AlgemeneRekening, BtwCode BtwCode, String OndernemingsNummer, String RechtspersonenRegister, String BankNummer, String AlgemeneInfo) {
         this.LeverancierId = LeverancierId;
         this.Aanspreking = Aanspreking;
         this.Naam = Naam;
@@ -131,12 +127,6 @@ public class Leverancier implements New {
         this.RechtspersonenRegister = RechtspersonenRegister;
         this.BankNummer = BankNummer;
         this.AlgemeneInfo = AlgemeneInfo;
-        this.Linken = Linken;
-        this.Verloven = Verloven;
-        this.leverancierOpeningstijden = leverancierOpeningstijden;
-        this.Leveranciers = Leveranciers;
-        this.LeverancierLeveringsDagen = LeverancierLeveringsDagen;
-        this.LeveringsDagen = LeveringsDagen;
     }
 
     public int getLeverancierId() {
@@ -515,28 +505,12 @@ public class Leverancier implements New {
         this.Verloven = Verloven;
     }
 
-    public List<LeverancierOpeningstijd> getLeverancierOpeningstijden() {
-        return leverancierOpeningstijden;
+    public List<Openingstijd> getOpeningstijden() {
+        return Openingstijden;
     }
 
-    public void setLeverancierOpeningstijden(List<LeverancierOpeningstijd> leverancierOpeningstijden) {
-        this.leverancierOpeningstijden = leverancierOpeningstijden;
-    }
-
-    public List<Openingstijd> getLeveranciers() {
-        return Leveranciers;
-    }
-
-    public void setLeveranciers(List<Openingstijd> Leveranciers) {
-        this.Leveranciers = Leveranciers;
-    }
-
-    public List<LeverancierLeveringsDag> getLeverancierLeveringsDagen() {
-        return LeverancierLeveringsDagen;
-    }
-
-    public void setLeverancierLeveringsDagen(List<LeverancierLeveringsDag> LeverancierLeveringsDagen) {
-        this.LeverancierLeveringsDagen = LeverancierLeveringsDagen;
+    public void setOpeningstijden(List<Openingstijd> Openingstijden) {
+        this.Openingstijden = Openingstijden;
     }
 
     public List<LeveringsDag> getLeveringsDagen() {

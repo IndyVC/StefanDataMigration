@@ -7,11 +7,36 @@ package Utils;
 
 import Adressen.Adres;
 import Adressen.OntvangstAdres;
+import Bestellingen.OrderPicking;
+import Materialen.StandaardTekstLeveringsbonnen;
 import New.New;
 import Producten.ReceptProduct;
+import enums.AllergeenType;
+import enums.BtwCode;
+import enums.CcpPva;
+import enums.DayOfWeek;
 import enums.Eenheid;
+import enums.EtiketPrintMogelijkheid;
+import enums.EtiketType;
+import enums.FunctieVanIngrediënt;
+import enums.InhoudLeveringsbonnen;
 import enums.Land;
+import enums.LeveringsFrequenties;
+import enums.MuntEenheid;
+import enums.OpzoekenAankoopproduct;
+import enums.Orderpicking;
+import enums.Printertype;
+import enums.ScanFrequentie;
+import enums.ScannerType;
+import enums.Solvabiliteit;
+import enums.SoortFeestdag;
+import enums.SoortFysischeEigenschap;
+import enums.SoortLink;
+import enums.StandaardTekstVoorType;
+import enums.Taal;
 import enums.VerpakkingsEenheid;
+import enums.Webshop_API;
+import enums.WeegschaalModel;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.sql.SQLException;
@@ -115,6 +140,54 @@ public class DB {
                                 statement.setInt(i, Eenheid.valueOf(field.get(obj).toString()).ordinal());
                             } else if (field.get(obj) instanceof VerpakkingsEenheid) {
                                 statement.setInt(i, VerpakkingsEenheid.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof DayOfWeek) {
+                                statement.setInt(i, DayOfWeek.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof Taal) {
+                                statement.setInt(i, Taal.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof AllergeenType) {
+                                statement.setInt(i, AllergeenType.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof BtwCode) {
+                                statement.setInt(i, BtwCode.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof CcpPva) {
+                                statement.setInt(i, CcpPva.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof EtiketPrintMogelijkheid) {
+                                statement.setInt(i, EtiketPrintMogelijkheid.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof EtiketType) {
+                                statement.setInt(i, EtiketType.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof FunctieVanIngrediënt) {
+                                statement.setInt(i, FunctieVanIngrediënt.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof InhoudLeveringsbonnen) {
+                                statement.setInt(i, InhoudLeveringsbonnen.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof LeveringsFrequenties) {
+                                statement.setInt(i, LeveringsFrequenties.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof MuntEenheid) {
+                                statement.setInt(i, MuntEenheid.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof OpzoekenAankoopproduct) {
+                                statement.setInt(i, OpzoekenAankoopproduct.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof Orderpicking) {
+                                statement.setInt(i, Orderpicking.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof Printertype) {
+                                statement.setInt(i, Printertype.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof ScanFrequentie) {
+                                statement.setInt(i, ScanFrequentie.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof ScannerType) {
+                                statement.setInt(i, ScannerType.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof Solvabiliteit) {
+                                statement.setInt(i, Solvabiliteit.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof SoortFeestdag) {
+                                statement.setInt(i, SoortFeestdag.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof SoortFysischeEigenschap) {
+                                statement.setInt(i, SoortFysischeEigenschap.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof SoortLink) {
+                                statement.setInt(i, SoortLink.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof StandaardTekstVoorType) {
+                                statement.setInt(i, StandaardTekstVoorType.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof StandaardTekstVoorType) {
+                                statement.setInt(i, StandaardTekstVoorType.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof Webshop_API) {
+                                statement.setInt(i, Webshop_API.valueOf(field.get(obj).toString()).ordinal());
+                            } else if (field.get(obj) instanceof WeegschaalModel) {
+                                statement.setInt(i, WeegschaalModel.valueOf(field.get(obj).toString()).ordinal());
                             }
                         } else if (field.getType() == int.class) {
                             statement.setInt(i, field.getInt(obj));
@@ -124,9 +197,9 @@ public class DB {
                             statement.setBoolean(i, field.getBoolean(obj));
                         } else if (field.getType() == double.class) {
                             statement.setDouble(i, field.getDouble(obj));
-                        }else if(field.getType() == Date.class){
+                        } else if (field.getType() == Date.class) {
                             Date date = (Date) field.get(obj);
-                            statement.setDate(i, date!=null?date:new Date(0));
+                            statement.setDate(i, date != null ? date : new Date(0));
                         } else if (List.class.isAssignableFrom(field.getType())) {
                             //SKIP!
                         } else if (New.class.isAssignableFrom(type)) {
@@ -178,12 +251,15 @@ public class DB {
 
     public static void executeCustomQuery(String query, String tableName) {
         try {
+            System.out.println("CUSTOM QUERY ON " + tableName);
             Connection connection = getConnection();
 
             PreparedStatement statement = connection.prepareStatement(query);
             disableDatabaseConstraints(connection);
             statement.executeUpdate();
             statement.closeOnCompletion();
+            System.out.println("DONE CUSTOM QUERY ON " + tableName);
+
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -6,14 +6,14 @@
 package Producten;
 
 import Algemeen.Omschrijving;
+import Bedrijven.Fabrikant;
 import Bedrijven.Vestiging;
 import Bestellingen.BestelGroep;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.AnalytischeRekening;
+import Materialen.Etiket;
+import Materialen.EtiketTekst;
 import New.New;
-import Old.Etiket.Etiket;
-import Old.Etiket.EtiketTekst;
-import Old.Fabrikant;
 import TussenTabellen.AankoopProductVerkoopProduct;
 import TussenTabellen.VestigingAankoopProduct;
 import Voorraden.VoorraadPlaats;
@@ -39,12 +39,12 @@ public class AankoopProduct implements New{
     public Eenheid AankoopEenheid;
     public Eenheid VoorraadEenhied;
     public Eenheid EtiketEenheid;
-    public int EenhedenPerVerpakking;
-    public int VerpakkingenPerOmverpakking;
+    public double EenhedenPerVerpakking;
+    public double VerpakkingenPerOmverpakking;
     public double NettoGewichtPerVerpakking;
     public double BrutoGewichtPerVerpakking;
-    public int MinimumBestelHoeveelheid;
-    public int TeBestellenVeelvoud;
+    public double MinimumBestelHoeveelheid;
+    public double TeBestellenVeelvoud;
     public int MinimumLeveringsTermijnInDagen;
     public int MinimumAantalDagenHoudbaar;
     public boolean NaarVoorRaad;
@@ -82,7 +82,7 @@ public class AankoopProduct implements New{
     public AankoopProduct() {
     }
 
-    public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, int EenhedenPerVerpakking, int VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, int MinimumBestelHoeveelheid, int TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, long Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct, List<VestigingAankoopProduct> AankoopProductvestigingen, List<Vestiging> Vestigingen, List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProduct, List<VerkoopProduct> VerkoopProducten) {
+    public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, double EenhedenPerVerpakking, double VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, double MinimumBestelHoeveelheid, double TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, long Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct) {
         this.AankoopProductId = AankoopProductId;
         this.Omschrijving = Omschrijving;
         this.ProductCategorie = ProductCategorie;
@@ -128,10 +128,6 @@ public class AankoopProduct implements New{
         this.EenheidBijInGebruikName = EenheidBijInGebruikName;
         this.AantalLotenInGebruik = AantalLotenInGebruik;
         this.ReceptProduct = ReceptProduct;
-        this.AankoopProductvestigingen = AankoopProductvestigingen;
-        this.Vestigingen = Vestigingen;
-        this.AankoopProductenVerkoopProduct = AankoopProductenVerkoopProduct;
-        this.VerkoopProducten = VerkoopProducten;
     }
 
     
@@ -216,17 +212,45 @@ public class AankoopProduct implements New{
         this.EtiketEenheid = EtiketEenheid;
     }
 
-    public int getEenhedenPerVerpakking() {
+    public double getEenhedenPerVerpakking() {
         return EenhedenPerVerpakking;
     }
+
+    public void setEenhedenPerVerpakking(double EenhedenPerVerpakking) {
+        this.EenhedenPerVerpakking = EenhedenPerVerpakking;
+    }
+
+    public double getVerpakkingenPerOmverpakking() {
+        return VerpakkingenPerOmverpakking;
+    }
+
+    public void setVerpakkingenPerOmverpakking(double VerpakkingenPerOmverpakking) {
+        this.VerpakkingenPerOmverpakking = VerpakkingenPerOmverpakking;
+    }
+
+
 
     public void setEenhedenPerVerpakking(int EenhedenPerVerpakking) {
         this.EenhedenPerVerpakking = EenhedenPerVerpakking;
     }
 
-    public int getVerpakkingenPerOmverpakking() {
-        return VerpakkingenPerOmverpakking;
+    public double getMinimumBestelHoeveelheid() {
+        return MinimumBestelHoeveelheid;
     }
+
+    public void setMinimumBestelHoeveelheid(double MinimumBestelHoeveelheid) {
+        this.MinimumBestelHoeveelheid = MinimumBestelHoeveelheid;
+    }
+
+    public double getTeBestellenVeelvoud() {
+        return TeBestellenVeelvoud;
+    }
+
+    public void setTeBestellenVeelvoud(double TeBestellenVeelvoud) {
+        this.TeBestellenVeelvoud = TeBestellenVeelvoud;
+    }
+
+
 
     public void setVerpakkingenPerOmverpakking(int VerpakkingenPerOmverpakking) {
         this.VerpakkingenPerOmverpakking = VerpakkingenPerOmverpakking;
@@ -248,17 +272,9 @@ public class AankoopProduct implements New{
         this.BrutoGewichtPerVerpakking = BrutoGewichtPerVerpakking;
     }
 
-    public int getMinimumBestelHoeveelheid() {
-        return MinimumBestelHoeveelheid;
-    }
+  
 
-    public void setMinimumBestelHoeveelheid(int MinimumBestelHoeveelheid) {
-        this.MinimumBestelHoeveelheid = MinimumBestelHoeveelheid;
-    }
-
-    public int getTeBestellenVeelvoud() {
-        return TeBestellenVeelvoud;
-    }
+    
 
     public void setTeBestellenVeelvoud(int TeBestellenVeelvoud) {
         this.TeBestellenVeelvoud = TeBestellenVeelvoud;

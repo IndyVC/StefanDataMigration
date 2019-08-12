@@ -22,7 +22,7 @@ public class Dagboek implements New {
     public AlgemeneRekening AlgemeneRekeningKlanten;
     public AlgemeneRekening AlgemeneRekeningKortingGegeven;
     public boolean Blokkeren;
-
+    
     public Dagboek() {
     }
 

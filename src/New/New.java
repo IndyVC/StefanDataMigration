@@ -12,4 +12,6 @@ package New;
 public interface New {
     void setId(int id);
     int getId();
+    
+    
 }

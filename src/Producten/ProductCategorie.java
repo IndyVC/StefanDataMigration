@@ -6,13 +6,13 @@
 package Producten;
 
 import Algemeen.Omschrijving;
+import Bedrijven.Fabrikant;
 import Bestellingen.BestelGroep;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.AnalytischeRekening;
+import Materialen.Etiket;
 import Materialen.Verpakking;
 import New.New;
-import Old.Etiket.Etiket;
-import Old.Fabrikant;
 import Voorraden.VoorraadPlaats;
 import enums.BtwCode;
 import enums.Eenheid;
@@ -27,22 +27,22 @@ public class ProductCategorie implements New{
 
     public int ProductCategorieId;
     public Omschrijving Omschrijving;
-    public ProductGroep StandaardProductGroep;
-    public ProductSubGroep StandaardProductSubGroep;
-    public Fabrikant StandaardFabrikant;
+    public ProductGroep StandaardProductGroepProductGroep;
+    public ProductSubGroep StandaardProductSubGroepProductSubGroep;
+    public Fabrikant StandaardFabrikantFabrikant;
     public BestelGroep BestelGroep;
-    public Verpakking StandaardVerpakking;
-    public Verpakking StandaardColliVerpakking;
+    public Verpakking StandaardVerpakkingVerpakking;
+    public Verpakking StandaardColliVerpakkingVerpakking;
     public Eenheid StandaardEenheid;
     public VerpakkingsEenheid StandaardAankoopEenheid;
-    public Etiket StandaardEtiket;
+    public Etiket StandaardEtiketEtiket;
     public VerpakkingsEenheid StandaardEenheidOpEtiket;
     public VerpakkingsEenheid StandaardVoorraadEenheid;
     public VoorraadPlaats StandaardVoorraadPlaats;
     public BtwCode StandaardBtwCode;
     public VerpakkingsEenheid StandaardPrijsEenheid;
-    public AlgemeneRekening StandaardAlgemeneRekening;
-    public AnalytischeRekening StandaardAnalytischeRekening;
+    public AlgemeneRekening StandaardAlgemeneRekeningAlgemeneRekening;
+    public AnalytischeRekening StandaardAnalytischeRekeningAnalytischeRekening;
     public boolean StandaardDoorverkoop;
     public boolean StandaardVoorraad;
     public boolean AfdrukkenEtiketIntern;
@@ -64,22 +64,22 @@ public class ProductCategorie implements New{
     public ProductCategorie(int ProductCategorieId, Omschrijving Omschrijving, ProductGroep StandaardProductGroep, ProductSubGroep StandaardProductSubGroep, Fabrikant StandaardFabrikant, BestelGroep BestelGroep, Verpakking StandaardVerpakking, Verpakking StandaardColliVerpakking, Eenheid StandaardEenheid, VerpakkingsEenheid StandaardAankoopEenheid, Etiket StandaardEtiket, VerpakkingsEenheid StandaardEenheidOpEtiket, VerpakkingsEenheid StandaardVoorraadEenheid, VoorraadPlaats StandaardVoorraadPlaats, BtwCode StandaardBtwCode, VerpakkingsEenheid StandaardPrijsEenheid, AlgemeneRekening StandaardAlgemeneRekening, AnalytischeRekening StandaardAnalytischeRekening, boolean StandaardDoorverkoop, boolean StandaardVoorraad, boolean AfdrukkenEtiketIntern, boolean AfdrukkenEtiketVerbruik, VerpakkingsEenheid StandaardVerbruiksEenheidOpEtiket, boolean IsBeperkthoudbaarNaOpenen, boolean AfdrukkenEtikettenVanVerkoopProducten, EtiketPrintMogelijkheid EtiketPrint, boolean AfdrukkenEtiketMetIngrediënten, boolean IsHulpstof, boolean IsZichtbaarBijDeIngaveVanReceptenDegenEnBeslagen, boolean IsZichtbaarBijDeIngaveVanReceptenVoorberijdeProducten, boolean IsZichtbaarBijDeIngaveVanReceptenAfgewerkteProducten, boolean IsZichtbaarBijDeIngaveVanReceptenVerkoopProducten) {
         this.ProductCategorieId = ProductCategorieId;
         this.Omschrijving = Omschrijving;
-        this.StandaardProductGroep = StandaardProductGroep;
-        this.StandaardProductSubGroep = StandaardProductSubGroep;
-        this.StandaardFabrikant = StandaardFabrikant;
+        this.StandaardProductGroepProductGroep = StandaardProductGroep;
+        this.StandaardProductSubGroepProductSubGroep = StandaardProductSubGroep;
+        this.StandaardFabrikantFabrikant = StandaardFabrikant;
         this.BestelGroep = BestelGroep;
-        this.StandaardVerpakking = StandaardVerpakking;
-        this.StandaardColliVerpakking = StandaardColliVerpakking;
+        this.StandaardVerpakkingVerpakking = StandaardVerpakking;
+        this.StandaardColliVerpakkingVerpakking = StandaardColliVerpakking;
         this.StandaardEenheid = StandaardEenheid;
         this.StandaardAankoopEenheid = StandaardAankoopEenheid;
-        this.StandaardEtiket = StandaardEtiket;
+        this.StandaardEtiketEtiket = StandaardEtiket;
         this.StandaardEenheidOpEtiket = StandaardEenheidOpEtiket;
         this.StandaardVoorraadEenheid = StandaardVoorraadEenheid;
         this.StandaardVoorraadPlaats = StandaardVoorraadPlaats;
         this.StandaardBtwCode = StandaardBtwCode;
         this.StandaardPrijsEenheid = StandaardPrijsEenheid;
-        this.StandaardAlgemeneRekening = StandaardAlgemeneRekening;
-        this.StandaardAnalytischeRekening = StandaardAnalytischeRekening;
+        this.StandaardAlgemeneRekeningAlgemeneRekening = StandaardAlgemeneRekening;
+        this.StandaardAnalytischeRekeningAnalytischeRekening = StandaardAnalytischeRekening;
         this.StandaardDoorverkoop = StandaardDoorverkoop;
         this.StandaardVoorraad = StandaardVoorraad;
         this.AfdrukkenEtiketIntern = AfdrukkenEtiketIntern;
@@ -112,28 +112,28 @@ public class ProductCategorie implements New{
         this.Omschrijving = Omschrijving;
     }
 
-    public ProductGroep getStandaardProductGroep() {
-        return StandaardProductGroep;
+    public ProductGroep getStandaardProductGroepProductGroep() {
+        return StandaardProductGroepProductGroep;
     }
 
-    public void setStandaardProductGroep(ProductGroep StandaardProductGroep) {
-        this.StandaardProductGroep = StandaardProductGroep;
+    public void setStandaardProductGroepProductGroep(ProductGroep StandaardProductGroepProductGroep) {
+        this.StandaardProductGroepProductGroep = StandaardProductGroepProductGroep;
     }
 
-    public ProductSubGroep getStandaardProductSubGroep() {
-        return StandaardProductSubGroep;
+    public ProductSubGroep getStandaardProductSubGroepProductSubGroep() {
+        return StandaardProductSubGroepProductSubGroep;
     }
 
-    public void setStandaardProductSubGroep(ProductSubGroep StandaardProductSubGroep) {
-        this.StandaardProductSubGroep = StandaardProductSubGroep;
+    public void setStandaardProductSubGroepProductSubGroep(ProductSubGroep StandaardProductSubGroepProductSubGroep) {
+        this.StandaardProductSubGroepProductSubGroep = StandaardProductSubGroepProductSubGroep;
     }
 
-    public Fabrikant getStandaardFabrikant() {
-        return StandaardFabrikant;
+    public Fabrikant getStandaardFabrikantFabrikant() {
+        return StandaardFabrikantFabrikant;
     }
 
-    public void setStandaardFabrikant(Fabrikant StandaardFabrikant) {
-        this.StandaardFabrikant = StandaardFabrikant;
+    public void setStandaardFabrikantFabrikant(Fabrikant StandaardFabrikantFabrikant) {
+        this.StandaardFabrikantFabrikant = StandaardFabrikantFabrikant;
     }
 
     public BestelGroep getBestelGroep() {
@@ -144,22 +144,23 @@ public class ProductCategorie implements New{
         this.BestelGroep = BestelGroep;
     }
 
-    public Verpakking getStandaardVerpakking() {
-        return StandaardVerpakking;
+    public Verpakking getStandaardVerpakkingVerpakking() {
+        return StandaardVerpakkingVerpakking;
     }
 
-    public void setStandaardVerpakking(Verpakking StandaardVerpakking) {
-        this.StandaardVerpakking = StandaardVerpakking;
+    public void setStandaardVerpakkingVerpakking(Verpakking StandaardVerpakkingVerpakking) {
+        this.StandaardVerpakkingVerpakking = StandaardVerpakkingVerpakking;
     }
 
-    public Verpakking getStandaardColliVerpakking() {
-        return StandaardColliVerpakking;
+    public Verpakking getStandaardColliVerpakkingVerpakking() {
+        return StandaardColliVerpakkingVerpakking;
     }
 
-    public void setStandaardColliVerpakking(Verpakking StandaardColliVerpakking) {
-        this.StandaardColliVerpakking = StandaardColliVerpakking;
+    public void setStandaardColliVerpakkingVerpakking(Verpakking StandaardColliVerpakkingVerpakking) {
+        this.StandaardColliVerpakkingVerpakking = StandaardColliVerpakkingVerpakking;
     }
-
+   
+ 
     public Eenheid getStandaardEenheid() {
         return StandaardEenheid;
     }
@@ -176,12 +177,12 @@ public class ProductCategorie implements New{
         this.StandaardAankoopEenheid = StandaardAankoopEenheid;
     }
 
-    public Etiket getStandaardEtiket() {
-        return StandaardEtiket;
+    public Etiket getStandaardEtiketEtiket() {
+        return StandaardEtiketEtiket;
     }
 
-    public void setStandaardEtiket(Etiket StandaardEtiket) {
-        this.StandaardEtiket = StandaardEtiket;
+    public void setStandaardEtiketEtiket(Etiket StandaardEtiketEtiket) {
+        this.StandaardEtiketEtiket = StandaardEtiketEtiket;
     }
 
     public VerpakkingsEenheid getStandaardEenheidOpEtiket() {
@@ -224,20 +225,20 @@ public class ProductCategorie implements New{
         this.StandaardPrijsEenheid = StandaardPrijsEenheid;
     }
 
-    public AlgemeneRekening getStandaardAlgemeneRekening() {
-        return StandaardAlgemeneRekening;
+    public AlgemeneRekening getStandaardAlgemeneRekeningAlgemeneRekening() {
+        return StandaardAlgemeneRekeningAlgemeneRekening;
     }
 
-    public void setStandaardAlgemeneRekening(AlgemeneRekening StandaardAlgemeneRekening) {
-        this.StandaardAlgemeneRekening = StandaardAlgemeneRekening;
+    public void setStandaardAlgemeneRekeningAlgemeneRekening(AlgemeneRekening StandaardAlgemeneRekeningAlgemeneRekening) {
+        this.StandaardAlgemeneRekeningAlgemeneRekening = StandaardAlgemeneRekeningAlgemeneRekening;
     }
 
-    public AnalytischeRekening getStandaardAnalytischeRekening() {
-        return StandaardAnalytischeRekening;
+    public AnalytischeRekening getStandaardAnalytischeRekeningAnalytischeRekening() {
+        return StandaardAnalytischeRekeningAnalytischeRekening;
     }
 
-    public void setStandaardAnalytischeRekening(AnalytischeRekening StandaardAnalytischeRekening) {
-        this.StandaardAnalytischeRekening = StandaardAnalytischeRekening;
+    public void setStandaardAnalytischeRekeningAnalytischeRekening(AnalytischeRekening StandaardAnalytischeRekeningAnalytischeRekening) {
+        this.StandaardAnalytischeRekeningAnalytischeRekening = StandaardAnalytischeRekeningAnalytischeRekening;
     }
 
     public boolean isStandaardDoorverkoop() {
