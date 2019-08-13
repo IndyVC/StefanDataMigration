@@ -16,11 +16,6 @@ import New.New;
 public class KlantAdres implements New{
 
     public int KlantAdresId;
-
-    public int KlantId;
-
-    public int AdresId;
-
     public Klant Klant;
     public Adres Adres;
 
@@ -30,9 +25,7 @@ public class KlantAdres implements New{
 
     public KlantAdres(Klant klant, Adres adres) {
         Klant = klant;
-        KlantId = Klant.KlantId;
         Adres = adres;
-        AdresId = Adres.AdresId;
     }
 
     @Override
@@ -44,4 +37,30 @@ public class KlantAdres implements New{
     public int getId() {
         return this.KlantAdresId;
     }
+
+    public int getKlantAdresId() {
+        return KlantAdresId;
+    }
+
+    public void setKlantAdresId(int KlantAdresId) {
+        this.KlantAdresId = KlantAdresId;
+    }
+
+    public Klant getKlant() {
+        return Klant;
+    }
+
+    public void setKlant(Klant Klant) {
+        this.Klant = Klant;
+    }
+
+    public Adres getAdres() {
+        return Adres;
+    }
+
+    public void setAdres(Adres Adres) {
+        this.Adres = Adres;
+    }
+    
+    
 }

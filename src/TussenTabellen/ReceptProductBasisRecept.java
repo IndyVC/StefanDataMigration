@@ -16,11 +16,6 @@ import Producten.Recepten.BasisRecept;
 public class ReceptProductBasisRecept implements New{
 
     public int ReceptProductBasisReceptId;
-
-    public int ReceptProductId;
-
-    public int BasisReceptId;
-
     public ReceptProduct ReceptProduct;
     public BasisRecept BasisRecept;
 
@@ -30,9 +25,7 @@ public class ReceptProductBasisRecept implements New{
 
     public ReceptProductBasisRecept(ReceptProduct receptProduct, BasisRecept basisRecept) {
         ReceptProduct = receptProduct;
-        ReceptProductId = ReceptProduct.ReceptProductId;
         BasisRecept = basisRecept;
-        BasisReceptId = BasisRecept.BasisReceptId;
     }
 
     @Override
@@ -44,4 +37,30 @@ public class ReceptProductBasisRecept implements New{
     public int getId() {
         return ReceptProductBasisReceptId;
     }
+
+    public int getReceptProductBasisReceptId() {
+        return ReceptProductBasisReceptId;
+    }
+
+    public void setReceptProductBasisReceptId(int ReceptProductBasisReceptId) {
+        this.ReceptProductBasisReceptId = ReceptProductBasisReceptId;
+    }
+
+    public ReceptProduct getReceptProduct() {
+        return ReceptProduct;
+    }
+
+    public void setReceptProduct(ReceptProduct ReceptProduct) {
+        this.ReceptProduct = ReceptProduct;
+    }
+
+    public BasisRecept getBasisRecept() {
+        return BasisRecept;
+    }
+
+    public void setBasisRecept(BasisRecept BasisRecept) {
+        this.BasisRecept = BasisRecept;
+    }
+    
+        
 }

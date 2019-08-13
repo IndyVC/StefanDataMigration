@@ -17,10 +17,6 @@ public class ReceptProductMaterieel implements New {
 
     public int ReceptProductMaterieelId;
 
-    public int ReceptProductId;
-
-    public int MaterieelId;
-
     public ReceptProduct ReceptProduct;
     public Materieel Materieel;
 
@@ -30,9 +26,7 @@ public class ReceptProductMaterieel implements New {
 
     public ReceptProductMaterieel(ReceptProduct receptProduct, Materieel materieel) {
         ReceptProduct = receptProduct;
-        ReceptProductId = ReceptProduct.ReceptProductId;
         Materieel = materieel;
-        MaterieelId = materieel.MaterieelId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class ReceptProductMaterieel implements New {
     public int getId() {
         return this.ReceptProductMaterieelId;
     }
+
+    public int getReceptProductMaterieelId() {
+        return ReceptProductMaterieelId;
+    }
+
+    public void setReceptProductMaterieelId(int ReceptProductMaterieelId) {
+        this.ReceptProductMaterieelId = ReceptProductMaterieelId;
+    }
+
+    public ReceptProduct getReceptProduct() {
+        return ReceptProduct;
+    }
+
+    public void setReceptProduct(ReceptProduct ReceptProduct) {
+        this.ReceptProduct = ReceptProduct;
+    }
+
+    public Materieel getMaterieel() {
+        return Materieel;
+    }
+
+    public void setMaterieel(Materieel Materieel) {
+        this.Materieel = Materieel;
+    }
+    
+    
 }

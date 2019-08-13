@@ -17,10 +17,6 @@ public class BasisProductVestiging implements New{
 
     public int BasisProductVestigingId;
 
-    public int BasisProductId;
-
-    public int VestigingId;
-
     public BasisProduct BasisProduct;
     public Vestiging Vestiging;
 
@@ -30,9 +26,7 @@ public class BasisProductVestiging implements New{
 
     public BasisProductVestiging(BasisProduct basisProduct, Vestiging vestiging) {
         BasisProduct = basisProduct;
-        BasisProductId = BasisProduct.BasisProductId;
         Vestiging = vestiging;
-        VestigingId = Vestiging.getVestgingId();
     }
 
     @Override
@@ -44,4 +38,30 @@ public class BasisProductVestiging implements New{
     public int getId() {
         return this.BasisProductVestigingId;
     }
+
+    public int getBasisProductVestigingId() {
+        return BasisProductVestigingId;
+    }
+
+    public void setBasisProductVestigingId(int BasisProductVestigingId) {
+        this.BasisProductVestigingId = BasisProductVestigingId;
+    }
+
+    public BasisProduct getBasisProduct() {
+        return BasisProduct;
+    }
+
+    public void setBasisProduct(BasisProduct BasisProduct) {
+        this.BasisProduct = BasisProduct;
+    }
+
+    public Vestiging getVestiging() {
+        return Vestiging;
+    }
+
+    public void setVestiging(Vestiging Vestiging) {
+        this.Vestiging = Vestiging;
+    }
+    
+    
 }

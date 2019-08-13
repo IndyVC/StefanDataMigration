@@ -16,11 +16,6 @@ import New.New;
 public class KlantBereikbaarheidOpDag implements New{
 
     public int KlantBereikbaarheidOpDagId;
-
-    public int KlantId;
-
-    public int BereikbaarheidOpDagId;
-
     public Klant Klant;
     public BereikbaarheidOpDag BereikbaarheidOpDag;
 
@@ -30,9 +25,7 @@ public class KlantBereikbaarheidOpDag implements New{
 
     public KlantBereikbaarheidOpDag(Klant klant, BereikbaarheidOpDag bereikbaarheidOpDag) {
         Klant = klant;
-        KlantId = Klant.KlantId;
         BereikbaarheidOpDag = bereikbaarheidOpDag;
-        BereikbaarheidOpDagId = BereikbaarheidOpDag.BereikbaarheidOpDagId;
     }
 
     @Override
@@ -44,4 +37,30 @@ public class KlantBereikbaarheidOpDag implements New{
     public int getId() {
         return KlantBereikbaarheidOpDagId;
     }
+
+    public int getKlantBereikbaarheidOpDagId() {
+        return KlantBereikbaarheidOpDagId;
+    }
+
+    public void setKlantBereikbaarheidOpDagId(int KlantBereikbaarheidOpDagId) {
+        this.KlantBereikbaarheidOpDagId = KlantBereikbaarheidOpDagId;
+    }
+
+    public Klant getKlant() {
+        return Klant;
+    }
+
+    public void setKlant(Klant Klant) {
+        this.Klant = Klant;
+    }
+
+    public BereikbaarheidOpDag getBereikbaarheidOpDag() {
+        return BereikbaarheidOpDag;
+    }
+
+    public void setBereikbaarheidOpDag(BereikbaarheidOpDag BereikbaarheidOpDag) {
+        this.BereikbaarheidOpDag = BereikbaarheidOpDag;
+    }
+    
+    
 }

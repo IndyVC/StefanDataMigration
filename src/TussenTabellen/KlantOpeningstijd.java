@@ -17,9 +17,6 @@ public class KlantOpeningstijd implements New{
 
     public int KlantOpeningsTijdId;
 
-    public int KlantId;
-
-    public int OpeningstijdId;
     public Klant Klant;
     public Openingstijd Openingstijd;
 
@@ -29,9 +26,7 @@ public class KlantOpeningstijd implements New{
 
     public KlantOpeningstijd(Klant klant, Openingstijd openingstijd) {
         Klant = klant;
-        KlantId = Klant.KlantId;
         Openingstijd = openingstijd;
-        OpeningstijdId = Openingstijd.OpeningsTijdId;
     }
 
     @Override
@@ -43,4 +38,30 @@ public class KlantOpeningstijd implements New{
     public int getId() {
         return this.KlantOpeningsTijdId;
     }
+
+    public int getKlantOpeningsTijdId() {
+        return KlantOpeningsTijdId;
+    }
+
+    public void setKlantOpeningsTijdId(int KlantOpeningsTijdId) {
+        this.KlantOpeningsTijdId = KlantOpeningsTijdId;
+    }
+
+    public Klant getKlant() {
+        return Klant;
+    }
+
+    public void setKlant(Klant Klant) {
+        this.Klant = Klant;
+    }
+
+    public Openingstijd getOpeningstijd() {
+        return Openingstijd;
+    }
+
+    public void setOpeningstijd(Openingstijd Openingstijd) {
+        this.Openingstijd = Openingstijd;
+    }
+    
+    
 }

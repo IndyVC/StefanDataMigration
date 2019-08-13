@@ -17,10 +17,6 @@ public class AfgewerktProductMaterieel implements New{
 
     public int AfgewerktProductMaterieelId;
 
-    public int AfgewerktProductId;
-
-    public int MaterieelId;
-
     public AfgewerktProduct AfgewerktProduct;
     public Materieel Materieel;
 
@@ -30,9 +26,7 @@ public class AfgewerktProductMaterieel implements New{
 
     public AfgewerktProductMaterieel(AfgewerktProduct afgewerktProduct, Materieel materieel) {
         AfgewerktProduct = afgewerktProduct;
-        AfgewerktProductId = afgewerktProduct.AfgewerktProductId;
         Materieel = materieel;
-        MaterieelId = materieel.MaterieelId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class AfgewerktProductMaterieel implements New{
     public int getId() {
         return this.AfgewerktProductMaterieelId;
     }
+
+    public int getAfgewerktProductMaterieelId() {
+        return AfgewerktProductMaterieelId;
+    }
+
+    public void setAfgewerktProductMaterieelId(int AfgewerktProductMaterieelId) {
+        this.AfgewerktProductMaterieelId = AfgewerktProductMaterieelId;
+    }
+
+    public AfgewerktProduct getAfgewerktProduct() {
+        return AfgewerktProduct;
+    }
+
+    public void setAfgewerktProduct(AfgewerktProduct AfgewerktProduct) {
+        this.AfgewerktProduct = AfgewerktProduct;
+    }
+
+    public Materieel getMaterieel() {
+        return Materieel;
+    }
+
+    public void setMaterieel(Materieel Materieel) {
+        this.Materieel = Materieel;
+    }
+    
+    
 }

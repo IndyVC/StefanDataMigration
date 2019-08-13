@@ -17,10 +17,6 @@ public class AfgewerktProductBasisRecept implements New{
 
     public int AfgewerktProductBasisReceptId;
 
-    public int AfgewerktProductId;
-
-    public int BasisReceptId;
-
     public AfgewerktProduct AfgewerktProduct;
     public BasisRecept BasisRecept;
 
@@ -30,9 +26,7 @@ public class AfgewerktProductBasisRecept implements New{
 
     public AfgewerktProductBasisRecept(AfgewerktProduct afgewerktProduct, BasisRecept basisRecept) {
         AfgewerktProduct = afgewerktProduct;
-        AfgewerktProductId = afgewerktProduct.AfgewerktProductId;
         BasisRecept = basisRecept;
-        BasisReceptId = BasisRecept.BasisReceptId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class AfgewerktProductBasisRecept implements New{
     public int getId() {
         return this.AfgewerktProductBasisReceptId;
     }
+
+    public int getAfgewerktProductBasisReceptId() {
+        return AfgewerktProductBasisReceptId;
+    }
+
+    public void setAfgewerktProductBasisReceptId(int AfgewerktProductBasisReceptId) {
+        this.AfgewerktProductBasisReceptId = AfgewerktProductBasisReceptId;
+    }
+
+    public AfgewerktProduct getAfgewerktProduct() {
+        return AfgewerktProduct;
+    }
+
+    public void setAfgewerktProduct(AfgewerktProduct AfgewerktProduct) {
+        this.AfgewerktProduct = AfgewerktProduct;
+    }
+
+    public BasisRecept getBasisRecept() {
+        return BasisRecept;
+    }
+
+    public void setBasisRecept(BasisRecept BasisRecept) {
+        this.BasisRecept = BasisRecept;
+    }
+    
+    
 }

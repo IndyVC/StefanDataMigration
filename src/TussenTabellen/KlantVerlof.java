@@ -16,8 +16,7 @@ import Old.Klant.Klant;
 public class KlantVerlof implements New {
 
     public int KlantVerlofId;
-    public int KlantId;
-    public int VerlofId;
+
     public Klant Klant;
     public Verlof Verlof;
 
@@ -35,22 +34,6 @@ public class KlantVerlof implements New {
 
     public void setKlantVerlofId(int KlantVerlofId) {
         this.KlantVerlofId = KlantVerlofId;
-    }
-
-    public int getKlantId() {
-        return KlantId;
-    }
-
-    public void setKlantId(int KlantId) {
-        this.KlantId = KlantId;
-    }
-
-    public int getVerlofId() {
-        return VerlofId;
-    }
-
-    public void setVerlofId(int VerlofId) {
-        this.VerlofId = VerlofId;
     }
 
     public Klant getKlant() {

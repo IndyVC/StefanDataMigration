@@ -17,10 +17,6 @@ public class KlantKorting implements New{
 
     public int KlantKortingId;
 
-    public int KlantId;
-
-    public int KortingId;
-
     public Klant Klant;
     public Korting Korting;
 
@@ -30,9 +26,7 @@ public class KlantKorting implements New{
 
     public KlantKorting(Klant klant, Korting korting) {
         Klant = klant;
-        KlantId = Klant.KlantId;
         Korting = korting;
-        KortingId = Korting.KortingId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class KlantKorting implements New{
     public int getId() {
         return KlantKortingId;
     }
+
+    public int getKlantKortingId() {
+        return KlantKortingId;
+    }
+
+    public void setKlantKortingId(int KlantKortingId) {
+        this.KlantKortingId = KlantKortingId;
+    }
+
+    public Klant getKlant() {
+        return Klant;
+    }
+
+    public void setKlant(Klant Klant) {
+        this.Klant = Klant;
+    }
+
+    public Korting getKorting() {
+        return Korting;
+    }
+
+    public void setKorting(Korting Korting) {
+        this.Korting = Korting;
+    }
+    
+    
 }

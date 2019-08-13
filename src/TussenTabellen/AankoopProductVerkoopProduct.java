@@ -16,9 +16,6 @@ import Producten.VerkoopProduct;
 public class AankoopProductVerkoopProduct implements New{
 
     public int AankoopProductVerkoopProductId;
-    public int AankoopProductId;
-    public int VerkoopProductId;
-
     public AankoopProduct AankoopProduct;
     public VerkoopProduct VerkoopProduct;
 
@@ -28,9 +25,7 @@ public class AankoopProductVerkoopProduct implements New{
 
     public AankoopProductVerkoopProduct(AankoopProduct aankoopProduct, VerkoopProduct verkoopProduct) {
         AankoopProduct = aankoopProduct;
-        AankoopProductId = AankoopProduct.AankoopProductId;
         VerkoopProduct = verkoopProduct;
-        VerkoopProductId = VerkoopProduct.VerkoopProductId;
     }
 
     @Override
@@ -42,4 +37,30 @@ public class AankoopProductVerkoopProduct implements New{
     public int getId() {
         return this.AankoopProductVerkoopProductId;
     }
+
+    public int getAankoopProductVerkoopProductId() {
+        return AankoopProductVerkoopProductId;
+    }
+
+    public void setAankoopProductVerkoopProductId(int AankoopProductVerkoopProductId) {
+        this.AankoopProductVerkoopProductId = AankoopProductVerkoopProductId;
+    }
+
+    public AankoopProduct getAankoopProduct() {
+        return AankoopProduct;
+    }
+
+    public void setAankoopProduct(AankoopProduct AankoopProduct) {
+        this.AankoopProduct = AankoopProduct;
+    }
+
+    public VerkoopProduct getVerkoopProduct() {
+        return VerkoopProduct;
+    }
+
+    public void setVerkoopProduct(VerkoopProduct VerkoopProduct) {
+        this.VerkoopProduct = VerkoopProduct;
+    }
+    
+    
 }

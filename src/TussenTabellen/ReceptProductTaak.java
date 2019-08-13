@@ -17,10 +17,6 @@ public class ReceptProductTaak implements New {
 
     public int ReceptProductTaakId;
 
-    public int ReceptProductId;
-
-    public int TaakId;
-
     public ReceptProduct ReceptProduct;
     public Taak Taak;
 
@@ -30,9 +26,7 @@ public class ReceptProductTaak implements New {
 
     public ReceptProductTaak(ReceptProduct receptProduct, Taak taak) {
         ReceptProduct = receptProduct;
-        ReceptProductId = ReceptProduct.ReceptProductId;
         Taak = taak;
-        TaakId = Taak.TaakId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class ReceptProductTaak implements New {
     public int getId() {
         return this.ReceptProductTaakId;
     }
+
+    public int getReceptProductTaakId() {
+        return ReceptProductTaakId;
+    }
+
+    public void setReceptProductTaakId(int ReceptProductTaakId) {
+        this.ReceptProductTaakId = ReceptProductTaakId;
+    }
+
+    public ReceptProduct getReceptProduct() {
+        return ReceptProduct;
+    }
+
+    public void setReceptProduct(ReceptProduct ReceptProduct) {
+        this.ReceptProduct = ReceptProduct;
+    }
+
+    public Taak getTaak() {
+        return Taak;
+    }
+
+    public void setTaak(Taak Taak) {
+        this.Taak = Taak;
+    }
+    
+    
 }

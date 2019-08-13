@@ -17,10 +17,6 @@ public class BasisProductMaterieel implements New{
 
     public int BasisProductMaterieelId;
 
-    public int BasisProductId;
-
-    public int MaterieelId;
-
     public BasisProduct BasisProduct;
     public Materieel Materieel;
 
@@ -30,9 +26,7 @@ public class BasisProductMaterieel implements New{
 
     public BasisProductMaterieel(BasisProduct basisProduct, Materieel materieel) {
         BasisProduct = basisProduct;
-        BasisProductId = BasisProduct.BasisProductId;
         Materieel = materieel;
-        MaterieelId = Materieel.MaterieelId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class BasisProductMaterieel implements New{
     public int getId() {
         return this.BasisProductMaterieelId;
     }
+
+    public int getBasisProductMaterieelId() {
+        return BasisProductMaterieelId;
+    }
+
+    public void setBasisProductMaterieelId(int BasisProductMaterieelId) {
+        this.BasisProductMaterieelId = BasisProductMaterieelId;
+    }
+
+    public BasisProduct getBasisProduct() {
+        return BasisProduct;
+    }
+
+    public void setBasisProduct(BasisProduct BasisProduct) {
+        this.BasisProduct = BasisProduct;
+    }
+
+    public Materieel getMaterieel() {
+        return Materieel;
+    }
+
+    public void setMaterieel(Materieel Materieel) {
+        this.Materieel = Materieel;
+    }
+    
+    
 }

@@ -17,10 +17,6 @@ public class VerkoopProductMaterieel implements New{
 
     public int VerkoopProductMaterieelId;
 
-    public int VerkoopProductId;
-
-    public int MaterieelId;
-
     public VerkoopProduct VerkoopProduct;
     public Materieel Materieel;
 
@@ -30,9 +26,7 @@ public class VerkoopProductMaterieel implements New{
 
     public VerkoopProductMaterieel(VerkoopProduct verkoopProduct, Materieel materieel) {
         VerkoopProduct = verkoopProduct;
-        VerkoopProductId = VerkoopProduct.VerkoopProductId;
         Materieel = materieel;
-        MaterieelId = Materieel.MaterieelId;
     }
 
     @Override
@@ -44,4 +38,29 @@ public class VerkoopProductMaterieel implements New{
     public int getId() {
         return this.VerkoopProductMaterieelId;
     }
+
+    public int getVerkoopProductMaterieelId() {
+        return VerkoopProductMaterieelId;
+    }
+
+    public void setVerkoopProductMaterieelId(int VerkoopProductMaterieelId) {
+        this.VerkoopProductMaterieelId = VerkoopProductMaterieelId;
+    }
+
+    public VerkoopProduct getVerkoopProduct() {
+        return VerkoopProduct;
+    }
+
+    public void setVerkoopProduct(VerkoopProduct VerkoopProduct) {
+        this.VerkoopProduct = VerkoopProduct;
+    }
+
+    public Materieel getMaterieel() {
+        return Materieel;
+    }
+
+    public void setMaterieel(Materieel Materieel) {
+        this.Materieel = Materieel;
+    }
+    
 }

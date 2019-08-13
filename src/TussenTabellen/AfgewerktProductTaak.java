@@ -17,10 +17,6 @@ public class AfgewerktProductTaak implements New{
 
     public int AfgewerktProductTaakId;
 
-    public int AfgewerktProductId;
-
-    public int TaakId;
-
     public AfgewerktProduct AfgewerktProduct;
     public Taak Taak;
 
@@ -30,9 +26,7 @@ public class AfgewerktProductTaak implements New{
 
     public AfgewerktProductTaak(AfgewerktProduct afgewerktProduct, Taak taak) {
         AfgewerktProduct = afgewerktProduct;
-        AfgewerktProductId = afgewerktProduct.AfgewerktProductId;
         Taak = taak;
-        TaakId = Taak.TaakId;
     }
 
     @Override
@@ -44,4 +38,29 @@ public class AfgewerktProductTaak implements New{
     public int getId() {
         return this.AfgewerktProductTaakId;
     }
+
+    public int getAfgewerktProductTaakId() {
+        return AfgewerktProductTaakId;
+    }
+
+    public void setAfgewerktProductTaakId(int AfgewerktProductTaakId) {
+        this.AfgewerktProductTaakId = AfgewerktProductTaakId;
+    }
+
+    public AfgewerktProduct getAfgewerktProduct() {
+        return AfgewerktProduct;
+    }
+
+    public void setAfgewerktProduct(AfgewerktProduct AfgewerktProduct) {
+        this.AfgewerktProduct = AfgewerktProduct;
+    }
+
+    public Taak getTaak() {
+        return Taak;
+    }
+
+    public void setTaak(Taak Taak) {
+        this.Taak = Taak;
+    }
+    
 }

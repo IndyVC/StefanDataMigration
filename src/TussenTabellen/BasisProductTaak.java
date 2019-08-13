@@ -17,10 +17,6 @@ public class BasisProductTaak implements New{
 
     public int BasisProductTaakId;
 
-    public int BasisProductId;
-
-    public int TaakId;
-
     public BasisProduct BasisProduct;
     public Taak Taak;
 
@@ -30,9 +26,7 @@ public class BasisProductTaak implements New{
 
     public BasisProductTaak(BasisProduct basisProduct, Taak taak) {
         BasisProduct = basisProduct;
-        BasisProductId = BasisProduct.BasisProductId;
         Taak = taak;
-        TaakId = Taak.TaakId;
     }
 
     @Override
@@ -44,4 +38,30 @@ public class BasisProductTaak implements New{
     public int getId() {
         return this.BasisProductTaakId;
     }
+
+    public int getBasisProductTaakId() {
+        return BasisProductTaakId;
+    }
+
+    public void setBasisProductTaakId(int BasisProductTaakId) {
+        this.BasisProductTaakId = BasisProductTaakId;
+    }
+
+    public BasisProduct getBasisProduct() {
+        return BasisProduct;
+    }
+
+    public void setBasisProduct(BasisProduct BasisProduct) {
+        this.BasisProduct = BasisProduct;
+    }
+
+    public Taak getTaak() {
+        return Taak;
+    }
+
+    public void setTaak(Taak Taak) {
+        this.Taak = Taak;
+    }
+    
+    
 }

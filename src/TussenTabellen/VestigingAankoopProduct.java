@@ -17,9 +17,6 @@ public class VestigingAankoopProduct implements New {
 
     public int VestigingAankoopProductId;
 
-    public int VestigingId;
-    public int AankoopProductId;
-
     public Vestiging Vestiging;
     public AankoopProduct AankoopProduct;
 
@@ -29,9 +26,7 @@ public class VestigingAankoopProduct implements New {
 
     public VestigingAankoopProduct(Vestiging vestiging, AankoopProduct aankoopProduct) {
         Vestiging = vestiging;
-        VestigingId = Vestiging.getVestgingId();
         AankoopProduct = aankoopProduct;
-        AankoopProductId = AankoopProduct.AankoopProductId;
     }
 
     @Override
@@ -43,4 +38,30 @@ public class VestigingAankoopProduct implements New {
     public int getId() {
         return this.VestigingAankoopProductId;
     }
+
+    public int getVestigingAankoopProductId() {
+        return VestigingAankoopProductId;
+    }
+
+    public void setVestigingAankoopProductId(int VestigingAankoopProductId) {
+        this.VestigingAankoopProductId = VestigingAankoopProductId;
+    }
+
+    public Vestiging getVestiging() {
+        return Vestiging;
+    }
+
+    public void setVestiging(Vestiging Vestiging) {
+        this.Vestiging = Vestiging;
+    }
+
+    public AankoopProduct getAankoopProduct() {
+        return AankoopProduct;
+    }
+
+    public void setAankoopProduct(AankoopProduct AankoopProduct) {
+        this.AankoopProduct = AankoopProduct;
+    }
+    
+    
 }

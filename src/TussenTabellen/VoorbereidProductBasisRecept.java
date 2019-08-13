@@ -17,10 +17,6 @@ public class VoorbereidProductBasisRecept implements New {
 
     public int VoorbereidProductBasisReceptId;
 
-    public int VoorbereidProductId;
-
-    public int BasisReceptId;
-
     public VoorbereidProduct VoorbereidProduct;
     public BasisRecept BasisRecept;
 
@@ -30,9 +26,7 @@ public class VoorbereidProductBasisRecept implements New {
 
     public VoorbereidProductBasisRecept(VoorbereidProduct voorbereidProduct, BasisRecept basisRecept) {
         VoorbereidProduct = voorbereidProduct;
-        VoorbereidProductId = VoorbereidProduct.VoorbereidProductId;
         BasisRecept = basisRecept;
-        BasisReceptId = basisRecept.BasisReceptId;
     }
 
     @Override
@@ -44,4 +38,29 @@ public class VoorbereidProductBasisRecept implements New {
     public int getId() {
         return this.VoorbereidProductBasisReceptId;
     }
+
+    public int getVoorbereidProductBasisReceptId() {
+        return VoorbereidProductBasisReceptId;
+    }
+
+    public void setVoorbereidProductBasisReceptId(int VoorbereidProductBasisReceptId) {
+        this.VoorbereidProductBasisReceptId = VoorbereidProductBasisReceptId;
+    }
+
+    public VoorbereidProduct getVoorbereidProduct() {
+        return VoorbereidProduct;
+    }
+
+    public void setVoorbereidProduct(VoorbereidProduct VoorbereidProduct) {
+        this.VoorbereidProduct = VoorbereidProduct;
+    }
+
+    public BasisRecept getBasisRecept() {
+        return BasisRecept;
+    }
+
+    public void setBasisRecept(BasisRecept BasisRecept) {
+        this.BasisRecept = BasisRecept;
+    }
+    
 }
