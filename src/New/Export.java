@@ -29,6 +29,9 @@ import Leveringen.Leverancier;
 import Leveringen.LeveranciersGroep;
 import Leveringen.LeveringsDag;
 import Materialen.Etiket;
+import Materialen.Materieel;
+import Materialen.Materieelgroep;
+import Materialen.Onderhoud;
 import Materialen.Printer;
 import Materialen.Verpakking;
 import Producten.AankoopProduct;
@@ -58,6 +61,8 @@ import java.util.stream.Collectors;
  * UITLEG EXPORT KLASSE: Verwijder commentaar NOOIT! Je moet weten of het de
  * eerste keer is dat een bepaalde klasse wordt weggeschreven, zodat de boolean
  * deleteAllPrevious op true staat. Daarna mag dit NIET meer.
+ *
+ * MISSING CLASSES: TAAK? Welke table van vroeger? ONDERHOUD?
  */
 public class Export {
 
@@ -85,6 +90,8 @@ public class Export {
     private static List<AnalytischeRekening> newAnalytischeRekeningen;
     private static List<Bank> newBanken;
     private static List<BasisRecept> newBasisRecepten;
+    private static List<Materieelgroep> newMaterieelGroepen;
+    private static List<Materieel> newMaterieel;
 
     public static void export() {
         Import.readOld();
@@ -96,7 +103,7 @@ public class Export {
         System.out.println("EXPORT ONTVANGSTADRESSEN");
         exportOntvangstAdressen(); //done
         System.out.println("EXPORT RECEPTPRODUCTEN (LISTS NOG NIET OPGEVULD)");
-        exportReceptProducten(); // RECEPT PRODUCT NOG OPVULLEN: ReceptProductBasisRecepten; ReceptProductTaken; ReceptProductMaterielen;
+        exportReceptProducten(); // RECEPT PRODUCT NOG OPVULLEN: ReceptProductTaken; ReceptProductMaterielen;
         System.out.println("EXPORT BESTELVOORSTELLEN");
         exportBestelvoorstellen(); //done
         System.out.println("EXPORT BESTELBONNEN EN UITGAANDEBESTELLINGEN");
@@ -130,8 +137,61 @@ public class Export {
         System.out.println("EXPORT AANKOOPPRODUCTEN");
         exportAankoopproducten(); //AANKOOPPRODUCT NOG OPVULLEN: AankoopProductvestigingen; AankoopProductenVerkoopProduct; VerkoopProducten
         System.out.println("EXPORT BASISRECEPTEN");
-        exportBasisRecepten();  //BASIS RECEPT NOG OPVULLEN: BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten;
+        exportBasisRecepten();  //BASIS RECEPT NOG OPVULLEN: Jobs; BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten; 
+        System.out.println("EXPORT MATERIEELGROEPEN");
+        exportMaterieelGroepen(); //done
+        System.out.println("EXPORT MATERIEEL");
+        exportMaterieel(); //MaterieelBasisProducten; MaterieelAfgewerktProducten; MaterieelVerkoopProducten; MaterieelVoorbereidProducten; MaterieelReceptProducten;
 
+    }
+
+    public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {
+        List<Integer> oldIds = new ArrayList();
+        List<T> distinct = new ArrayList();
+        if (exists.size() > 0 && exists != null) {
+            exists.forEach(e -> {
+                if (e != null) {
+                    oldIds.add(Integer.valueOf(((New) e).getId()));
+                }
+            });
+
+            newList.forEach(e -> {
+                New obj = (New) e;
+                if (!oldIds.contains(obj.getId())) {
+                    distinct.add(e);
+                }
+                oldIds.add(obj.getId());
+            });
+
+            for (T obj : distinct) {
+                exists.add(obj);
+            }
+        } else {
+            newList.forEach(e -> {
+                New obj = (New) e;
+                if (!oldIds.contains(obj.getId())) {
+                    distinct.add(e);
+                }
+                oldIds.add(obj.getId());
+            });
+
+        }
+        return distinct;
+    }
+
+    public static <T> List<T> deleteDuplicates(List<T> list) {
+        List<Integer> oldIds = new ArrayList();
+        List<T> distinct = new ArrayList();
+
+        list.forEach(e -> {
+            New obj = (New) e;
+            if (!oldIds.contains(obj.getId())) {
+                distinct.add(e);
+            }
+            oldIds.add(obj.getId());
+        });
+
+        return distinct;
     }
 
     //EERSTE KEER BANKEN
@@ -521,63 +581,47 @@ public class Export {
     public static void exportBasisRecepten() {
         newBasisRecepten = Mapper.oldReceptenToBasisRecepten();
         List<TussenTabellen.ReceptProductBasisRecept> tussen = new ArrayList();
-        newBasisRecepten.forEach(e->{
-            e.getBasisReceptReceptProducten().forEach(t->{
+        newBasisRecepten.forEach(e -> {
+            e.getBasisReceptReceptProducten().forEach(t -> {
                 tussen.add(t);
             });
         });
-        DB.insert(tussen, "ReceptProductBasisRecepten", ReceptProductBasisRecept.class, true, true);
         DB.insert(newBasisRecepten, "BasisRecepten", BasisRecept.class, true, true);
-        
+        DB.insert(tussen, "ReceptProductBasisRecepten", ReceptProductBasisRecept.class, true, true);
+
     }
 
-    public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {
-        List<Integer> oldIds = new ArrayList();
-        List<T> distinct = new ArrayList();
-        if (exists.size() > 0 && exists != null) {
-            exists.forEach(e -> {
-                if (e != null) {
-                    oldIds.add(Integer.valueOf(((New) e).getId()));
-                }
-            });
+    //EERSTE KEER MATERIEELGROEPEN
+    public static void exportMaterieelGroepen() {
+        newMaterieelGroepen = Mapper.oldMaterieelgroepToNewMaterieelGroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newMaterieelGroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newMaterieelGroepen, "Materieelgroepen", Materieelgroep.class, true, false);
 
-            newList.forEach(e -> {
-                New obj = (New) e;
-                if (!oldIds.contains(obj.getId())) {
-                    distinct.add(e);
-                }
-                oldIds.add(obj.getId());
-            });
-
-            for (T obj : distinct) {
-                exists.add(obj);
-            }
-        } else {
-            newList.forEach(e -> {
-                New obj = (New) e;
-                if (!oldIds.contains(obj.getId())) {
-                    distinct.add(e);
-                }
-                oldIds.add(obj.getId());
-            });
-
-        }
-        return distinct;
     }
 
-    public static <T> List<T> deleteDuplicates(List<T> list) {
-        List<Integer> oldIds = new ArrayList();
-        List<T> distinct = new ArrayList();
+    public static void exportMaterieel() {
+        newMaterieel = Mapper.oldMaterieelToNewMaterieel();
+        List<Materieelgroep> materieelGroepen = new ArrayList();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<Leverancier> leveranciers = new ArrayList();
+        List<Onderhoud> onderhouden = new ArrayList();
 
-        list.forEach(e -> {
-            New obj = (New) e;
-            if (!oldIds.contains(obj.getId())) {
-                distinct.add(e);
-            }
-            oldIds.add(obj.getId());
+        newMaterieel.forEach(e -> {
+            materieelGroepen.add(e.getMaterieelgroep());
+            omschrijvingen.add(e.getOmschrijving());
+            leveranciers.add(e.getLeverancier());
+            onderhouden.add(e.getOnderhoud());
         });
 
-        return distinct;
+        DB.insert(removeDuplicates(materieelGroepen, newMaterieelGroepen), "Materieelgroepen", Materieelgroep.class, false, false);
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(leveranciers, "Leverancier", Leverancier.class, false, false);
+        DB.insert(onderhouden, "Onderhouden", Onderhoud.class, true, false);
+        DB.insert(newMaterieel, "Materieelen", Materieel.class, true, false);
     }
 
 }

@@ -30,34 +30,24 @@ public class Taak implements New{
     public boolean Blokkeren;
     public Omschrijving Omschrijving;
     public List<BasisProductTaak> TaakBasisProducten;
-    public List<BasisProduct> BasisProducten;
     public List<AfgewerktProductTaak> TaakAfgewerkteProducten;
-    public List<AfgewerktProduct> AfgewerkteProducten;
     public List<VerkoopProductTaak> TaakVerkoopProducten;
-    public List<VerkoopProduct> VerkoopProducten;
     public List<VoorbereidProductTaak> TaakVoorbereidProducten;
-    public List<VoorbereidProduct> VoorbereidProducten;
     public List<ReceptProductTaak> TaakReceptProducten;
-    public List<ReceptProduct> ReceptProducten;
 
     public Taak() {
     }
 
-    public Taak(int TaakId, String Tijdsduur, boolean Blokkeren, Omschrijving Omschrijving, List<BasisProductTaak> TaakBasisProducten, List<BasisProduct> BasisProducten, List<AfgewerktProductTaak> TaakAfgewerkteProducten, List<AfgewerktProduct> AfgewerkteProducten, List<VerkoopProductTaak> TaakVerkoopProducten, List<VerkoopProduct> VerkoopProducten, List<VoorbereidProductTaak> TaakVoorbereidProducten, List<VoorbereidProduct> VoorbereidProducten, List<ReceptProductTaak> TaakReceptProducten, List<ReceptProduct> ReceptProducten) {
+    public Taak(int TaakId, String Tijdsduur, boolean Blokkeren, Omschrijving Omschrijving) {
         this.TaakId = TaakId;
         this.Tijdsduur = Tijdsduur;
         this.Blokkeren = Blokkeren;
         this.Omschrijving = Omschrijving;
         this.TaakBasisProducten = TaakBasisProducten;
-        this.BasisProducten = BasisProducten;
         this.TaakAfgewerkteProducten = TaakAfgewerkteProducten;
-        this.AfgewerkteProducten = AfgewerkteProducten;
         this.TaakVerkoopProducten = TaakVerkoopProducten;
-        this.VerkoopProducten = VerkoopProducten;
         this.TaakVoorbereidProducten = TaakVoorbereidProducten;
-        this.VoorbereidProducten = VoorbereidProducten;
         this.TaakReceptProducten = TaakReceptProducten;
-        this.ReceptProducten = ReceptProducten;
     }
 
     public int getTaakId() {
@@ -100,14 +90,6 @@ public class Taak implements New{
         this.TaakBasisProducten = TaakBasisProducten;
     }
 
-    public List<BasisProduct> getBasisProducten() {
-        return BasisProducten;
-    }
-
-    public void setBasisProducten(List<BasisProduct> BasisProducten) {
-        this.BasisProducten = BasisProducten;
-    }
-
     public List<AfgewerktProductTaak> getTaakAfgewerkteProducten() {
         return TaakAfgewerkteProducten;
     }
@@ -116,13 +98,6 @@ public class Taak implements New{
         this.TaakAfgewerkteProducten = TaakAfgewerkteProducten;
     }
 
-    public List<AfgewerktProduct> getAfgewerkteProducten() {
-        return AfgewerkteProducten;
-    }
-
-    public void setAfgewerkteProducten(List<AfgewerktProduct> AfgewerkteProducten) {
-        this.AfgewerkteProducten = AfgewerkteProducten;
-    }
 
     public List<VerkoopProductTaak> getTaakVerkoopProducten() {
         return TaakVerkoopProducten;
@@ -132,13 +107,6 @@ public class Taak implements New{
         this.TaakVerkoopProducten = TaakVerkoopProducten;
     }
 
-    public List<VerkoopProduct> getVerkoopProducten() {
-        return VerkoopProducten;
-    }
-
-    public void setVerkoopProducten(List<VerkoopProduct> VerkoopProducten) {
-        this.VerkoopProducten = VerkoopProducten;
-    }
 
     public List<VoorbereidProductTaak> getTaakVoorbereidProducten() {
         return TaakVoorbereidProducten;
@@ -147,31 +115,13 @@ public class Taak implements New{
     public void setTaakVoorbereidProducten(List<VoorbereidProductTaak> TaakVoorbereidProducten) {
         this.TaakVoorbereidProducten = TaakVoorbereidProducten;
     }
-
-    public List<VoorbereidProduct> getVoorbereidProducten() {
-        return VoorbereidProducten;
-    }
-
-    public void setVoorbereidProducten(List<VoorbereidProduct> VoorbereidProducten) {
-        this.VoorbereidProducten = VoorbereidProducten;
-    }
     
-    
-
     public List<ReceptProductTaak> getTaakReceptProducten() {
         return TaakReceptProducten;
     }
 
     public void setTaakReceptProducten(List<ReceptProductTaak> TaakReceptProducten) {
         this.TaakReceptProducten = TaakReceptProducten;
-    }
-
-    public List<ReceptProduct> getReceptProducten() {
-        return ReceptProducten;
-    }
-
-    public void setReceptProducten(List<ReceptProduct> ReceptProducten) {
-        this.ReceptProducten = ReceptProducten;
     }
 
     @Override

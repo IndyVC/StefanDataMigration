@@ -25,10 +25,13 @@ import Leveringen.Leverancier;
 import Leveringen.LeveranciersGroep;
 import Leveringen.LeveringsDag;
 import Materialen.Etiket;
+import Materialen.Materieelgroep;
+import Materialen.Onderhoud;
 import Materialen.Printer;
 import Materialen.Verpakking;
 import Old.Boekhouding.Bankinstelling;
 import Old.Etiket.EtiketTekst;
+import Old.Materieel;
 import Producten.AankoopProduct;
 import Producten.ProductCategorie;
 import Producten.ProductGroep;
@@ -514,27 +517,60 @@ public class Mapper {
         return newProductcategorieen;
     }
 
-    public static List<Producten.Recepten.BasisRecept> oldReceptenToBasisRecepten(){
+    public static List<Producten.Recepten.BasisRecept> oldReceptenToBasisRecepten() {
         List<Producten.Recepten.BasisRecept> newRecepten = new ArrayList();
-        List<Old.Recept.Recept> recepten = Import.getRecepten().stream().map(e->(Old.Recept.Recept)e).collect(Collectors.toList());
-        
+        List<Old.Recept.Recept> recepten = Import.getRecepten().stream().map(e -> (Old.Recept.Recept) e).collect(Collectors.toList());
+
         //generate ID
-        for(Old.Recept.Recept e:recepten){
-            ReceptProduct receptProduct = oldReceptproductToNewReceptproduct().stream().filter(r->r.getId()==e.getId_header()).findFirst().orElse(null);
+        for (Old.Recept.Recept e : recepten) {
+            ReceptProduct receptProduct = oldReceptproductToNewReceptproduct().stream().filter(r -> r.getId() == e.getId_header()).findFirst().orElse(null);
             Omschrijving omschrijving = new Omschrijving();
             omschrijving.setId(-1);
             BasisRecept basisRecept = new BasisRecept(-1, omschrijving, e.getHoeveelheid(), e.getPercentage(), e.getVolgnummer(), e.getHulpstof(), e.getTelbasis(), e.getAantal_personen());
-            if(receptProduct!=null){
+            if (receptProduct != null) {
                 TussenTabellen.ReceptProductBasisRecept tussen = new TussenTabellen.ReceptProductBasisRecept(receptProduct, basisRecept);
                 basisRecept.getBasisReceptReceptProducten().add(tussen);
                 receptProduct.getReceptProductBasisRecepten().add(tussen);
             }
             newRecepten.add(basisRecept);
-            
+
         }
-        
+
         return newRecepten;
     }
+
+    public static List<Materialen.Materieelgroep> oldMaterieelgroepToNewMaterieelGroep() {
+        List<Old.MaterieelGroep> materieelGroep = Import.getMaterieelgroep().stream().map(e -> (Old.MaterieelGroep) e).collect(Collectors.toList());
+        List<Materialen.Materieelgroep> newMaterieelGroep = new ArrayList();
+        
+        materieelGroep.forEach(e->{
+            Omschrijving omschrijving = new Omschrijving(-1,e.getOmschrijvingn(),e.getOmschrijvingf(),e.getOmschrijvinge());
+            Materialen.Materieelgroep matGroep = new Materieelgroep(e.getId_materieelgroep(),omschrijving, false);
+            newMaterieelGroep.add(matGroep);
+        });
+        
+        return newMaterieelGroep;
+    }
+
+    public static List<Materialen.Materieel> oldMaterieelToNewMaterieel() {
+        List<Materialen.Materieel> newMaterieel = new ArrayList();
+        List<Old.Materieel> materieel = Import.getMaterieel().stream().map(e -> (Old.Materieel) e).collect(Collectors.toList());
+
+        materieel.forEach(e -> {
+            Materialen.Materieelgroep matGroep = oldMaterieelgroepToNewMaterieelGroep().stream().filter(g->g.getId()==e.getId_materieelgroep()).findFirst().orElse(new Materieelgroep());
+            matGroep.setId(e.getId_materieelgroep());
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Leverancier leverancier = oldLeverantierToNewLeverancier().stream().filter(l->l.getId()==e.getId_leverancier()).findFirst().orElse(new Leverancier());
+            leverancier.setId(e.getId_leverancier());
+            Materialen.Onderhoud onderhoud = new Onderhoud();
+            onderhoud.setId(-1);
+            Materialen.Materieel mat = new Materialen.Materieel(e.getId_materieel(), matGroep, e.getTechnische_keuring(), e.getDatum_laatste_keuring(), e.getDatum_volgende_keuring(), omschrijving, leverancier, e.getGebruiksaanwijzing(), e.getVeiligheidsfiche(), e.getLink_technische_keuring(), e.getLink_onderhoudschema(), e.getLink_ingebruikstelling(), e.getLink_foto(), e.getBlokkeren(), e.getGebruiksaanwijzing(), e.getVeiligheidsfiche(), onderhoud);
+            newMaterieel.add(mat);
+        });
+        
+        return newMaterieel;
+    }
+
     private static Eenheid convertRecepteenheid(int id) {
         switch (id) {
             case -30:

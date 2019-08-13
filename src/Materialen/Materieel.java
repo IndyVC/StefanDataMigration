@@ -6,8 +6,8 @@
 package Materialen;
 
 import Algemeen.Omschrijving;
+import Leveringen.Leverancier;
 import New.New;
-import Old.Leverancier;
 import Producten.AfgewerktProduct;
 import Producten.BasisProduct;
 import Producten.ReceptProduct;
@@ -19,13 +19,14 @@ import TussenTabellen.ReceptProductMaterieel;
 import TussenTabellen.VerkoopProductMaterieel;
 import TussenTabellen.VoorbereidProductMaterieel;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author stefa
  */
-public class Materieel implements New{
+public class Materieel implements New {
 
     public int MaterieelId;
     public Materieelgroep Materieelgroep;
@@ -59,20 +60,15 @@ public class Materieel implements New{
 
     public Onderhoud Onderhoud;
     public List<BasisProductMaterieel> MaterieelBasisProducten;
-    public List<BasisProduct> BasisProducten;
     public List<AfgewerktProductMaterieel> MaterieelAfgewerktProducten;
-    public List<AfgewerktProduct> AfgewerkteProducten;
     public List<VerkoopProductMaterieel> MaterieelVerkoopProducten;
-    public List<VerkoopProduct> VerkoopProducten;
     public List<VoorbereidProductMaterieel> MaterieelVoorbereidProducten;
-    public List<VoorbereidProduct> VoorbereidProducten;
     public List<ReceptProductMaterieel> MaterieelReceptProducten;
-    public List<ReceptProduct> ReceptProducten;
 
     public Materieel() {
     }
 
-    public Materieel(int MaterieelId, Materieelgroep Materieelgroep, boolean MoetGekeurdWorden, Date LaatsteKeuring, Date VolgendeKeuring, Omschrijving Omschrijving, Leverancier Leverancier, String GebruiksaanwijzingBestand, String VeiligheidsficheBestand, String TechnischeKeuringBestand, String OnderhoudsschemaBestand, String IngebruikstellingBestand, String Foto, boolean Blokkeren, String Gebruiksaanwijzing, String Veiligheidsfiche, Onderhoud Onderhoud, List<BasisProductMaterieel> MaterieelBasisProducten, List<BasisProduct> BasisProducten, List<AfgewerktProductMaterieel> MaterieelAfgewerktProducten, List<AfgewerktProduct> AfgewerkteProducten, List<VerkoopProductMaterieel> MaterieelVerkoopProducten, List<VerkoopProduct> VerkoopProducten, List<VoorbereidProductMaterieel> MaterieelVoorbereidProducten, List<VoorbereidProduct> VoorbereidProducten, List<ReceptProductMaterieel> MaterieelReceptProducten, List<ReceptProduct> ReceptProducten) {
+    public Materieel(int MaterieelId, Materieelgroep Materieelgroep, boolean MoetGekeurdWorden, Date LaatsteKeuring, Date VolgendeKeuring, Omschrijving Omschrijving, Leverancier Leverancier, String GebruiksaanwijzingBestand, String VeiligheidsficheBestand, String TechnischeKeuringBestand, String OnderhoudsschemaBestand, String IngebruikstellingBestand, String Foto, boolean Blokkeren, String Gebruiksaanwijzing, String Veiligheidsfiche, Onderhoud Onderhoud) {
         this.MaterieelId = MaterieelId;
         this.Materieelgroep = Materieelgroep;
         this.MoetGekeurdWorden = MoetGekeurdWorden;
@@ -90,16 +86,11 @@ public class Materieel implements New{
         this.Gebruiksaanwijzing = Gebruiksaanwijzing;
         this.Veiligheidsfiche = Veiligheidsfiche;
         this.Onderhoud = Onderhoud;
-        this.MaterieelBasisProducten = MaterieelBasisProducten;
-        this.BasisProducten = BasisProducten;
-        this.MaterieelAfgewerktProducten = MaterieelAfgewerktProducten;
-        this.AfgewerkteProducten = AfgewerkteProducten;
-        this.MaterieelVerkoopProducten = MaterieelVerkoopProducten;
-        this.VerkoopProducten = VerkoopProducten;
-        this.MaterieelVoorbereidProducten = MaterieelVoorbereidProducten;
-        this.VoorbereidProducten = VoorbereidProducten;
-        this.MaterieelReceptProducten = MaterieelReceptProducten;
-        this.ReceptProducten = ReceptProducten;
+        this.MaterieelBasisProducten = new ArrayList();
+        this.MaterieelAfgewerktProducten = new ArrayList();
+        this.MaterieelVerkoopProducten = new ArrayList();
+        this.MaterieelVoorbereidProducten = new ArrayList();
+        this.MaterieelReceptProducten = new ArrayList();
     }
 
     public int getMaterieelId() {
@@ -246,28 +237,12 @@ public class Materieel implements New{
         this.MaterieelBasisProducten = MaterieelBasisProducten;
     }
 
-    public List<BasisProduct> getBasisProducten() {
-        return BasisProducten;
-    }
-
-    public void setBasisProducten(List<BasisProduct> BasisProducten) {
-        this.BasisProducten = BasisProducten;
-    }
-
     public List<AfgewerktProductMaterieel> getMaterieelAfgewerktProducten() {
         return MaterieelAfgewerktProducten;
     }
 
     public void setMaterieelAfgewerktProducten(List<AfgewerktProductMaterieel> MaterieelAfgewerktProducten) {
         this.MaterieelAfgewerktProducten = MaterieelAfgewerktProducten;
-    }
-
-    public List<AfgewerktProduct> getAfgewerkteProducten() {
-        return AfgewerkteProducten;
-    }
-
-    public void setAfgewerkteProducten(List<AfgewerktProduct> AfgewerkteProducten) {
-        this.AfgewerkteProducten = AfgewerkteProducten;
     }
 
     public List<VerkoopProductMaterieel> getMaterieelVerkoopProducten() {
@@ -278,28 +253,12 @@ public class Materieel implements New{
         this.MaterieelVerkoopProducten = MaterieelVerkoopProducten;
     }
 
-    public List<VerkoopProduct> getVerkoopProducten() {
-        return VerkoopProducten;
-    }
-
-    public void setVerkoopProducten(List<VerkoopProduct> VerkoopProducten) {
-        this.VerkoopProducten = VerkoopProducten;
-    }
-
     public List<VoorbereidProductMaterieel> getMaterieelVoorbereidProducten() {
         return MaterieelVoorbereidProducten;
     }
 
     public void setMaterieelVoorbereidProducten(List<VoorbereidProductMaterieel> MaterieelVoorbereidProducten) {
         this.MaterieelVoorbereidProducten = MaterieelVoorbereidProducten;
-    }
-
-    public List<VoorbereidProduct> getVoorbereidProducten() {
-        return VoorbereidProducten;
-    }
-
-    public void setVoorbereidProducten(List<VoorbereidProduct> VoorbereidProducten) {
-        this.VoorbereidProducten = VoorbereidProducten;
     }
 
     public List<ReceptProductMaterieel> getMaterieelReceptProducten() {
@@ -310,20 +269,12 @@ public class Materieel implements New{
         this.MaterieelReceptProducten = MaterieelReceptProducten;
     }
 
-    public List<ReceptProduct> getReceptProducten() {
-        return ReceptProducten;
-    }
-
-    public void setReceptProducten(List<ReceptProduct> ReceptProducten) {
-        this.ReceptProducten = ReceptProducten;
+    @Override
+    public void setId(int id) {
+        this.MaterieelId = id;
     }
 
     @Override
-    public void setId(int id) {
-        this.MaterieelId=id;
-    }
-    
-     @Override
     public int getId() {
         return this.MaterieelId;
     }
