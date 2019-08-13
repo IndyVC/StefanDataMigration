@@ -7,12 +7,13 @@ package TussenTabellen;
 
 import Bestellingen.Klant;
 import Boekhouding.Korting;
+import New.New;
 
 /**
  *
  * @author stefa
  */
-public class KlantKorting {
+public class KlantKorting implements New{
 
     public int KlantKortingId;
 
@@ -32,5 +33,15 @@ public class KlantKorting {
         KlantId = Klant.KlantId;
         Korting = korting;
         KortingId = Korting.KortingId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.KlantKortingId=id;
+    }
+
+    @Override
+    public int getId() {
+        return KlantKortingId;
     }
 }

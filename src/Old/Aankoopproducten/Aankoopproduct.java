@@ -1,6 +1,7 @@
 package Old.Aankoopproducten;
 import Old.Old;
 import Utils.Util;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 public class Aankoopproduct implements Old { 
@@ -63,7 +64,7 @@ private boolean etiket_intern;
 private int id_etiket;
 private String info_inhoud;
 private int id_leveringstemperatuur;
-private String gtin;
+private BigDecimal gtin;
 private int id_online;
 private boolean etiket_verkoopproduct;
 private double etiket_verkoopproduct_percentage_ondergrens;
@@ -166,7 +167,7 @@ this.etiket_intern = Util.Boolean(data[55]);
 this.id_etiket = Util.Int(data[56]);
 this.info_inhoud = data[57];
 this.id_leveringstemperatuur = Util.Int(data[58]);
-this.gtin = data[59];
+this.gtin = Util.BigDecimal(data[59]);
 this.id_online = Util.Int(data[60]);
 this.etiket_verkoopproduct = Util.Boolean(data[61]);
 this.etiket_verkoopproduct_percentage_ondergrens = Util.Double(data[62]);
@@ -386,7 +387,7 @@ return this.info_inhoud;
 public int getId_leveringstemperatuur() {
 return this.id_leveringstemperatuur;
 }
-public String getGtin() {
+public BigDecimal getGtin() {
 return this.gtin;
 }
 public int getId_online() {
@@ -689,7 +690,7 @@ public void setInfo_inhoud(String info_inhoud){
 public void setId_leveringstemperatuur(int id_leveringstemperatuur){
  this.id_leveringstemperatuur=id_leveringstemperatuur;
  }
-public void setGtin(String gtin){
+public void setGtin(BigDecimal gtin){
  this.gtin=gtin;
  }
 public void setId_online(int id_online){

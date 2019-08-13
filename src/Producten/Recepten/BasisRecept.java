@@ -17,6 +17,7 @@ import TussenTabellen.BasisProductBasisRecept;
 import TussenTabellen.ReceptProductBasisRecept;
 import TussenTabellen.VerkoopProductBasisRecept;
 import TussenTabellen.VoorbereidProductBasisRecept;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,28 +29,23 @@ public class BasisRecept implements New{
     public int BasisReceptId;
 
     public Omschrijving Omschrijving;
-    public int Hoeveelheid;
+    public double Hoeveelheid;
     public double Percentage;
     public int Volgnummer;
-    public String Hulpstof;
-    public String Telbasis;
+    public boolean Hulpstof;
+    public boolean Telbasis;
     public int AantalPersonen;
 
     public List<BasisProductBasisRecept> BasisReceptBasisProducten;
-    public List<BasisProduct> BasisProducten;
     public List<AfgewerktProductBasisRecept> BasisReceptAfgewerkteProducten;
-    public List<AfgewerktProduct> AfgewerktProducten;
     public List<VerkoopProductBasisRecept> BasisReceptverkoopProducten;
-    public List<VerkoopProduct> VerkoopProducten;
     public List<VoorbereidProductBasisRecept> BasisReceptVoorbereidProducten;
-    public List<VoorbereidProduct> VoorbereidProducten;
     public List<ReceptProductBasisRecept> BasisReceptReceptProducten;
-    public List<ReceptProduct> ReceptProducten;
 
     public BasisRecept() {
     }
 
-    public BasisRecept(int BasisReceptId, Omschrijving Omschrijving, int Hoeveelheid, double Percentage, int Volgnummer, String Hulpstof, String Telbasis, int AantalPersonen, List<BasisProductBasisRecept> BasisReceptBasisProducten, List<BasisProduct> BasisProducten, List<AfgewerktProductBasisRecept> BasisReceptAfgewerkteProducten, List<AfgewerktProduct> AfgewerktProducten, List<VerkoopProductBasisRecept> BasisReceptverkoopProducten, List<VerkoopProduct> VerkoopProducten, List<VoorbereidProductBasisRecept> BasisReceptVoorbereidProducten, List<VoorbereidProduct> VoorbereidProducten, List<ReceptProductBasisRecept> BasisReceptReceptProducten, List<ReceptProduct> ReceptProducten) {
+    public BasisRecept(int BasisReceptId, Omschrijving Omschrijving, double Hoeveelheid, double Percentage, int Volgnummer, boolean Hulpstof, boolean Telbasis, int AantalPersonen) {
         this.BasisReceptId = BasisReceptId;
         this.Omschrijving = Omschrijving;
         this.Hoeveelheid = Hoeveelheid;
@@ -58,16 +54,12 @@ public class BasisRecept implements New{
         this.Hulpstof = Hulpstof;
         this.Telbasis = Telbasis;
         this.AantalPersonen = AantalPersonen;
-        this.BasisReceptBasisProducten = BasisReceptBasisProducten;
-        this.BasisProducten = BasisProducten;
-        this.BasisReceptAfgewerkteProducten = BasisReceptAfgewerkteProducten;
-        this.AfgewerktProducten = AfgewerktProducten;
-        this.BasisReceptverkoopProducten = BasisReceptverkoopProducten;
-        this.VerkoopProducten = VerkoopProducten;
-        this.BasisReceptVoorbereidProducten = BasisReceptVoorbereidProducten;
-        this.VoorbereidProducten = VoorbereidProducten;
-        this.BasisReceptReceptProducten = BasisReceptReceptProducten;
-        this.ReceptProducten = ReceptProducten;
+        BasisReceptBasisProducten = new ArrayList();
+        BasisReceptAfgewerkteProducten = new ArrayList();
+        BasisReceptverkoopProducten =new ArrayList();
+        BasisReceptVoorbereidProducten = new ArrayList();
+        BasisReceptReceptProducten = new ArrayList();
+        
     }
 
     public int getBasisReceptId() {
@@ -86,11 +78,11 @@ public class BasisRecept implements New{
         this.Omschrijving = Omschrijving;
     }
 
-    public int getHoeveelheid() {
+    public double getHoeveelheid() {
         return Hoeveelheid;
     }
 
-    public void setHoeveelheid(int Hoeveelheid) {
+    public void setHoeveelheid(double Hoeveelheid) {
         this.Hoeveelheid = Hoeveelheid;
     }
 
@@ -110,19 +102,19 @@ public class BasisRecept implements New{
         this.Volgnummer = Volgnummer;
     }
 
-    public String getHulpstof() {
+    public boolean getHulpstof() {
         return Hulpstof;
     }
 
-    public void setHulpstof(String Hulpstof) {
+    public void setHulpstof(boolean Hulpstof) {
         this.Hulpstof = Hulpstof;
     }
 
-    public String getTelbasis() {
+    public boolean getTelbasis() {
         return Telbasis;
     }
 
-    public void setTelbasis(String Telbasis) {
+    public void setTelbasis(boolean Telbasis) {
         this.Telbasis = Telbasis;
     }
 
@@ -142,14 +134,6 @@ public class BasisRecept implements New{
         this.BasisReceptBasisProducten = BasisReceptBasisProducten;
     }
 
-    public List<BasisProduct> getBasisProducten() {
-        return BasisProducten;
-    }
-
-    public void setBasisProducten(List<BasisProduct> BasisProducten) {
-        this.BasisProducten = BasisProducten;
-    }
-
     public List<AfgewerktProductBasisRecept> getBasisReceptAfgewerkteProducten() {
         return BasisReceptAfgewerkteProducten;
     }
@@ -158,13 +142,7 @@ public class BasisRecept implements New{
         this.BasisReceptAfgewerkteProducten = BasisReceptAfgewerkteProducten;
     }
 
-    public List<AfgewerktProduct> getAfgewerktProducten() {
-        return AfgewerktProducten;
-    }
-
-    public void setAfgewerktProducten(List<AfgewerktProduct> AfgewerktProducten) {
-        this.AfgewerktProducten = AfgewerktProducten;
-    }
+ 
 
     public List<VerkoopProductBasisRecept> getBasisReceptverkoopProducten() {
         return BasisReceptverkoopProducten;
@@ -172,14 +150,6 @@ public class BasisRecept implements New{
 
     public void setBasisReceptverkoopProducten(List<VerkoopProductBasisRecept> BasisReceptverkoopProducten) {
         this.BasisReceptverkoopProducten = BasisReceptverkoopProducten;
-    }
-
-    public List<VerkoopProduct> getVerkoopProducten() {
-        return VerkoopProducten;
-    }
-
-    public void setVerkoopProducten(List<VerkoopProduct> VerkoopProducten) {
-        this.VerkoopProducten = VerkoopProducten;
     }
 
     public List<VoorbereidProductBasisRecept> getBasisReceptVoorbereidProducten() {
@@ -190,13 +160,6 @@ public class BasisRecept implements New{
         this.BasisReceptVoorbereidProducten = BasisReceptVoorbereidProducten;
     }
 
-    public List<VoorbereidProduct> getVoorbereidProducten() {
-        return VoorbereidProducten;
-    }
-
-    public void setVoorbereidProducten(List<VoorbereidProduct> VoorbereidProducten) {
-        this.VoorbereidProducten = VoorbereidProducten;
-    }
 
     public List<ReceptProductBasisRecept> getBasisReceptReceptProducten() {
         return BasisReceptReceptProducten;
@@ -204,14 +167,6 @@ public class BasisRecept implements New{
 
     public void setBasisReceptReceptProducten(List<ReceptProductBasisRecept> BasisReceptReceptProducten) {
         this.BasisReceptReceptProducten = BasisReceptReceptProducten;
-    }
-
-    public List<ReceptProduct> getReceptProducten() {
-        return ReceptProducten;
-    }
-
-    public void setReceptProducten(List<ReceptProduct> ReceptProducten) {
-        this.ReceptProducten = ReceptProducten;
     }
 
     @Override

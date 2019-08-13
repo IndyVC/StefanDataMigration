@@ -7,12 +7,13 @@ package TussenTabellen;
 
 import Algemeen.Openingstijd;
 import Bestellingen.Klant;
+import New.New;
 
 /**
  *
  * @author stefa
  */
-public class KlantOpeningstijd {
+public class KlantOpeningstijd implements New{
 
     public int KlantOpeningsTijdId;
 
@@ -31,5 +32,15 @@ public class KlantOpeningstijd {
         KlantId = Klant.KlantId;
         Openingstijd = openingstijd;
         OpeningstijdId = Openingstijd.OpeningsTijdId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.KlantOpeningsTijdId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.KlantOpeningsTijdId;
     }
 }

@@ -11,6 +11,7 @@ import Bestellingen.OrderPicking;
 import Materialen.StandaardTekstLeveringsbonnen;
 import New.New;
 import Producten.ReceptProduct;
+import static Utils.Util.BigDecimal;
 import enums.AllergeenType;
 import enums.BtwCode;
 import enums.CcpPva;
@@ -38,6 +39,7 @@ import enums.VerpakkingsEenheid;
 import enums.Webshop_API;
 import enums.WeegschaalModel;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,9 +52,9 @@ import java.util.logging.Logger;
  * @author stefa
  */
 public class DB {
-
+    
     private static String SQL_INSERT = "";
-
+    
     public static Connection getConnection() {
         try {
             String connectionUrl = "jdbc:sqlserver://localhost:1433;"
@@ -62,16 +64,16 @@ public class DB {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-
+        
     }
-
+    
     public static <T> void insert(List<T> objects, String tableName, Class<T> type, boolean deletePreviousData, boolean generateId) {
         System.out.printf("START INSERTING %S%n", tableName);
         String cols = "(";
         String qms = "(";
         int i = 1;
         List<String> columns = new ArrayList();
-
+        
         for (Field field : type.getFields()) {
             if (i == 1 && generateId) {
                 System.out.println("SKIP: Generate ID");
@@ -88,7 +90,7 @@ public class DB {
             }
             i++;
         }
-
+        
         int size = columns.size();
         int j = 1;
         for (String col : columns) {
@@ -101,31 +103,31 @@ public class DB {
             }
             j++;
         }
-
+        
         String insert = String.format("INSERT INTO %s %s VALUES %s", tableName, cols, qms);
         SQL_INSERT = insert;
-
+        
         executeInsert(objects, tableName, type, deletePreviousData, generateId);
     }
-
+    
     public static <T> void executeInsert(List<T> objects, String tableName, Class<T> type, boolean deletePreviousData, boolean generateId) {
         Connection connection = getConnection();
         try {
-
+            
             PreparedStatement statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
-
+            
             disableDatabaseConstraints(connection);
-
+            
             if (generateId) {
                 enableIdentityGeneration(connection, tableName);
             } else {
                 disableIdentityGeneration(connection, tableName);
             }
-
+            
             if (deletePreviousData) {
                 clearTable(connection, tableName);
             }
-
+            
             for (T obj : objects) {
                 int i = 1;
                 boolean firstField = true;
@@ -200,6 +202,9 @@ public class DB {
                         } else if (field.getType() == Date.class) {
                             Date date = (Date) field.get(obj);
                             statement.setDate(i, date != null ? date : new Date(0));
+                        } else if (field.getType() == BigDecimal.class) {
+                            BigDecimal big = (BigDecimal) field.get(obj);
+                            statement.setBigDecimal(i, big);
                         } else if (List.class.isAssignableFrom(field.getType())) {
                             //SKIP!
                         } else if (New.class.isAssignableFrom(type)) {
@@ -215,11 +220,11 @@ public class DB {
                             throw new IllegalArgumentException("DATA TYPE IS NOT SUPPORTED YET, ADD IT!!!");
                         }
                         i++;
-
+                        
                     }
                     firstField = false;
                 }
-
+                
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
                     if (generateId) {
@@ -230,12 +235,12 @@ public class DB {
                         }
                     }
                 }
-
+                
             }
-
+            
             statement.closeOnCompletion();
             System.out.printf("DONE INSERTING %S%n", tableName);
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
@@ -248,21 +253,21 @@ public class DB {
             SQL_INSERT = "";
         }
     }
-
-    public static void executeCustomQuery(String query, String tableName) {
+    
+    public static void executeCustomQuery(String query) {
         try {
             Connection connection = getConnection();
-
+            
             PreparedStatement statement = connection.prepareStatement(query);
             disableDatabaseConstraints(connection);
             statement.executeUpdate();
             statement.closeOnCompletion();
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private static void disableDatabaseConstraints(Connection connection) {
         try {
             Statement disableConstraintsStatement = connection.createStatement();
@@ -272,11 +277,11 @@ public class DB {
             Logger.getLogger(DB.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
-
+    
     private static void enableDatabaseConstraints(Connection connection) {
-
+        
         try {
             Statement enableConstraintsStatement = connection.createStatement();
             enableConstraintsStatement.execute("exec sp_MSforeachtable \"ALTER TABLE ? CHECK CONSTRAINT ALL\"");
@@ -285,9 +290,9 @@ public class DB {
             Logger.getLogger(DB.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
-
+    
     private static void disableIdentityGeneration(Connection connection, String tableName) {
         try {
             Statement disableConstraintsStatement = connection.createStatement();
@@ -297,7 +302,7 @@ public class DB {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private static void enableIdentityGeneration(Connection connection, String tableName) {
         try {
             Statement enableConstraintsStatement = connection.createStatement();
@@ -307,7 +312,7 @@ public class DB {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private static void clearTable(Connection connection, String tableName) {
         try {
             Statement clearStatement = connection.createStatement();

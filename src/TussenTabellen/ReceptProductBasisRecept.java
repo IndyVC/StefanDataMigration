@@ -5,6 +5,7 @@
  */
 package TussenTabellen;
 
+import New.New;
 import Producten.ReceptProduct;
 import Producten.Recepten.BasisRecept;
 
@@ -12,7 +13,7 @@ import Producten.Recepten.BasisRecept;
  *
  * @author stefa
  */
-public class ReceptProductBasisRecept {
+public class ReceptProductBasisRecept implements New{
 
     public int ReceptProductBasisReceptId;
 
@@ -32,5 +33,15 @@ public class ReceptProductBasisRecept {
         ReceptProductId = ReceptProduct.ReceptProductId;
         BasisRecept = basisRecept;
         BasisReceptId = BasisRecept.BasisReceptId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.ReceptProductBasisReceptId=id;
+    }
+
+    @Override
+    public int getId() {
+        return ReceptProductBasisReceptId;
     }
 }

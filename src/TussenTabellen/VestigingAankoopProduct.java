@@ -6,32 +6,41 @@
 package TussenTabellen;
 
 import Bedrijven.Vestiging;
+import New.New;
 import Producten.AankoopProduct;
 
 /**
  *
  * @author stefa
  */
- public class VestigingAankoopProduct
-    {
-        public int VestigingAankoopProductId;
+public class VestigingAankoopProduct implements New {
 
-        public int VestigingId;
-        public int AankoopProductId;
+    public int VestigingAankoopProductId;
 
-        public Vestiging Vestiging;
-        public AankoopProduct AankoopProduct;
+    public int VestigingId;
+    public int AankoopProductId;
 
-        public VestigingAankoopProduct()
-        {
+    public Vestiging Vestiging;
+    public AankoopProduct AankoopProduct;
 
-        }
+    public VestigingAankoopProduct() {
 
-        public VestigingAankoopProduct(Vestiging vestiging, AankoopProduct aankoopProduct)
-        {
-            Vestiging = vestiging;
-            VestigingId = Vestiging.getVestgingId();
-            AankoopProduct = aankoopProduct;
-            AankoopProductId = AankoopProduct.AankoopProductId;
-        }
     }
+
+    public VestigingAankoopProduct(Vestiging vestiging, AankoopProduct aankoopProduct) {
+        Vestiging = vestiging;
+        VestigingId = Vestiging.getVestgingId();
+        AankoopProduct = aankoopProduct;
+        AankoopProductId = AankoopProduct.AankoopProductId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.VestigingAankoopProductId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.VestigingAankoopProductId;
+    }
+}

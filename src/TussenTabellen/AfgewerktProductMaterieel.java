@@ -6,13 +6,14 @@
 package TussenTabellen;
 
 import Materialen.Materieel;
+import New.New;
 import Producten.AfgewerktProduct;
 
 /**
  *
  * @author stefa
  */
-public class AfgewerktProductMaterieel {
+public class AfgewerktProductMaterieel implements New{
 
     public int AfgewerktProductMaterieelId;
 
@@ -32,5 +33,15 @@ public class AfgewerktProductMaterieel {
         AfgewerktProductId = afgewerktProduct.AfgewerktProductId;
         Materieel = materieel;
         MaterieelId = materieel.MaterieelId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.AfgewerktProductMaterieelId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.AfgewerktProductMaterieelId;
     }
 }

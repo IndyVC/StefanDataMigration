@@ -5,6 +5,7 @@
  */
 package TussenTabellen;
 
+import New.New;
 import Producten.AankoopProduct;
 import Producten.VerkoopProduct;
 
@@ -12,25 +13,33 @@ import Producten.VerkoopProduct;
  *
  * @author stefa
  */
-public class AankoopProductVerkoopProduct
-    {
-        public int AankoopProductVerkoopProductId;
-        public int AankoopProductId;
-        public int VerkoopProductId;
+public class AankoopProductVerkoopProduct implements New{
 
-        public AankoopProduct AankoopProduct;
-        public VerkoopProduct VerkoopProduct;
+    public int AankoopProductVerkoopProductId;
+    public int AankoopProductId;
+    public int VerkoopProductId;
 
-        public AankoopProductVerkoopProduct()
-        {
+    public AankoopProduct AankoopProduct;
+    public VerkoopProduct VerkoopProduct;
 
-        }
+    public AankoopProductVerkoopProduct() {
 
-        public AankoopProductVerkoopProduct(AankoopProduct aankoopProduct, VerkoopProduct verkoopProduct)
-        {
-            AankoopProduct = aankoopProduct;
-            AankoopProductId = AankoopProduct.AankoopProductId;
-            VerkoopProduct = verkoopProduct;
-            VerkoopProductId = VerkoopProduct.VerkoopProductId;
-        }
     }
+
+    public AankoopProductVerkoopProduct(AankoopProduct aankoopProduct, VerkoopProduct verkoopProduct) {
+        AankoopProduct = aankoopProduct;
+        AankoopProductId = AankoopProduct.AankoopProductId;
+        VerkoopProduct = verkoopProduct;
+        VerkoopProductId = VerkoopProduct.VerkoopProductId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.AankoopProductVerkoopProductId = id;
+    }
+
+    @Override
+    public int getId() {
+        return this.AankoopProductVerkoopProductId;
+    }
+}

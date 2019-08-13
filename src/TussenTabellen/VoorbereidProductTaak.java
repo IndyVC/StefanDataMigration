@@ -5,6 +5,7 @@
  */
 package TussenTabellen;
 
+import New.New;
 import Producten.Recepten.Taak;
 import Producten.VoorbereidProduct;
 
@@ -12,7 +13,7 @@ import Producten.VoorbereidProduct;
  *
  * @author stefa
  */
-public class VoorbereidProductTaak {
+public class VoorbereidProductTaak implements New{
 
     public int VoorbereidProductTaakId;
 
@@ -32,5 +33,15 @@ public class VoorbereidProductTaak {
         VoorbereidProductId = VoorbereidProduct.VoorbereidProductId;
         Taak = taak;
         TaakId = Taak.TaakId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.VoorbereidProductTaakId = id;
+    }
+
+    @Override
+    public int getId() {
+        return this.VoorbereidProductTaakId;
     }
 }

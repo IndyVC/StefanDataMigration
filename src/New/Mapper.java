@@ -34,6 +34,7 @@ import Producten.ProductCategorie;
 import Producten.ProductGroep;
 import Producten.ProductSubGroep;
 import Producten.ReceptProduct;
+import Producten.Recepten.BasisRecept;
 import Voorraden.VoorraadPlaats;
 import enums.BtwCode;
 import enums.DayOfWeek;
@@ -48,7 +49,6 @@ import enums.Taal;
 import enums.VerpakkingsEenheid;
 import enums.Webshop_API;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,16 +60,16 @@ import java.util.stream.Collectors;
 public class Mapper {
 
     //give old objects, get new objects.
-    
-    public static List<Boekhouding.Bank> oldBankinstellingToNewBank(){
+    public static List<Boekhouding.Bank> oldBankinstellingToNewBank() {
         List<Boekhouding.Bank> newBanken = new ArrayList();
-        List<Old.Boekhouding.Bankinstelling> bankInstellingen = Import.getBankinstellingen().stream().map(b->(Old.Boekhouding.Bankinstelling)b).collect(Collectors.toList());
-        
-        bankInstellingen.forEach(b->{
+        List<Old.Boekhouding.Bankinstelling> bankInstellingen = Import.getBankinstellingen().stream().map(b -> (Old.Boekhouding.Bankinstelling) b).collect(Collectors.toList());
+
+        bankInstellingen.forEach(b -> {
             newBanken.add(new Bank(b.getId_bank(), b.getNaam(), b.getBankcode()));
         });
         return newBanken;
     }
+
     public static List<Bedrijven.Bedrijf> oldBedrijfToNewBedrijf() {
         List<Vestiging> newVestigingen;
         List<Bedrijven.Bedrijf> newBedrijven = new ArrayList();
@@ -81,10 +81,10 @@ public class Mapper {
 
             Adres adres = new Adres(0, old.getStraat(), old.getHuisnummer(), "", old.getPostcode(), old.getWoonplaats(), Land.België);
             Bedrijven.Bedrijf bedrijf = new Bedrijven.Bedrijf(old.getId_bedrijf(), old.getNaam(), old.getTelefoonnummer(), old.getEmailadres(), adres, null);
-            Bank bank = oldBankinstellingToNewBank().stream().filter(e->e.getBankId()==old.getId_bank()).findFirst().orElse(new Bank());
+            Bank bank = oldBankinstellingToNewBank().stream().filter(e -> e.getBankId() == old.getId_bank()).findFirst().orElse(new Bank());
             bank.setId(old.getId_bank());
 
-            BankRekeningNummer bankRekeningNummer = new BankRekeningNummer(0, old.getIban(),bank);
+            BankRekeningNummer bankRekeningNummer = new BankRekeningNummer(0, old.getIban(), bank);
             newVestigingen.add(new Vestiging(0, bedrijf, new Omschrijving(0, old.getNaam(), old.getNaam(), old.getNaam()), adres, old.getTelefoonnummer(), old.getEmailadres(), bankRekeningNummer, old.getOndernemingsnummer(), old.getVestigingsnummer()));
             bedrijf.setVestigingen(newVestigingen);
             newBedrijven.add(bedrijf);
@@ -308,20 +308,7 @@ public class Mapper {
     public static List<Producten.AankoopProduct> oldAankoopproductToNewAankoopproduct() {
         List<Old.Aankoopproducten.Aankoopproduct> aankoopproducten = Import.getAankoopproducten().stream().map(e -> (Old.Aankoopproducten.Aankoopproduct) e).collect(Collectors.toList());
         List<Producten.AankoopProduct> newAankoopproducten = new ArrayList();
-        List<Producten.ProductGroep> newProductGroepen = oldProductgroepToNewProductGroep();
-        List<Producten.ProductSubGroep> newProductSubGroepen = oldProductSubGroepToNewProductSubGroep();
-        List<Old.Product.Productgroep> productgroepen = Import.getProductgroepen().stream().map(e -> (Old.Product.Productgroep) e).collect(Collectors.toList());
-        List<Old.Product.Productsubgroep> productsubgroepen = Import.getProductsubgroepen().stream().map(e -> (Old.Product.Productsubgroep) e).collect(Collectors.toList());
 
-        for(Old.Product.Productsubgroep subgroep:productsubgroepen){
-           ProductSubGroep subGroep = newProductSubGroepen.stream().filter(e->e.getId()==subgroep.getId_productsubgroep()).findFirst().orElse(null);
-           ProductGroep productGroep = newProductGroepen.stream().filter(e->e.getId()==subgroep.getId_productgroep()).findFirst().orElse(null);
-           if(subGroep!=null){
-               subGroep.setProductGroep(productGroep);
-           }
-        }
-        
-        
         aankoopproducten.forEach(a -> {
             Omschrijving omschrijving = new Omschrijving(0, a.getOmschrijvingn(), a.getOmschrijvingf(), "");
             ProductCategorie productCategorie = oldProductcategorieToNewProductcategorie().stream().filter(pc -> pc.getId() == a.getId_productcategorie()).findFirst().orElse(new ProductCategorie());
@@ -344,8 +331,8 @@ public class Mapper {
             fabrikant.setId(a.getId_fabrikant());
             ReceptProduct receptProduct = oldReceptproductToNewReceptproduct().stream().filter(rp -> rp.getId() == a.getId_receptproduct()).findFirst().orElse(new ReceptProduct());
             receptProduct.setId(a.getId_receptproduct());
-            String gtin = a.getGtin();
-            
+            BigDecimal gtin = a.getGtin();
+
             Producten.AankoopProduct newAankoopproduct = new AankoopProduct(a.getId_aankoopproduct(),
                     omschrijving, productCategorie, productGroep, productSubgroep, bestelgroep,
                     VerpakkingsEenheid.values()[0], Eenheid.values()[a.getId_aankoopeenheid()],
@@ -488,7 +475,7 @@ public class Mapper {
         }
 
         newProductgroepen.forEach(groep -> {
-            groep.setProductSubGroepen(newProductSubgroepen.stream().filter(subgroep -> subgroep.getProductGroep().getProductGroepId() == groep.getProductGroepId()).collect(Collectors.toList()));
+            groep.setProductSubGroepen(newProductSubgroepen.stream().filter(subgroep -> subgroep.getProductGroep().getId() == groep.getProductGroepId()).collect(Collectors.toList()));
         });
 
         for (Old.Product.Productcategorie e : productcategorie) {
@@ -527,6 +514,27 @@ public class Mapper {
         return newProductcategorieen;
     }
 
+    public static List<Producten.Recepten.BasisRecept> oldReceptenToBasisRecepten(){
+        List<Producten.Recepten.BasisRecept> newRecepten = new ArrayList();
+        List<Old.Recept.Recept> recepten = Import.getRecepten().stream().map(e->(Old.Recept.Recept)e).collect(Collectors.toList());
+        
+        //generate ID
+        for(Old.Recept.Recept e:recepten){
+            ReceptProduct receptProduct = oldReceptproductToNewReceptproduct().stream().filter(r->r.getId()==e.getId_header()).findFirst().orElse(null);
+            Omschrijving omschrijving = new Omschrijving();
+            omschrijving.setId(-1);
+            BasisRecept basisRecept = new BasisRecept(-1, omschrijving, e.getHoeveelheid(), e.getPercentage(), e.getVolgnummer(), e.getHulpstof(), e.getTelbasis(), e.getAantal_personen());
+            if(receptProduct!=null){
+                TussenTabellen.ReceptProductBasisRecept tussen = new TussenTabellen.ReceptProductBasisRecept(receptProduct, basisRecept);
+                basisRecept.getBasisReceptReceptProducten().add(tussen);
+                receptProduct.getReceptProductBasisRecepten().add(tussen);
+            }
+            newRecepten.add(basisRecept);
+            
+        }
+        
+        return newRecepten;
+    }
     private static Eenheid convertRecepteenheid(int id) {
         switch (id) {
             case -30:
@@ -570,5 +578,15 @@ public class Mapper {
             default:
                 return VerpakkingsEenheid.Eenheid;
         }
+    }
+
+    private static BigDecimal getBigDecimal(String gtin) {
+        BigDecimal big;
+        if (gtin != null && !gtin.equals("")) {
+            big = new BigDecimal(gtin);
+        } else {
+            big = new BigDecimal(0);
+        }
+        return big;
     }
 }

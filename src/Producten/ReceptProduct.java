@@ -14,6 +14,7 @@ import TussenTabellen.ReceptProductBasisRecept;
 import TussenTabellen.ReceptProductMaterieel;
 import TussenTabellen.ReceptProductTaak;
 import enums.Eenheid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,11 +37,8 @@ public class ReceptProduct implements New{
         public boolean Blokkeren;
         public List<AankoopProduct> AankoopProducten;
         public List<ReceptProductBasisRecept> ReceptProductBasisRecepten;
-        public List<BasisRecept> BasisRecepten;
         public List<ReceptProductTaak> ReceptProductTaken;
-        public List<Taak> ReceptTaken;
         public List<ReceptProductMaterieel> ReceptProductMaterielen;
-        public List<Materieel> ReceptMaterieel;
 
     public ReceptProduct() {
         setId(-1);
@@ -61,13 +59,10 @@ public class ReceptProduct implements New{
         this.RelatieveWeegmarge = RelatieveWeegmarge;
         this.AbsoluteWeegmarge = AbsoluteWeegmarge;
         this.Blokkeren = Blokkeren;
-        this.AankoopProducten = AankoopProducten;
-        this.ReceptProductBasisRecepten = ReceptProductBasisRecepten;
-        this.BasisRecepten = BasisRecepten;
-        this.ReceptProductTaken = ReceptProductTaken;
-        this.ReceptTaken = ReceptTaken;
-        this.ReceptProductMaterielen = ReceptProductMaterielen;
-        this.ReceptMaterieel = ReceptMaterieel;
+        this.AankoopProducten = new ArrayList();
+        this.ReceptProductBasisRecepten = new ArrayList();
+        this.ReceptProductTaken = new ArrayList();
+        this.ReceptProductMaterielen = new ArrayList();
     }
 
    
@@ -191,13 +186,7 @@ public class ReceptProduct implements New{
         this.ReceptProductBasisRecepten = ReceptProductBasisRecepten;
     }
 
-    public List<BasisRecept> getBasisRecepten() {
-        return BasisRecepten;
-    }
 
-    public void setBasisRecepten(List<BasisRecept> BasisRecepten) {
-        this.BasisRecepten = BasisRecepten;
-    }
 
     public List<ReceptProductTaak> getReceptProductTaken() {
         return ReceptProductTaken;
@@ -205,14 +194,6 @@ public class ReceptProduct implements New{
 
     public void setReceptProductTaken(List<ReceptProductTaak> ReceptProductTaken) {
         this.ReceptProductTaken = ReceptProductTaken;
-    }
-
-    public List<Taak> getReceptTaken() {
-        return ReceptTaken;
-    }
-
-    public void setReceptTaken(List<Taak> ReceptTaken) {
-        this.ReceptTaken = ReceptTaken;
     }
 
     public List<ReceptProductMaterieel> getReceptProductMaterielen() {
@@ -223,13 +204,6 @@ public class ReceptProduct implements New{
         this.ReceptProductMaterielen = ReceptProductMaterielen;
     }
 
-    public List<Materieel> getReceptMaterieel() {
-        return ReceptMaterieel;
-    }
-
-    public void setReceptMaterieel(List<Materieel> ReceptMaterieel) {
-        this.ReceptMaterieel = ReceptMaterieel;
-    }
 
     @Override
     public void setId(int id) {

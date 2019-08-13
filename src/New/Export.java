@@ -36,6 +36,8 @@ import Producten.ProductCategorie;
 import Producten.ProductGroep;
 import Producten.ProductSubGroep;
 import Producten.ReceptProduct;
+import Producten.Recepten.BasisRecept;
+import TussenTabellen.ReceptProductBasisRecept;
 import Utils.DB;
 import Voorraden.VoorraadPlaats;
 import java.util.ArrayList;
@@ -74,7 +76,7 @@ public class Export {
     private static List<BestelGroep> newBestelgroepen;
     private static List<Printer> newPrinters;
     private static List<VoorraadPlaats> newVoorraadPlaatsen;
-    private static List<ProductSubGroep> newProductSubGroep;
+    private static List<ProductSubGroep> newProductSubGroepen;
     private static List<ProductGroep> newProductgroepen;
     private static List<ProductCategorie> newProductcategorieën;
     private static List<Etiket> newEtiketten;
@@ -82,49 +84,54 @@ public class Export {
     private static List<Verpakking> newVerpakkingen;
     private static List<AnalytischeRekening> newAnalytischeRekeningen;
     private static List<Bank> newBanken;
+    private static List<BasisRecept> newBasisRecepten;
 
     public static void export() {
         Import.readOld();
+
         System.out.println("EXPORT BBANK");
-        exportBanken();
+        exportBanken(); //done
         System.out.println("EXPORT BEDRIJF");
-        exportBedrijf();
+        exportBedrijf(); //done
         System.out.println("EXPORT ONTVANGSTADRESSEN");
-        exportOntvangstAdressen();
+        exportOntvangstAdressen(); //done
         System.out.println("EXPORT RECEPTPRODUCTEN (LISTS NOG NIET OPGEVULD)");
-        exportReceptProducten();
+        exportReceptProducten(); // RECEPT PRODUCT NOG OPVULLEN: ReceptProductBasisRecepten; ReceptProductTaken; ReceptProductMaterielen;
         System.out.println("EXPORT BESTELVOORSTELLEN");
-        exportBestelvoorstellen();
+        exportBestelvoorstellen(); //done
         System.out.println("EXPORT BESTELBONNEN EN UITGAANDEBESTELLINGEN");
-        exportBestelbonnenUitgaandeBestellingen();
+        exportBestelbonnenUitgaandeBestellingen(); //done
         System.out.println("EXPORT LEVERANCIERSGROEPEN");
-        exportLeveranciersGroepen();
+        exportLeveranciersGroepen(); //done
         System.out.println("EXPORT BETALINGSVOORWAARDES");
-        exportBetalingsVoorwaardes();
+        exportBetalingsVoorwaardes(); //done
         System.out.println("EXPORT DAGBOEKEN");
-        exportDagboeken();
+        exportDagboeken(); //done
         System.out.println("EXPORT LEVERANCIERS");
-        exportLeveranciers();
+        exportLeveranciers(); //done !check this
         System.out.println("EXPORT FABRIKANTEN START");
-        exportFabrikanten();
+        exportFabrikanten(); //done
         System.out.println("EXPORT ALGEMENE REKENINGEN");
-        exportAlgemeneRekeningen();
+        exportAlgemeneRekeningen(); //done
         System.out.println("EXPORT BESTELGROEPEN");
-        exportBestelgroepen();
+        exportBestelgroepen(); //done
         System.out.println("EXPORT PRINTERS");
-        exportPrinters();
+        exportPrinters(); //done
         System.out.println("EXPORT ETIKETTEN");
-        exportEtiketten();
+        exportEtiketten(); //done
         System.out.println("EXPORT VOORRAADPLAATSEN");
-        exportVoorraadPlaatsen();
+        exportVoorraadPlaatsen(); //done
         System.out.println("EXPORT PRODUCTSUBGROEPEN");
-        exportProductSubgroepen();
+        exportProductSubgroepen(); //done
         System.out.println("EXPORT PRODUCTGROEPEN");
-        exportProductgroepen();
+        exportProductgroepen(); //done
         System.out.println("EXPORT PRODUCTCATEGORIEEN");
-        exportProductcategorieën();
+        exportProductcategorieën(); //done
         System.out.println("EXPORT AANKOOPPRODUCTEN");
-        exportAankoopproducten();
+        exportAankoopproducten(); //AANKOOPPRODUCT NOG OPVULLEN: AankoopProductvestigingen; AankoopProductenVerkoopProduct; VerkoopProducten
+        System.out.println("EXPORT BASISRECEPTEN");
+        exportBasisRecepten();  //BASIS RECEPT NOG OPVULLEN: BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten;
+
     }
 
     //EERSTE KEER BANKEN
@@ -160,7 +167,7 @@ public class Export {
         eigenaars.forEach(eigenaar -> {
             eigenaar.Bedrijven.forEach(bedrijf -> {
                 String query = String.format("UPDATE %s set EigenaarId = %d where BedrijfId = %d;", "Bedrijven", eigenaar.getId(), bedrijf.getId());
-                DB.executeCustomQuery(query, "Bedrijven");
+                DB.executeCustomQuery(query);
             });
         });
     }
@@ -337,38 +344,50 @@ public class Export {
         DB.insert(newVoorraadPlaatsen, "VoorraadPlaatsen", VoorraadPlaats.class, true, false);
     }
 
+    //EERSTE KEER PRODUCTSUBGROEP
     public static void exportProductSubgroepen() {
-        newProductSubGroep = Mapper.oldProductSubGroepToNewProductSubGroep();
+        newProductSubGroepen = Mapper.oldProductSubGroepToNewProductSubGroep();
         List<Omschrijving> omschrijvingen = new ArrayList();
         List<AlgemeneRekening> algemeneRekeningen = new ArrayList();
 
-        newProductSubGroep.forEach(subgroep -> {
+        newProductSubGroepen.forEach(subgroep -> {
             omschrijvingen.add(subgroep.getOmschrijving());
             algemeneRekeningen.add(subgroep.getAlgemeneRekening());
         });
 
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
-        DB.insert(newProductSubGroep, "ProductSubGroep", ProductSubGroep.class, true, false);
+        DB.insert(newProductSubGroepen, "ProductSubGroep", ProductSubGroep.class, true, false);
     }
 
+    //EERSTE KEER PRODUCTGROEPEN EN ASSOCIATIE TUSSEN PRODUCTGROEP EN PRODUCTSUBGROEP OPVULLEN
     public static void exportProductgroepen() {
         newProductgroepen = Mapper.oldProductgroepToNewProductGroep();
         List<Omschrijving> omschrijvingen = new ArrayList();
         List<AlgemeneRekening> algemeneRekeningen = new ArrayList();
+        List<Old.Product.Productsubgroep> productsubgroepen = Import.getProductsubgroepen().stream().map(e -> (Old.Product.Productsubgroep) e).collect(Collectors.toList());
 
-        newProductgroepen.forEach(groep -> {
-            List<ProductSubGroep> subGroepen = Mapper.oldProductSubGroepToNewProductSubGroep().stream().filter(e -> e.getProductGroep().getId() == groep.getProductGroepId()).collect(Collectors.toList());
-            groep.setProductSubGroepen(subGroepen);
-            omschrijvingen.add(groep.getOmschrijving());
-            algemeneRekeningen.add(groep.getAlgemeneRekening());
-        });
+        for (Old.Product.Productsubgroep subgroep : productsubgroepen) {
+            List<ProductSubGroep> subGroepen = newProductSubGroepen.stream().filter(e -> e.getId() == subgroep.getId_productsubgroep()).collect(Collectors.toList());
+            ProductGroep productGroep = newProductgroepen.stream().filter(e -> e.getId() == subgroep.getId_productgroep()).findFirst().orElse(null);
+            if (productGroep != null) {
+                productGroep.setProductSubGroepen(subGroepen);
+                subGroepen.forEach(t -> {
+                    t.setProductGroep(productGroep);
+                    String query = String.format("UPDATE ProductSubGroep SET ProductGroepId = %d WHERE ProductSubGroepId = %d", t.getProductGroep().getId(), t.getProductSubGroepId());
+                    DB.executeCustomQuery(query);
+                });
+            }
+            omschrijvingen.add(productGroep.getOmschrijving());
+            algemeneRekeningen.add(productGroep.getAlgemeneRekening());
+        }
 
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
         DB.insert(newProductgroepen, "ProductGroep", ProductGroep.class, true, false);
     }
 
+    //EERSTE KEER ETIKETTEN
     public static void exportEtiketten() {
         newEtiketten = Mapper.oldEtiketToNewEtiket();
         List<Printer> printers = new ArrayList();
@@ -381,6 +400,7 @@ public class Export {
         DB.insert(newEtiketten, "Etiketten", Etiket.class, true, false);
     }
 
+    //EERSTE KEER PRODUCTCATEGORIEEN EN VERPAKKINGEN EN ANALYTISCHE REKENINGEN
     public static void exportProductcategorieën() {
         newProductcategorieën = Mapper.oldProductcategorieToNewProductcategorie();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -435,20 +455,20 @@ public class Export {
 
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
-        DB.insert(removeDuplicates(productSubgroepen, newProductSubGroep), "ProductSubGroep", ProductSubGroep.class, false, false);
+        DB.insert(removeDuplicates(productSubgroepen, newProductSubGroepen), "ProductSubGroep", ProductSubGroep.class, false, false);
         DB.insert(removeDuplicates(productGroepen, newProductgroepen), "ProductGroep", ProductGroep.class, false, false);
-        DB.insert(removeDuplicates(standaardVerpakkingen, newVerpakkingen), "Verpakking", Verpakking.class, true, false);
-        DB.insert(removeDuplicates(colliVerpakkingen, newVerpakkingen), "Verpakking", Verpakking.class, false, false);
+        DB.insert(newVerpakkingen, "Verpakking", Verpakking.class, true, false);
         DB.insert(removeDuplicates(fabrikanten, newFabrikanten), "Fabrikanten", Fabrikant.class, false, false);
         DB.insert(removeDuplicates(bestelGroepen, newBestelgroepen), "BestelGroepen", BestelGroep.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
-        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
+        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, true, false);
         DB.insert(removeDuplicates(analytischeRekeningen, newAnalytischeRekeningen), "AnalytischeRekeningen", AnalytischeRekening.class, true, false);
 
         DB.insert(newProductcategorieën, "ProductCategorie", ProductCategorie.class, true, false);
 
     }
 
+    //EERSTE KEER AANKOOPPRODUCTEN
     private static void exportAankoopproducten() {
         newAankoopproducten = Mapper.oldAankoopproductToNewAankoopproduct();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -478,7 +498,7 @@ public class Export {
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
-        DB.insert(removeDuplicates(productSubgroepen, newProductSubGroep), "ProductSubGroep", ProductSubGroep.class, false, false);
+        DB.insert(removeDuplicates(productSubgroepen, newProductSubGroepen), "ProductSubGroep", ProductSubGroep.class, false, false);
         DB.insert(removeDuplicates(productgroepen, newProductgroepen), "ProductGroep", ProductGroep.class, false, false);
         DB.insert(removeDuplicates(fabrikanten, newFabrikanten), "Fabrikanten", Fabrikant.class, false, false);
         DB.insert(removeDuplicates(bestelgroepen, newBestelgroepen), "BestelGroepen", BestelGroep.class, false, false);
@@ -490,6 +510,25 @@ public class Export {
 
         DB.insert(newAankoopproducten, "AankoopProducten", AankoopProduct.class, true, false);
 
+        newReceptProducten.forEach(e -> {
+            List<AankoopProduct> aankoopProducten = newAankoopproducten.stream().filter(a -> a.getReceptProduct().getId() == e.getId()).collect(Collectors.toList());
+            e.setAankoopProducten(aankoopProducten);
+        });
+
+    }
+
+    // EERSTE KEER BASISRECEPTEN + Tussen tabel receptproduct-basisrecept
+    public static void exportBasisRecepten() {
+        newBasisRecepten = Mapper.oldReceptenToBasisRecepten();
+        List<TussenTabellen.ReceptProductBasisRecept> tussen = new ArrayList();
+        newBasisRecepten.forEach(e->{
+            e.getBasisReceptReceptProducten().forEach(t->{
+                tussen.add(t);
+            });
+        });
+        DB.insert(tussen, "ReceptProductBasisRecepten", ReceptProductBasisRecept.class, true, true);
+        DB.insert(newBasisRecepten, "BasisRecepten", BasisRecept.class, true, true);
+        
     }
 
     public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {

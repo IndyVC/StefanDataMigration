@@ -7,12 +7,13 @@ package TussenTabellen;
 
 import Adressen.Adres;
 import Bestellingen.Klant;
+import New.New;
 
 /**
  *
  * @author stefa
  */
-public class KlantAdres {
+public class KlantAdres implements New{
 
     public int KlantAdresId;
 
@@ -32,5 +33,15 @@ public class KlantAdres {
         KlantId = Klant.KlantId;
         Adres = adres;
         AdresId = Adres.AdresId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.KlantAdresId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.KlantAdresId;
     }
 }

@@ -7,12 +7,13 @@ package TussenTabellen;
 
 import Algemeen.BereikbaarheidOpDag;
 import Bestellingen.Klant;
+import New.New;
 
 /**
  *
  * @author stefa
  */
-public class KlantBereikbaarheidOpDag {
+public class KlantBereikbaarheidOpDag implements New{
 
     public int KlantBereikbaarheidOpDagId;
 
@@ -32,5 +33,15 @@ public class KlantBereikbaarheidOpDag {
         KlantId = Klant.KlantId;
         BereikbaarheidOpDag = bereikbaarheidOpDag;
         BereikbaarheidOpDagId = BereikbaarheidOpDag.BereikbaarheidOpDagId;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.KlantBereikbaarheidOpDagId=id;
+    }
+
+    @Override
+    public int getId() {
+        return KlantBereikbaarheidOpDagId;
     }
 }

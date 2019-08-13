@@ -6,13 +6,14 @@
 package TussenTabellen;
 
 import Bedrijven.Vestiging;
+import New.New;
 import Producten.BasisProduct;
 
 /**
  *
  * @author stefa
  */
-public class BasisProductVestiging {
+public class BasisProductVestiging implements New{
 
     public int BasisProductVestigingId;
 
@@ -32,5 +33,15 @@ public class BasisProductVestiging {
         BasisProductId = BasisProduct.BasisProductId;
         Vestiging = vestiging;
         VestigingId = Vestiging.getVestgingId();
+    }
+
+    @Override
+    public void setId(int id) {
+        this.BasisProductVestigingId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.BasisProductVestigingId;
     }
 }

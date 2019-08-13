@@ -5,6 +5,7 @@
  */
 package Utils;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -75,6 +76,20 @@ public class Util {
                 return Double.valueOf(newString);
             }
             return Double.valueOf(string);
+        }
+    }
+
+    public static BigDecimal BigDecimal(String string) {
+        if (Util.empty(string)) {
+            return new BigDecimal(0);
+        } else {
+            if(string.contains("+")){
+                string = string.replace("+", "");
+            }
+            if (string.contains(",")) {
+                string = string.replace(',', '.');
+            }
+            return new BigDecimal(string);
         }
     }
 

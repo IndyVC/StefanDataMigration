@@ -6,13 +6,14 @@
 package TussenTabellen;
 
 import Bedrijven.Verlof;
+import New.New;
 import Old.Klant.Klant;
 
 /**
  *
  * @author stefa
  */
-public class KlantVerlof {
+public class KlantVerlof implements New {
 
     public int KlantVerlofId;
     public int KlantId;
@@ -66,6 +67,16 @@ public class KlantVerlof {
 
     public void setVerlof(Verlof Verlof) {
         this.Verlof = Verlof;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.KlantVerlofId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.KlantVerlofId;
     }
 
 }

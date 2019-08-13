@@ -63,7 +63,7 @@ public class AankoopProduct implements New{
     public MuntEenheid PrijsEenheid;
     public boolean EtiketIntern;
     public Etiket Etiket;
-    public String Gtin;
+    public BigDecimal Gtin;
     public EtiketTekst EtiketTekst;
     public Fabrikant Fabrikant;
     public double VerliesPercentage;
@@ -76,14 +76,13 @@ public class AankoopProduct implements New{
     public int AantalLotenInGebruik;
     public ReceptProduct ReceptProduct;
     public List<VestigingAankoopProduct> AankoopProductvestigingen;
-    public List<Vestiging> Vestigingen;
     public List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProduct;
     public List<VerkoopProduct> VerkoopProducten;
 
     public AankoopProduct() {
     }
 
-    public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, double EenhedenPerVerpakking, double VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, double MinimumBestelHoeveelheid, double TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, String Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct) {
+    public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, double EenhedenPerVerpakking, double VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, double MinimumBestelHoeveelheid, double TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, BigDecimal Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct) {
         this.AankoopProductId = AankoopProductId;
         this.Omschrijving = Omschrijving;
         this.ProductCategorie = ProductCategorie;
@@ -417,11 +416,11 @@ public class AankoopProduct implements New{
         this.Etiket = Etiket;
     }
 
-    public String getGtin() {
+    public BigDecimal getGtin() {
         return Gtin;
     }
 
-    public void setGtin(String Gtin) {
+    public void setGtin(BigDecimal Gtin) {
         this.Gtin = Gtin;
     }
 
@@ -519,14 +518,6 @@ public class AankoopProduct implements New{
 
     public void setAankoopProductvestigingen(List<VestigingAankoopProduct> AankoopProductvestigingen) {
         this.AankoopProductvestigingen = AankoopProductvestigingen;
-    }
-
-    public List<Vestiging> getVestigingen() {
-        return Vestigingen;
-    }
-
-    public void setVestigingen(List<Vestiging> Vestigingen) {
-        this.Vestigingen = Vestigingen;
     }
 
     public List<AankoopProductVerkoopProduct> getAankoopProductenVerkoopProduct() {
