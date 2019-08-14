@@ -13,6 +13,7 @@ import Bedrijven.BankRekeningNummer;
 import Bedrijven.Bedrijf;
 import Bedrijven.Eigenaar;
 import Bedrijven.Fabrikant;
+import Bedrijven.PrivateLabel;
 import Bedrijven.Verlof;
 import Bedrijven.Vestiging;
 import Bestellingen.BestelGroep;
@@ -21,13 +22,18 @@ import Bestellingen.Bestelbon;
 import Bestellingen.UitgaandeBestelling;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.AnalytischeRekening;
+import Boekhouding.BTWPercentage;
 import Boekhouding.Bank;
 import Boekhouding.BetalingsVoorwaarde;
 import Boekhouding.Dagboek;
+import Boekhouding.OnrechtstreekseKost;
+import Boekhouding.VasteKost;
+import Boekhouding.Winstmarge;
 import Import.Import;
 import Leveringen.Leverancier;
 import Leveringen.LeveranciersGroep;
 import Leveringen.LeveringsDag;
+import Materialen.BarcodePrefix;
 import Materialen.Etiket;
 import Materialen.Materieel;
 import Materialen.Materieelgroep;
@@ -35,14 +41,36 @@ import Materialen.Onderhoud;
 import Materialen.Printer;
 import Materialen.Verpakking;
 import Producten.AankoopProduct;
+import Producten.AfgewerktProduct;
+import Producten.DistributieWijze;
+import Producten.FysischeEigenschap;
+import Producten.MicrobiologischeParameter;
+import Producten.OptieGroep;
 import Producten.ProductCategorie;
 import Producten.ProductGroep;
 import Producten.ProductSubGroep;
+import Producten.Productiegroep;
 import Producten.ReceptProduct;
 import Producten.Recepten.BasisRecept;
+import Producten.Recepten.Job;
+import Producten.Recepten.Receptgroep;
+import Producten.VariantGroep;
+import Producten.VerkoopProduct;
+import Producten.VerkoopProductGroep;
+import Producten.VerkoopsBarcode;
+import Producten.Verkoopsverdeelgroep;
+import Producten.Verkoopsverpakking;
+import Producten.VoorstellingOpProductielijst;
+import Tracering.LotnummerAanbrenger;
+import Tracering.LotnummerDrager;
+import Tracering.LotnummerType;
 import TussenTabellen.ReceptProductBasisRecept;
+import TussenTabellen.VestigingAankoopProduct;
 import Utils.DB;
+import Voorraden.BewaarTemperatuur;
+import Voorraden.Bewaarconditie;
 import Voorraden.VoorraadPlaats;
+import Voorraden.VoorraadProduct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,7 +90,8 @@ import java.util.stream.Collectors;
  * eerste keer is dat een bepaalde klasse wordt weggeschreven, zodat de boolean
  * deleteAllPrevious op true staat. Daarna mag dit NIET meer.
  *
- * MISSING CLASSES: TAAK? Welke table van vroeger? ONDERHOUD?
+ * MISSING CLASSES: TAAK? Welke table van vroeger? ONDERHOUD? Welke tabel van
+ * vroeger? MATERIEEL heeft geen enkele link om zijn lijsten op te vullen?
  */
 public class Export {
 
@@ -92,6 +121,28 @@ public class Export {
     private static List<BasisRecept> newBasisRecepten;
     private static List<Materieelgroep> newMaterieelGroepen;
     private static List<Materieel> newMaterieel;
+    private static List<Productiegroep> newProductiegroepen;
+    private static List<Receptgroep> newReceptengroepen;
+    private static List<Bewaarconditie> newBewaarcondities;
+    private static List<BewaarTemperatuur> newBewaarTemperaturen;
+    private static List<Verkoopsverdeelgroep> newVerdeelgroepen;
+    private static List<Verkoopsverpakking> newVerkoopsverpakking;
+    private static List<VasteKost> newVasteKosten;
+    private static List<OnrechtstreekseKost> newOnrechtstreekseKosten;
+    private static List<AfgewerktProduct> newAfgewerkteProducten;
+    private static List<VerkoopProductGroep> newVerkoopProductgroep;
+    private static List<BarcodePrefix> newBarcodePrefixen;
+    private static List<PrivateLabel> newPrivateLabels;
+    private static List<BTWPercentage> newBtwpercentages;
+    private static List<VariantGroep> newVariantgroepen;
+    private static List<OptieGroep> newOptiegroepen;
+    private static List<MicrobiologischeParameter> newMicrobiologischeParameters;
+    private static List<LotnummerType> newLotnummertypes;
+    private static List<LotnummerDrager> newLotnummerDragers;
+    private static List<LotnummerAanbrenger> newLotnummerAanbrengers;
+    private static List<Winstmarge> newWinstmarges;
+    private static List<DistributieWijze> newDistributiewijzes;
+    private static List<VerkoopProduct> newVerkoopProducten;
 
     public static void export() {
         Import.readOld();
@@ -103,7 +154,7 @@ public class Export {
         System.out.println("EXPORT ONTVANGSTADRESSEN");
         exportOntvangstAdressen(); //done
         System.out.println("EXPORT RECEPTPRODUCTEN (LISTS NOG NIET OPGEVULD)");
-        exportReceptProducten(); // RECEPT PRODUCT NOG OPVULLEN: ReceptProductTaken; ReceptProductMaterielen;
+        exportReceptProducten(); // |T|DONE             RECEPT PRODUCT NOG OPVULLEN: ReceptProductTaken; ReceptProductMaterielen;       MATERIEEL EN TAKEN KAN NIET GEVONDEN WORDEN? //Tot nu toe blijven dze leeg, associaties mss verkeerd 
         System.out.println("EXPORT BESTELVOORSTELLEN");
         exportBestelvoorstellen(); //done
         System.out.println("EXPORT BESTELBONNEN EN UITGAANDEBESTELLINGEN");
@@ -115,7 +166,7 @@ public class Export {
         System.out.println("EXPORT DAGBOEKEN");
         exportDagboeken(); //done
         System.out.println("EXPORT LEVERANCIERS");
-        exportLeveranciers(); //done !check this
+        exportLeveranciers(); //done
         System.out.println("EXPORT FABRIKANTEN START");
         exportFabrikanten(); //done
         System.out.println("EXPORT ALGEMENE REKENINGEN");
@@ -135,14 +186,59 @@ public class Export {
         System.out.println("EXPORT PRODUCTCATEGORIEEN");
         exportProductcategorieën(); //done
         System.out.println("EXPORT AANKOOPPRODUCTEN");
-        exportAankoopproducten(); //AANKOOPPRODUCT NOG OPVULLEN: AankoopProductvestigingen; AankoopProductenVerkoopProduct; VerkoopProducten
+        exportAankoopproducten(); //AANKOOPPRODUCT NOG OPVULLEN: AankoopProductenVerkoopProducten;
         System.out.println("EXPORT BASISRECEPTEN");
         exportBasisRecepten();  //BASIS RECEPT NOG OPVULLEN: Jobs; BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten; 
         System.out.println("EXPORT MATERIEELGROEPEN");
         exportMaterieelGroepen(); //done
         System.out.println("EXPORT MATERIEEL");
-        exportMaterieel(); //MaterieelBasisProducten; MaterieelAfgewerktProducten; MaterieelVerkoopProducten; MaterieelVoorbereidProducten; MaterieelReceptProducten;
-
+        exportMaterieel(); //MATERIEEL NOG OPVULLEN: MaterieelBasisProducten; MaterieelAfgewerktProducten; MaterieelVerkoopProducten; MaterieelVoorbereidProducten; MaterieelReceptProducten 
+        //MATERIEEL IS MET NIKS GELINKT?
+        // ===> tot nu toe heeft deze geen relaties...
+        System.out.println("EXPORT PRODUCTIEGROEPEN");
+        exportProductiegroepen(); //done
+        System.out.println("EXPORT RECEPTENGROEPEN");
+        exportReceptengroepen(); //done
+        System.out.println("EXPORT BEWAARCONDITIES");
+        exportBewaarcondities(); //done
+        System.out.println("EXPORT BEWAARTEMPERATUREN");
+        exportBewaarTemperaturen();//done
+        System.out.println("EXPORT VERKOOPSVERDEELGROEPEN");
+        exportVerdeelgroepen();//done
+        System.out.println("EXPORT VERKOOPSVERPAKKING");
+        exportVerkoopsverpakking();//done
+        System.out.println("EXPORT VASTE KOSTEN");
+        exportVastekosten();//done
+        System.out.println("EXPORT ONRECHTSTREEKSE KOSTEN");
+        exportOnrechtstreekseKosten();//done
+        System.out.println("EXPORT AFGEWERKTE PRODUCTEN");
+        exportAfgewerkteProducten();// AFGEWERKT PRODUCT NOG OPVULLEN: AfgewerktProductBasisRecepten; AfgewerktProductTaken; AfgewerktProductMaterieel => Geen ENKELE link voor alle 3.
+        System.out.println("EXPORT VERKOOP PRODUCTGROEPEN");
+        exportVerkoopProductgroepen(); //done
+        System.out.println("EXPORT BARCODEPREFIXEN");
+        exportBarcodeprefixen(); //done
+        System.out.println("EXPORT PRIVATE LABELS");
+        exportPrivatelabels(); //done
+        System.out.println("EXPORT BTW PERCENTAGES");
+        exportBtwpercentages(); //done
+        System.out.println("EXPORT VARIANTGROEPEN");
+        exportVariantGroepen(); //done
+        System.out.println("EXPORT OPTIEGROEPEN");
+        exportOptiegroepen(); //done
+        System.out.println("EXPORT MICROBIOLOGISCHE PARAMETER");
+        exportMicrobiologischeParameters(); //done
+        System.out.println("EXPORT LOTNUMMER TYPES");
+        exportLotnummertypes(); //done
+        System.out.println("EXPORT LOTNUMMER DRAGER");
+        exportLotnummerDrager(); //done
+        System.out.println("EXPORT LOTNUMMER AANBRENGERS");
+        exportLotnummerAanbrengers(); //done
+        System.out.println("EXPORT WINSTMARGES");
+        exportWinstmarges(); //done
+        System.out.println("EXPORT DISTRIBUTIEWIJZES");
+        exportDistributiewijzes(); //done
+        System.out.println("EXPORT VERKOOPPRODUCT");
+        exportVerkoopProducten(); //VERKOOPPRODUCT NOG OPVULLEN: GoedgekeurdeIngaves; VerkoopProductAankoopProduct; VerkoopProductBasisRecepten; VerkoopProductTaken; VerkoopProductMaterielen;
     }
 
     public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {
@@ -334,36 +430,38 @@ public class Export {
         List<Verlof> verloven = new ArrayList();
         List<Openingstijd> openingstijden = new ArrayList();
         List<LeveringsDag> leveringsdagen = new ArrayList();
+        List<Adres> adressen = new ArrayList();
 
-        DB.insert(newLeveranciers, "Leverancier", Leverancier.class, true, false);
         newLeveranciers.forEach(leverancier -> {
             leverancier.getVerloven().forEach(v -> verloven.add(v));
             leverancier.getOpeningstijden().forEach(v -> openingstijden.add(v));
             leverancier.getLeveringsDagen().forEach(v -> leveringsdagen.add(v));
+            adressen.add(leverancier.getAdres());
         });
 
+        DB.insert(deleteDuplicates(adressen), "Adressen", Adres.class, false, true);
         DB.insert(verloven, "Verlof", Verlof.class, true, true);
         DB.insert(openingstijden, "Openingstijd", Openingstijd.class, true, true);
         DB.insert(leveringsdagen, "LeveringsDag", LeveringsDag.class, true, true);
+        DB.insert(newLeveranciers, "Leverancier", Leverancier.class, true, false);
 
         System.out.println("LONG OPERATION!");
+
         /*
         newLeveranciers.forEach(leverancier -> {
             leverancier.getVerloven().forEach(verlof -> {
                 String query = String.format("UPDATE %s set LeverancierId = %d where VerlofId = %d;", "Verlof", leverancier.getId(), verlof.getId());
-                DB.executeCustomQuery(query, "Verlof");
+                DB.executeCustomQuery(query);
             });
             leverancier.getOpeningstijden().forEach(openingstijd -> {
                 String query = String.format("UPDATE %s set LeverancierId = %d where OpeningsTijdId = %d;", "Openingstijd", leverancier.getId(), openingstijd.getId());
-                DB.executeCustomQuery(query, "Openingstijd");
+                DB.executeCustomQuery(query);
             });
             leverancier.getLeveringsDagen().forEach(leveringsdag -> {
                 String query = String.format("UPDATE %s set LeverancierId = %d where LeveringsDagId = %d;", "LeveringsDag", leverancier.getId(), leveringsdag.getId());
-                DB.executeCustomQuery(query, "LeveringsDag");
+                DB.executeCustomQuery(query);
             });
-        })
-         */
-
+        });*/
         System.out.println("DONE OPERATION!");
 
     }
@@ -542,6 +640,7 @@ public class Export {
         List<ProductSubGroep> productSubgroepen = new ArrayList();
         List<VoorraadPlaats> voorraadPlaatsen = new ArrayList();
         List<ReceptProduct> receptProducten = new ArrayList();
+        List<VestigingAankoopProduct> tussen = new ArrayList();
 
         newAankoopproducten.forEach(e -> {
             omschrijvingen.add(e.getOmschrijving());
@@ -555,6 +654,9 @@ public class Export {
             algemeneRekeningen.add(e.getAlgemeneRekening());
             productCategorien.add(e.getProductCategorie());
             receptProducten.add(e.getReceptProduct());
+            e.getAankoopProductvestigingen().forEach(t -> {
+                tussen.add(t);
+            });
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
@@ -574,6 +676,8 @@ public class Export {
             List<AankoopProduct> aankoopProducten = newAankoopproducten.stream().filter(a -> a.getReceptProduct().getId() == e.getId()).collect(Collectors.toList());
             e.setAankoopProducten(aankoopProducten);
         });
+
+        DB.insert(tussen, "VestigingAankoopProduct", VestigingAankoopProduct.class, true, true);
 
     }
 
@@ -603,6 +707,7 @@ public class Export {
 
     }
 
+    //EERSTE KEER MATERIEEL
     public static void exportMaterieel() {
         newMaterieel = Mapper.oldMaterieelToNewMaterieel();
         List<Materieelgroep> materieelGroepen = new ArrayList();
@@ -619,9 +724,378 @@ public class Export {
 
         DB.insert(removeDuplicates(materieelGroepen, newMaterieelGroepen), "Materieelgroepen", Materieelgroep.class, false, false);
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
-        DB.insert(leveranciers, "Leverancier", Leverancier.class, false, false);
-        DB.insert(onderhouden, "Onderhouden", Onderhoud.class, true, false);
+        DB.insert(removeDuplicates(leveranciers, newLeveranciers), "Leverancier", Leverancier.class, false, false);
+        DB.insert(deleteDuplicates(onderhouden), "Onderhouden", Onderhoud.class, true, false);
         DB.insert(newMaterieel, "Materieelen", Materieel.class, true, false);
+    }
+
+    //EERSTE KEER PRODUCTIEGROEPEN
+    public static void exportProductiegroepen() {
+        newProductiegroepen = Mapper.oldProductiegroepToNewProductiegroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<AlgemeneRekening> rekeningen = new ArrayList();
+
+        newProductiegroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            rekeningen.add(e.getAlgemeneRekening());
+        });
+
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(rekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
+        DB.insert(newProductiegroepen, "Productiegroepen", Productiegroep.class, true, false);
+    }
+
+    //EERSTE KEER RECEPTGROEPEN
+    public static void exportReceptengroepen() {
+        newReceptengroepen = Mapper.oldReceptengroepToNewReceptenGroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newReceptengroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newReceptengroepen, "Receptgroepen", Receptgroep.class, true, false);
+    }
+
+    //EERSTE KEER BEWAARCONDITIES
+    public static void exportBewaarcondities() {
+        newBewaarcondities = Mapper.oldBewaarconditieToNewBewaarconditie();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newBewaarcondities.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newBewaarcondities, "Bewaarconditie", Bewaarconditie.class, true, false);
+    }
+
+    //EERSTE KEER BEWAARTEMPERATUREN
+    public static void exportBewaarTemperaturen() {
+        newBewaarTemperaturen = Mapper.oldBewaarTemperatuurToNewBewaarTemperatuur();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newBewaarTemperaturen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newBewaarTemperaturen, "BewaarTemperatuur", BewaarTemperatuur.class, true, false);
+    }
+
+    //EERSTE KEER VERDEELGROEPEN
+    public static void exportVerdeelgroepen() {
+        newVerdeelgroepen = Mapper.oldVerdeelgroepToNewVerdeelgroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newVerdeelgroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newVerdeelgroepen, "Verkoopsverdeelgroepen", Verkoopsverdeelgroep.class, true, false);
+    }
+
+    //EERSTE KEER VERKOOPSVERPAKKING
+    public static void exportVerkoopsverpakking() {
+        newVerkoopsverpakking = Mapper.oldVerkoopsverpakkingToNewVerkoopsverpakking();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<Verkoopsverdeelgroep> verkoopsVerdeelgroepen = new ArrayList();
+
+        newVerkoopsverpakking.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            verkoopsVerdeelgroepen.add(e.getVerkoopsverdeelgroep());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(verkoopsVerdeelgroepen, newVerdeelgroepen), "Verkoopsverdeelgroepen", Verkoopsverdeelgroep.class, false, false);
+        DB.insert(newVerkoopsverpakking, "Verkoopsverpakkingen", Verkoopsverpakking.class, true, false);
+    }
+
+    //EERSTE KEER VASTEKOSTEN
+    public static void exportVastekosten() {
+        newVasteKosten = Mapper.oldVastekostToNewVastekost();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newVasteKosten.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newVasteKosten, "VasteKosten", VasteKost.class, true, false);
+    }
+
+    //EERSTE KEER ONRECHTSTREEKSEKOSTEN
+    public static void exportOnrechtstreekseKosten() {
+        newOnrechtstreekseKosten = Mapper.oldOnrechtstreekseKostToNewOnrechtstreekseKost();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newOnrechtstreekseKosten.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newOnrechtstreekseKosten, "OnrechtstreekseKosten", OnrechtstreekseKost.class, true, false);
+    }
+
+    //EERSTE KEER VOORSTELLINGOPPRODUCTIELIJST, VOOORRAADPRODUCTEN, JOBS, AFGEWERKT PRODUCT
+    public static void exportAfgewerkteProducten() {
+        newAfgewerkteProducten = Mapper.oldAfgewerktProductToNewAfgewerktProduct();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<Productiegroep> productiegroepen = new ArrayList();
+        List<Receptgroep> receptGroepen = new ArrayList();
+        List<VoorraadProduct> voorraadProduct = new ArrayList();
+        List<VoorraadPlaats> voorraadPlaatsen = new ArrayList();
+        List<Etiket> etiketten = new ArrayList();
+        List<Bewaarconditie> bewaarcondities = new ArrayList();
+        List<BewaarTemperatuur> bewaarTemperaturen = new ArrayList();
+        List<Omschrijving> bereidingswijzes = new ArrayList();
+        List<VoorstellingOpProductielijst> voorstellingen = new ArrayList();
+        List<Job> jobs = new ArrayList();
+        List<Verkoopsverpakking> verkoopsverpakkingen = new ArrayList();
+        List<VasteKost> vasteKosten = new ArrayList();
+        List<OnrechtstreekseKost> onrechtstreekseKosten = new ArrayList();
+
+        newAfgewerkteProducten.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            productiegroepen.add(e.getProductiegroep());
+            receptGroepen.add(e.getReceptgroep());
+            voorraadProduct.add(e.getVoorraadProduct());
+            voorraadPlaatsen.add(e.getVoorraadplaats());
+            etiketten.add(e.getVerdeelEtiketEtiket());
+            bewaarcondities.add(e.getBewaarconditie());
+            bewaarTemperaturen.add(e.getBewaarTemperatuur());
+            bereidingswijzes.add(e.getBereidingswijzeOmschrijving());
+            voorstellingen.add(e.getVoorstellingOpProductielijst());
+            jobs.add(e.getJob());
+            verkoopsverpakkingen.add(e.getVerkoopsverpakking());
+            vasteKosten.add(e.getVasteKost());
+            onrechtstreekseKosten.add(e.getOnrechtstreekseKost());
+        });
+
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
+        DB.insert(removeDuplicates(receptGroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
+        DB.insert(deleteDuplicates(voorraadProduct), "VoorraadProducten", VoorraadProduct.class, true, true);
+        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
+        DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
+        DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
+        DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
+        DB.insert(bereidingswijzes, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, true, true);
+        DB.insert(deleteDuplicates(jobs), "Jobs", Job.class, true, false);
+        DB.insert(removeDuplicates(verkoopsverpakkingen, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
+        DB.insert(removeDuplicates(vasteKosten, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
+        DB.insert(removeDuplicates(onrechtstreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
+
+        DB.insert(newAfgewerkteProducten, "AfgewerktProduct", AfgewerktProduct.class, true, false);
+
+    }
+
+    //EERSTE KEER VERKOOPPRODUCTGROEPEN
+    public static void exportVerkoopProductgroepen() {
+        newVerkoopProductgroep = Mapper.oldVerkoopProductGroepToNewVerkoopProductGroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<Productiegroep> groepen = new ArrayList();
+
+        newVerkoopProductgroep.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            groepen.add(e.getProductiegroep());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(groepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
+        DB.insert(newVerkoopProductgroep, "VerkoopProductGroepen", VerkoopProductGroep.class, true, false);
+
+    }
+
+    //EERSTE KEER BARCODEPREFIXEN
+    public static void exportBarcodeprefixen() {
+        newBarcodePrefixen = Mapper.oldBarcodePrefixenToNewBarcodePrefixen();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newBarcodePrefixen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newBarcodePrefixen, "BarcodePrefixes", BarcodePrefix.class, true, false);
+    }
+
+    //EERSTE KEER PRIVATELABELS
+    public static void exportPrivatelabels() {
+        newPrivateLabels = Mapper.oldKlantPrivateLabelToNewPrivateLabel();
+        List<Adres> adressen = new ArrayList();
+        newPrivateLabels.forEach(e -> {
+            adressen.add(e.getAdres());
+        });
+        DB.insert(adressen, "Adressen", Adres.class, false, true);
+        DB.insert(newPrivateLabels, "PrivateLabels", PrivateLabel.class, true, false);
+
+    }
+
+    //EERSTE KEER BTWPERCENTAGES
+    public static void exportBtwpercentages() {
+        newBtwpercentages = Mapper.oldBtwcodeToNewBTWPercentage();
+        List<AlgemeneRekening> rekeningen = new ArrayList<>();
+        newBtwpercentages.forEach(e -> {
+            rekeningen.add(e.getAlgemeneRekeningAftrekbaarAlgemeneRekening());
+            rekeningen.add(e.getAlgemeneRekeningVerschuldigdAlgemeneRekening());
+        });
+        DB.insert(removeDuplicates(rekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
+        DB.insert(newBtwpercentages, "BTWpercentages", BTWPercentage.class, true, false);
+
+    }
+
+    //EERSTE KEER VARIANTGROEPEN
+    public static void exportVariantGroepen() {
+        newVariantgroepen = Mapper.oldVariantHoofdingToNewVariantGroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newVariantgroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newVariantgroepen, "VariantGroepen", VariantGroep.class, true, false);
+
+    }
+
+    //EERSTE KEER OPTIEGROEPEN
+    public static void exportOptiegroepen() {
+        newOptiegroepen = Mapper.oldOptieHoofdingToNewOptiegroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newOptiegroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newOptiegroepen, "OptieGroepen", OptieGroep.class, true, false);
+    }
+
+    //EERSTE KEER MICROBIOLOGISCHEPARAMETERS
+    public static void exportMicrobiologischeParameters() {
+        newMicrobiologischeParameters = Mapper.oldMicrobiologischeToNewMicrobiologische();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newMicrobiologischeParameters.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            omschrijvingen.add(e.getTekstTechnischeFicheOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newMicrobiologischeParameters, "MicroBiologischeParameters", MicrobiologischeParameter.class, true, false);
+    }
+
+    //EERSTE KEER LOTNUMMERTYPE
+    public static void exportLotnummertypes() {
+        newLotnummertypes = Mapper.oldLotnummerTypeToNewLotnummerType();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newLotnummertypes.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newLotnummertypes, "LotnummerTypes", LotnummerType.class, true, false);
+    }
+
+    //EERSTE KEER LOTNUMMERDRAGER
+    public static void exportLotnummerDrager() {
+        newLotnummerDragers = Mapper.oldLotnummerDragerToNewLotnummerDrager();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newLotnummerDragers.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newLotnummerDragers, "LotnummerDragers", LotnummerDrager.class, true, false);
+
+    }
+
+    //EERSTE KEER LOTNUMMERAANBRENGERS
+    public static void exportLotnummerAanbrengers() {
+        newLotnummerAanbrengers = Mapper.oldLotnummerAanbrengerToNewLotnummerAanbrenger();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newLotnummerAanbrengers.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newLotnummerAanbrengers, "LotnummerAanbrengers", LotnummerAanbrenger.class, true, false);
+
+    }
+
+    //EERSTE KEER WINSTMARGES
+    public static void exportWinstmarges() {
+        newWinstmarges = Mapper.oldWinstmargesToNewWinstmarge();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newWinstmarges.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newWinstmarges, "Winstmarges", Winstmarge.class, true, false);
+    }
+
+    //EERSTE KEER DISTRIBUTIEWIJZE
+    public static void exportDistributiewijzes() {
+        newDistributiewijzes = Mapper.oldDistributieWijzeToNewDistribibutieWijze();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newDistributiewijzes.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newDistributiewijzes, "DistributieWijzes", DistributieWijze.class, true, false);
+    }
+
+    public static void exportVerkoopProducten() {
+        newVerkoopProducten = Mapper.oldVerkoopProductenToNewVerkoopProducten();
+        List<VerkoopProductGroep> verkoopProductenGroepen = new ArrayList(); //has id
+        List<BarcodePrefix> barcodePrefixen = new ArrayList(); //has id
+        List<PrivateLabel> privateLabels = new ArrayList(); //has Id
+        List<VerkoopsBarcode> verkoopsBarcode = new ArrayList(); //no id
+        List<Verkoopsverpakking> verkoopsVerpakking = new ArrayList(); //has id
+        List<FysischeEigenschap> fysischeEig = new ArrayList(); // no id
+        List<Omschrijving> omschrijvingen = new ArrayList(); //no id
+        List<BTWPercentage> btwpercentages = new ArrayList(); // has id
+        List<VariantGroep> variantGroepen = new ArrayList(); //has id
+        List<OptieGroep> optieGroepen = new ArrayList(); //has id
+        List<MicrobiologischeParameter> micro = new ArrayList(); //has id
+        List<LotnummerType> lotnummerTypes = new ArrayList(); //has id
+        List<LotnummerDrager> lotnummerDragers = new ArrayList(); // has id
+        List<LotnummerAanbrenger> lotnummerAanbrengers = new ArrayList(); //has id
+        List<Winstmarge> winstmarges = new ArrayList(); // has id
+        List<DistributieWijze> distributiewijzes = new ArrayList(); //has id
+
+        newVerkoopProducten.forEach(e -> {
+            verkoopProductenGroepen.add(e.getVerkoopProductGroep());
+            barcodePrefixen.add(e.getBarcodePrefix());
+            privateLabels.add(e.getPrivateLabel());
+            verkoopsBarcode.add(e.getVerpakkingsBarcodeVerkoopsBarcode());
+            verkoopsBarcode.add(e.getColliBarcodeVerkoopsBarcode());
+            verkoopsBarcode.add(e.getPalletBarcodeVerkoopsBarcode());
+            verkoopsVerpakking.add(e.getVermeldingLeveringsbonVerkoopsverpakking());
+            fysischeEig.add(e.getBreedteFysischeEigenschap());
+            fysischeEig.add(e.getDiameterFysischeEigenschap());
+            fysischeEig.add(e.getGewichtFysischeEigenschap());
+            fysischeEig.add(e.getHoogteFysischeEigenschap());
+            fysischeEig.add(e.getLengteFysischeEigenschap());
+            omschrijvingen.add(e.getKleurOmschrijving());
+            omschrijvingen.add(e.getAfwerkingOmschrijving());
+            btwpercentages.add(e.getBTWpercentage());
+            variantGroepen.add(e.getVariantGroep());
+            optieGroepen.add(e.getOptieGroep());
+            micro.add(e.getMicroBiologischeParameter());
+            lotnummerTypes.add(e.getLotnummerType());
+            lotnummerDragers.add(e.getLotnummerDrager());
+            lotnummerAanbrengers.add(e.getLotnummerAanbrenger());
+            omschrijvingen.add(e.getProductBeschrijvingOmschrijving());
+            omschrijvingen.add(e.getGebruiksaanwijzingOmschrijving());
+            winstmarges.add(e.getWinstmarge());
+            distributiewijzes.add(e.getDistributieWijze());
+            omschrijvingen.add(e.getIngrediëntenOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(verkoopProductenGroepen, newVerkoopProductgroep), "VerkoopProductGroepen", VerkoopProductGroep.class, false, false);
+        DB.insert(removeDuplicates(barcodePrefixen, newBarcodePrefixen), "BarcodePrefixes", BarcodePrefix.class, false, false);
+        DB.insert(removeDuplicates(privateLabels, newPrivateLabels), "PrivateLabels", PrivateLabel.class, false, false);
+        DB.insert(verkoopsBarcode, "VerkoopsBarcode", VerkoopsBarcode.class, true, true);
+        DB.insert(removeDuplicates(verkoopsVerpakking, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
+        DB.insert(fysischeEig, "FysischeEigenschappen", FysischeEigenschap.class, true, true);
+        DB.insert(removeDuplicates(btwpercentages, newBtwpercentages), "BTWpercentages", BTWPercentage.class, false, false);
+        DB.insert(removeDuplicates(variantGroepen, newVariantgroepen), "VariantGroepen", VariantGroep.class, false, false);
+        DB.insert(removeDuplicates(optieGroepen, newOptiegroepen), "OptieGroepen", OptieGroep.class, false, false);
+        DB.insert(removeDuplicates(lotnummerTypes, newLotnummertypes), "LotnummerTypes", LotnummerType.class, false, false);
+        DB.insert(removeDuplicates(lotnummerDragers, newLotnummerDragers), "LotnummerDragers", LotnummerDrager.class, false, false);
+        DB.insert(removeDuplicates(lotnummerAanbrengers, newLotnummerAanbrengers), "LotnummerAanbrengers", LotnummerAanbrenger.class, false, false);
+        DB.insert(removeDuplicates(winstmarges, newWinstmarges), "Winstmarges", Winstmarge.class, false, false);
+        DB.insert(removeDuplicates(distributiewijzes, newDistributiewijzes), "DistributieWijzes", DistributieWijze.class, false, false);
+    
+        DB.insert(newVerkoopProducten, "VerkoopProduct", VerkoopProduct.class, true, false);
+        
     }
 
 }

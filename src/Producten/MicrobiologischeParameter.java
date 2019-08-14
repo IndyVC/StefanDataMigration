@@ -16,7 +16,7 @@ public class MicrobiologischeParameter implements New {
     public int MicroBiologischeParameterId;
 
         public Omschrijving Omschrijving;
-        public Omschrijving TekstTechnischeFiche;
+        public Omschrijving TekstTechnischeFicheOmschrijving;
 
     public MicrobiologischeParameter() {
     }
@@ -24,7 +24,7 @@ public class MicrobiologischeParameter implements New {
     public MicrobiologischeParameter(int MicroBiologischeParameterId, Omschrijving Omschrijving, Omschrijving TekstTechnischeFiche) {
         this.MicroBiologischeParameterId = MicroBiologischeParameterId;
         this.Omschrijving = Omschrijving;
-        this.TekstTechnischeFiche = TekstTechnischeFiche;
+        this.TekstTechnischeFicheOmschrijving = TekstTechnischeFiche;
     }
 
     public int getMicroBiologischeParameterId() {
@@ -43,12 +43,12 @@ public class MicrobiologischeParameter implements New {
         this.Omschrijving = Omschrijving;
     }
 
-    public Omschrijving getTekstTechnischeFiche() {
-        return TekstTechnischeFiche;
+    public Omschrijving getTekstTechnischeFicheOmschrijving() {
+        return TekstTechnischeFicheOmschrijving;
     }
 
-    public void setTekstTechnischeFiche(Omschrijving TekstTechnischeFiche) {
-        this.TekstTechnischeFiche = TekstTechnischeFiche;
+    public void setTekstTechnischeFicheOmschrijving(Omschrijving TekstTechnischeFicheOmschrijving) {
+        this.TekstTechnischeFicheOmschrijving = TekstTechnischeFicheOmschrijving;
     }
 
     @Override

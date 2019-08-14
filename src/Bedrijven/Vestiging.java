@@ -8,6 +8,10 @@ package Bedrijven;
 import Adressen.Adres;
 import Algemeen.Omschrijving;
 import New.New;
+import TussenTabellen.BasisProductVestiging;
+import TussenTabellen.VestigingAankoopProduct;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,6 +28,8 @@ public class Vestiging implements New {
     public BankRekeningNummer BankRekeningNummer;
     public String OndernemingsNummer;
     public String VestigingsNummer;
+    public List<VestigingAankoopProduct> VestigingAankoopProduct;
+    public List<BasisProductVestiging> BasisProductVestiging;
 
     public Vestiging() {
     }
@@ -38,6 +44,8 @@ public class Vestiging implements New {
         this.BankRekeningNummer = BankRekeningNummer;
         this.OndernemingsNummer = OndernemingsNummer;
         this.VestigingsNummer = VestigingsNummer;
+        this.BasisProductVestiging = new ArrayList();
+        this.VestigingAankoopProduct = new ArrayList();
     }
 
     public int getVestgingId() {
@@ -112,6 +120,39 @@ public class Vestiging implements New {
         this.VestigingsNummer = VestigingsNummer;
     }
 
+    public int getVestigingId() {
+        return VestigingId;
+    }
+
+    public void setVestigingId(int VestigingId) {
+        this.VestigingId = VestigingId;
+    }
+
+    public Omschrijving getVestigingsOmschrijvingOmschrijving() {
+        return VestigingsOmschrijvingOmschrijving;
+    }
+
+    public void setVestigingsOmschrijvingOmschrijving(Omschrijving VestigingsOmschrijvingOmschrijving) {
+        this.VestigingsOmschrijvingOmschrijving = VestigingsOmschrijvingOmschrijving;
+    }
+
+    public List<VestigingAankoopProduct> getVestigingAankoopProduct() {
+        return VestigingAankoopProduct;
+    }
+
+    public void setVestigingAankoopProduct(List<VestigingAankoopProduct> VestigingAankoopProduct) {
+        this.VestigingAankoopProduct = VestigingAankoopProduct;
+    }
+
+    public List<BasisProductVestiging> getBasisProductVestiging() {
+        return BasisProductVestiging;
+    }
+
+    public void setBasisProductVestiging(List<BasisProductVestiging> BasisProductVestiging) {
+        this.BasisProductVestiging = BasisProductVestiging;
+    }
+
+    
     @Override
     public void setId(int id) {
         this.VestigingId=id;

@@ -22,6 +22,7 @@ import enums.Eenheid;
 import enums.MuntEenheid;
 import enums.VerpakkingsEenheid;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,8 +77,7 @@ public class AankoopProduct implements New{
     public int AantalLotenInGebruik;
     public ReceptProduct ReceptProduct;
     public List<VestigingAankoopProduct> AankoopProductvestigingen;
-    public List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProduct;
-    public List<VerkoopProduct> VerkoopProducten;
+    public List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProducten;
 
     public AankoopProduct() {
     }
@@ -128,6 +128,8 @@ public class AankoopProduct implements New{
         this.EenheidBijInGebruikName = EenheidBijInGebruikName;
         this.AantalLotenInGebruik = AantalLotenInGebruik;
         this.ReceptProduct = ReceptProduct;
+        this.AankoopProductenVerkoopProducten = new ArrayList();
+        this.AankoopProductvestigingen = new ArrayList();
     }
 
     
@@ -520,20 +522,12 @@ public class AankoopProduct implements New{
         this.AankoopProductvestigingen = AankoopProductvestigingen;
     }
 
-    public List<AankoopProductVerkoopProduct> getAankoopProductenVerkoopProduct() {
-        return AankoopProductenVerkoopProduct;
+    public List<AankoopProductVerkoopProduct> getAankoopProductenVerkoopProducten() {
+        return AankoopProductenVerkoopProducten;
     }
 
-    public void setAankoopProductenVerkoopProduct(List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProduct) {
-        this.AankoopProductenVerkoopProduct = AankoopProductenVerkoopProduct;
-    }
-
-    public List<VerkoopProduct> getVerkoopProducten() {
-        return VerkoopProducten;
-    }
-
-    public void setVerkoopProducten(List<VerkoopProduct> VerkoopProducten) {
-        this.VerkoopProducten = VerkoopProducten;
+    public void setAankoopProductenVerkoopProducten(List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProducten) {
+        this.AankoopProductenVerkoopProducten = AankoopProductenVerkoopProducten;
     }
 
     @Override

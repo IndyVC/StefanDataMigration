@@ -4,27 +4,28 @@
  * and open the template in the editor.
  */
 package Producten;
+
 import java.sql.Date;
 
 import Algemeen.Omschrijving;
 import Bedrijven.PrivateLabel;
+import Boekhouding.BTWPercentage;
 import Boekhouding.Winstmarge;
+import Materialen.BarcodePrefix;
 import Materialen.Verpakking;
 import New.New;
-import Old.Boekhouding.BTWpercentage;
-import Old.Etiket.BarcodePrefix;
-import Old.Lotnummer.LotnummerAanbrenger;
-import Old.Lotnummer.LotnummerDrager;
-import Old.Lotnummer.LotnummerType;
-import Old.Materieel;
-import Old.Verkoopsverpakking;
 import Producten.Recepten.BasisRecept;
 import Producten.Recepten.Taak;
+import Tracering.LotnummerAanbrenger;
+import Tracering.LotnummerDrager;
+import Tracering.LotnummerType;
 import TussenTabellen.AankoopProductVerkoopProduct;
 import TussenTabellen.VerkoopProductBasisRecept;
 import TussenTabellen.VerkoopProductMaterieel;
 import TussenTabellen.VerkoopProductTaak;
 import enums.Eenheid;
+import enums.VerpakkingsEenheid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,60 +33,56 @@ import java.util.List;
  * @author stefa
  */
 public class VerkoopProduct implements New {
-     public int VerkoopProductId;
-        public boolean OnlineBeschikbaar;
-        public Date OnlineLaatstAangemaakt;
-        public String GelinktMetCode;
-        public VerkoopProductGroep VerkoopProductGroep;
-        public BarcodePrefix BarcodePrefix;
-        public PrivateLabel PrivateLabel;
-        public Verpakking PrimaireVerpakking;
-        public Verpakking SecundaireVerpakking;
-        public int StuksPerVerpakking;
-        public VerkoopsBarcode VerpakkingsBarcode;
-        public int VerpakkingenPerColli;
-        public VerkoopsBarcode ColliBarcode;
-        public int CollisPerPallet;
-        public VerkoopsBarcode PalletBarcode;
-        public Verkoopsverpakking VermeldingLeveringsbon;
-        public FysischeEigenschap Gewicht;
-        public FysischeEigenschap Hoogte;
-        public FysischeEigenschap Lengte;
-        public FysischeEigenschap Breedte;
-        public FysischeEigenschap Diameter;
-        public Omschrijving Kleur;
-        public Omschrijving Afwerking;
-        public BTWpercentage BTWpercentage;
-        public double Verkoopprijs;
-        public Eenheid Verkoopeenheid;
-        public VariantGroep VariantGroep;
-        public OptieGroep OptieGroep;
-        public MicrobiologischeParameter MicroBiologischeParameter;
-        public LotnummerType LotnummerType;
-        public LotnummerDrager LotnummerDrager;
-        public LotnummerAanbrenger LotnummerAanbrenger;
-        public Omschrijving ProductBeschrijving;
-        public Omschrijving Gebruiksaanwijzing;
-        public Winstmarge Winstmarge;
-        public DistributieWijze DistributieWijze;
-        public Omschrijving Ingrediënten;
 
-        public List<GoedgekeurdeIngave> GoedgekeurdeIngaves;
-        public List<FysischeEigenschap> FysischeEigenschappen;
-        public List<AankoopProductVerkoopProduct> VerkoopProductAankoopProduct;
-        public List<AankoopProduct> VerkoopProducten;
+    public int VerkoopProductId;
+    public boolean OnlineBeschikbaar;
+    public Date OnlineLaatstAangemaakt;
+    public String GelinktMetCode;
+    public VerkoopProductGroep VerkoopProductGroep;
+    public BarcodePrefix BarcodePrefix;
+    public PrivateLabel PrivateLabel;
+    public VerpakkingsEenheid PrimaireVerpakkingVerpakking;
+    public VerpakkingsEenheid SecundaireVerpakkingVerpakking;
+    public int StuksPerVerpakking;
+    public VerkoopsBarcode VerpakkingsBarcodeVerkoopsBarcode;
+    public int VerpakkingenPerColli;
+    public VerkoopsBarcode ColliBarcodeVerkoopsBarcode;
+    public int CollisPerPallet;
+    public VerkoopsBarcode PalletBarcodeVerkoopsBarcode;
+    public Verkoopsverpakking VermeldingLeveringsbonVerkoopsverpakking;
+    public FysischeEigenschap GewichtFysischeEigenschap;
+    public FysischeEigenschap HoogteFysischeEigenschap;
+    public FysischeEigenschap LengteFysischeEigenschap;
+    public FysischeEigenschap BreedteFysischeEigenschap;
+    public FysischeEigenschap DiameterFysischeEigenschap;
+    public Omschrijving KleurOmschrijving;
+    public Omschrijving AfwerkingOmschrijving;
+    public BTWPercentage BTWpercentage;
+    public double Verkoopprijs;
+    public Eenheid Verkoopeenheid;
+    public VariantGroep VariantGroep;
+    public OptieGroep OptieGroep;
+    public MicrobiologischeParameter MicroBiologischeParameter;
+    public LotnummerType LotnummerType;
+    public LotnummerDrager LotnummerDrager;
+    public LotnummerAanbrenger LotnummerAanbrenger;
+    public Omschrijving ProductBeschrijvingOmschrijving;
+    public Omschrijving GebruiksaanwijzingOmschrijving;
+    public Winstmarge Winstmarge;
+    public DistributieWijze DistributieWijze;
+    public Omschrijving IngrediëntenOmschrijving;
 
-        public List<VerkoopProductBasisRecept> VerkoopProductBasisRecepten;
-        public List<BasisRecept> BasisRecepten;
-        public List<VerkoopProductTaak> VerkoopProductTaken;
-        public List<Taak> ReceptTaken;
-        public List<VerkoopProductMaterieel> VerkoopProductMaterielen;
-        public List<Materieel> ReceptMaterieel;
-       
+    public List<GoedgekeurdeIngave> GoedgekeurdeIngaves;
+    public List<AankoopProductVerkoopProduct> VerkoopProductAankoopProduct;
+
+    public List<VerkoopProductBasisRecept> VerkoopProductBasisRecepten;
+    public List<VerkoopProductTaak> VerkoopProductTaken;
+    public List<VerkoopProductMaterieel> VerkoopProductMaterielen;
+
     public VerkoopProduct() {
     }
 
-    public VerkoopProduct(int VerkoopProductId, boolean OnlineBeschikbaar, Date OnlineLaatstAangemaakt, String GelinktMetCode, VerkoopProductGroep VerkoopProductGroep, BarcodePrefix BarcodePrefix, PrivateLabel PrivateLabel, Verpakking PrimaireVerpakking, Verpakking SecundaireVerpakking, int StuksPerVerpakking, VerkoopsBarcode VerpakkingsBarcode, int VerpakkingenPerColli, VerkoopsBarcode ColliBarcode, int CollisPerPallet, VerkoopsBarcode PalletBarcode, Verkoopsverpakking VermeldingLeveringsbon, FysischeEigenschap Gewicht, FysischeEigenschap Hoogte, FysischeEigenschap Lengte, FysischeEigenschap Breedte, FysischeEigenschap Diameter, Omschrijving Kleur, Omschrijving Afwerking, BTWpercentage BTWpercentage, double Verkoopprijs, Eenheid Verkoopeenheid, VariantGroep VariantGroep, OptieGroep OptieGroep, MicrobiologischeParameter MicroBiologischeParameter, LotnummerType LotnummerType, LotnummerDrager LotnummerDrager, LotnummerAanbrenger LotnummerAanbrenger, Omschrijving ProductBeschrijving, Omschrijving Gebruiksaanwijzing, Winstmarge Winstmarge, DistributieWijze DistributieWijze, Omschrijving Ingrediënten, List<GoedgekeurdeIngave> GoedgekeurdeIngaves, List<FysischeEigenschap> FysischeEigenschappen, List<AankoopProductVerkoopProduct> VerkoopProductAankoopProduct, List<AankoopProduct> VerkoopProducten, List<VerkoopProductBasisRecept> VerkoopProductBasisRecepten, List<BasisRecept> BasisRecepten, List<VerkoopProductTaak> VerkoopProductTaken, List<Taak> ReceptTaken, List<VerkoopProductMaterieel> VerkoopProductMaterielen, List<Materieel> ReceptMaterieel) {
+    public VerkoopProduct(int VerkoopProductId, boolean OnlineBeschikbaar, Date OnlineLaatstAangemaakt, String GelinktMetCode, VerkoopProductGroep VerkoopProductGroep, BarcodePrefix BarcodePrefix, PrivateLabel PrivateLabel, VerpakkingsEenheid PrimaireVerpakkingVerpakking, VerpakkingsEenheid SecundaireVerpakkingVerpakking, int StuksPerVerpakking, VerkoopsBarcode VerpakkingsBarcodeVerkoopsBarcode, int VerpakkingenPerColli, VerkoopsBarcode ColliBarcodeVerkoopsBarcode, int CollisPerPallet, VerkoopsBarcode PalletBarcodeVerkoopsBarcode, Verkoopsverpakking VermeldingLeveringsbonVerkoopsverpakking, FysischeEigenschap GewichtFysischeEigenschap, FysischeEigenschap HoogteFysischeEigenschap, FysischeEigenschap LengteFysischeEigenschap, FysischeEigenschap BreedteFysischeEigenschap, FysischeEigenschap DiameterFysischeEigenschap, Omschrijving KleurOmschrijving, Omschrijving AfwerkingOmschrijving, BTWPercentage BTWpercentage, double Verkoopprijs, Eenheid Verkoopeenheid, VariantGroep VariantGroep, OptieGroep OptieGroep, MicrobiologischeParameter MicroBiologischeParameter, LotnummerType LotnummerType, LotnummerDrager LotnummerDrager, LotnummerAanbrenger LotnummerAanbrenger, Omschrijving ProductBeschrijvingOmschrijving, Omschrijving GebruiksaanwijzingOmschrijving, Winstmarge Winstmarge, DistributieWijze DistributieWijze, Omschrijving IngrediëntenOmschrijving) {
         this.VerkoopProductId = VerkoopProductId;
         this.OnlineBeschikbaar = OnlineBeschikbaar;
         this.OnlineLaatstAangemaakt = OnlineLaatstAangemaakt;
@@ -93,22 +90,22 @@ public class VerkoopProduct implements New {
         this.VerkoopProductGroep = VerkoopProductGroep;
         this.BarcodePrefix = BarcodePrefix;
         this.PrivateLabel = PrivateLabel;
-        this.PrimaireVerpakking = PrimaireVerpakking;
-        this.SecundaireVerpakking = SecundaireVerpakking;
+        this.PrimaireVerpakkingVerpakking = PrimaireVerpakkingVerpakking;
+        this.SecundaireVerpakkingVerpakking = SecundaireVerpakkingVerpakking;
         this.StuksPerVerpakking = StuksPerVerpakking;
-        this.VerpakkingsBarcode = VerpakkingsBarcode;
+        this.VerpakkingsBarcodeVerkoopsBarcode = VerpakkingsBarcodeVerkoopsBarcode;
         this.VerpakkingenPerColli = VerpakkingenPerColli;
-        this.ColliBarcode = ColliBarcode;
+        this.ColliBarcodeVerkoopsBarcode = ColliBarcodeVerkoopsBarcode;
         this.CollisPerPallet = CollisPerPallet;
-        this.PalletBarcode = PalletBarcode;
-        this.VermeldingLeveringsbon = VermeldingLeveringsbon;
-        this.Gewicht = Gewicht;
-        this.Hoogte = Hoogte;
-        this.Lengte = Lengte;
-        this.Breedte = Breedte;
-        this.Diameter = Diameter;
-        this.Kleur = Kleur;
-        this.Afwerking = Afwerking;
+        this.PalletBarcodeVerkoopsBarcode = PalletBarcodeVerkoopsBarcode;
+        this.VermeldingLeveringsbonVerkoopsverpakking = VermeldingLeveringsbonVerkoopsverpakking;
+        this.GewichtFysischeEigenschap = GewichtFysischeEigenschap;
+        this.HoogteFysischeEigenschap = HoogteFysischeEigenschap;
+        this.LengteFysischeEigenschap = LengteFysischeEigenschap;
+        this.BreedteFysischeEigenschap = BreedteFysischeEigenschap;
+        this.DiameterFysischeEigenschap = DiameterFysischeEigenschap;
+        this.KleurOmschrijving = KleurOmschrijving;
+        this.AfwerkingOmschrijving = AfwerkingOmschrijving;
         this.BTWpercentage = BTWpercentage;
         this.Verkoopprijs = Verkoopprijs;
         this.Verkoopeenheid = Verkoopeenheid;
@@ -118,24 +115,37 @@ public class VerkoopProduct implements New {
         this.LotnummerType = LotnummerType;
         this.LotnummerDrager = LotnummerDrager;
         this.LotnummerAanbrenger = LotnummerAanbrenger;
-        this.ProductBeschrijving = ProductBeschrijving;
-        this.Gebruiksaanwijzing = Gebruiksaanwijzing;
+        this.ProductBeschrijvingOmschrijving = ProductBeschrijvingOmschrijving;
+        this.GebruiksaanwijzingOmschrijving = GebruiksaanwijzingOmschrijving;
         this.Winstmarge = Winstmarge;
         this.DistributieWijze = DistributieWijze;
-        this.Ingrediënten = Ingrediënten;
-        this.GoedgekeurdeIngaves = GoedgekeurdeIngaves;
-        this.FysischeEigenschappen = FysischeEigenschappen;
-        this.VerkoopProductAankoopProduct = VerkoopProductAankoopProduct;
-        this.VerkoopProducten = VerkoopProducten;
-        this.VerkoopProductBasisRecepten = VerkoopProductBasisRecepten;
-        this.BasisRecepten = BasisRecepten;
-        this.VerkoopProductTaken = VerkoopProductTaken;
-        this.ReceptTaken = ReceptTaken;
-        this.VerkoopProductMaterielen = VerkoopProductMaterielen;
-        this.ReceptMaterieel = ReceptMaterieel;
+        this.IngrediëntenOmschrijving = IngrediëntenOmschrijving;
     }
 
-    
+    public VerpakkingsEenheid getPrimaireVerpakkingVerpakking() {
+        return PrimaireVerpakkingVerpakking;
+    }
+
+    public void setPrimaireVerpakkingVerpakking(VerpakkingsEenheid PrimaireVerpakkingVerpakking) {
+        this.PrimaireVerpakkingVerpakking = PrimaireVerpakkingVerpakking;
+    }
+
+    public VerpakkingsEenheid getSecundaireVerpakkingVerpakking() {
+        return SecundaireVerpakkingVerpakking;
+    }
+
+    public void setSecundaireVerpakkingVerpakking(VerpakkingsEenheid SecundaireVerpakkingVerpakking) {
+        this.SecundaireVerpakkingVerpakking = SecundaireVerpakkingVerpakking;
+    }
+
+    public Eenheid getVerkoopeenheid() {
+        return Verkoopeenheid;
+    }
+
+    public void setVerkoopeenheid(Eenheid Verkoopeenheid) {
+        this.Verkoopeenheid = Verkoopeenheid;
+    }
+
     public int getVerkoopProductId() {
         return VerkoopProductId;
     }
@@ -192,22 +202,6 @@ public class VerkoopProduct implements New {
         this.PrivateLabel = PrivateLabel;
     }
 
-    public Verpakking getPrimaireVerpakking() {
-        return PrimaireVerpakking;
-    }
-
-    public void setPrimaireVerpakking(Verpakking PrimaireVerpakking) {
-        this.PrimaireVerpakking = PrimaireVerpakking;
-    }
-
-    public Verpakking getSecundaireVerpakking() {
-        return SecundaireVerpakking;
-    }
-
-    public void setSecundaireVerpakking(Verpakking SecundaireVerpakking) {
-        this.SecundaireVerpakking = SecundaireVerpakking;
-    }
-
     public int getStuksPerVerpakking() {
         return StuksPerVerpakking;
     }
@@ -216,12 +210,12 @@ public class VerkoopProduct implements New {
         this.StuksPerVerpakking = StuksPerVerpakking;
     }
 
-    public VerkoopsBarcode getVerpakkingsBarcode() {
-        return VerpakkingsBarcode;
+    public VerkoopsBarcode getVerpakkingsBarcodeVerkoopsBarcode() {
+        return VerpakkingsBarcodeVerkoopsBarcode;
     }
 
-    public void setVerpakkingsBarcode(VerkoopsBarcode VerpakkingsBarcode) {
-        this.VerpakkingsBarcode = VerpakkingsBarcode;
+    public void setVerpakkingsBarcodeVerkoopsBarcode(VerkoopsBarcode VerpakkingsBarcodeVerkoopsBarcode) {
+        this.VerpakkingsBarcodeVerkoopsBarcode = VerpakkingsBarcodeVerkoopsBarcode;
     }
 
     public int getVerpakkingenPerColli() {
@@ -232,12 +226,12 @@ public class VerkoopProduct implements New {
         this.VerpakkingenPerColli = VerpakkingenPerColli;
     }
 
-    public VerkoopsBarcode getColliBarcode() {
-        return ColliBarcode;
+    public VerkoopsBarcode getColliBarcodeVerkoopsBarcode() {
+        return ColliBarcodeVerkoopsBarcode;
     }
 
-    public void setColliBarcode(VerkoopsBarcode ColliBarcode) {
-        this.ColliBarcode = ColliBarcode;
+    public void setColliBarcodeVerkoopsBarcode(VerkoopsBarcode ColliBarcodeVerkoopsBarcode) {
+        this.ColliBarcodeVerkoopsBarcode = ColliBarcodeVerkoopsBarcode;
     }
 
     public int getCollisPerPallet() {
@@ -248,83 +242,83 @@ public class VerkoopProduct implements New {
         this.CollisPerPallet = CollisPerPallet;
     }
 
-    public VerkoopsBarcode getPalletBarcode() {
-        return PalletBarcode;
+    public VerkoopsBarcode getPalletBarcodeVerkoopsBarcode() {
+        return PalletBarcodeVerkoopsBarcode;
     }
 
-    public void setPalletBarcode(VerkoopsBarcode PalletBarcode) {
-        this.PalletBarcode = PalletBarcode;
+    public void setPalletBarcodeVerkoopsBarcode(VerkoopsBarcode PalletBarcodeVerkoopsBarcode) {
+        this.PalletBarcodeVerkoopsBarcode = PalletBarcodeVerkoopsBarcode;
     }
 
-    public Verkoopsverpakking getVermeldingLeveringsbon() {
-        return VermeldingLeveringsbon;
+    public Verkoopsverpakking getVermeldingLeveringsbonVerkoopsverpakking() {
+        return VermeldingLeveringsbonVerkoopsverpakking;
     }
 
-    public void setVermeldingLeveringsbon(Verkoopsverpakking VermeldingLeveringsbon) {
-        this.VermeldingLeveringsbon = VermeldingLeveringsbon;
+    public void setVermeldingLeveringsbonVerkoopsverpakking(Verkoopsverpakking VermeldingLeveringsbonVerkoopsverpakking) {
+        this.VermeldingLeveringsbonVerkoopsverpakking = VermeldingLeveringsbonVerkoopsverpakking;
     }
 
-    public FysischeEigenschap getGewicht() {
-        return Gewicht;
+    public FysischeEigenschap getGewichtFysischeEigenschap() {
+        return GewichtFysischeEigenschap;
     }
 
-    public void setGewicht(FysischeEigenschap Gewicht) {
-        this.Gewicht = Gewicht;
+    public void setGewichtFysischeEigenschap(FysischeEigenschap GewichtFysischeEigenschap) {
+        this.GewichtFysischeEigenschap = GewichtFysischeEigenschap;
     }
 
-    public FysischeEigenschap getHoogte() {
-        return Hoogte;
+    public FysischeEigenschap getHoogteFysischeEigenschap() {
+        return HoogteFysischeEigenschap;
     }
 
-    public void setHoogte(FysischeEigenschap Hoogte) {
-        this.Hoogte = Hoogte;
+    public void setHoogteFysischeEigenschap(FysischeEigenschap HoogteFysischeEigenschap) {
+        this.HoogteFysischeEigenschap = HoogteFysischeEigenschap;
     }
 
-    public FysischeEigenschap getLengte() {
-        return Lengte;
+    public FysischeEigenschap getLengteFysischeEigenschap() {
+        return LengteFysischeEigenschap;
     }
 
-    public void setLengte(FysischeEigenschap Lengte) {
-        this.Lengte = Lengte;
+    public void setLengteFysischeEigenschap(FysischeEigenschap LengteFysischeEigenschap) {
+        this.LengteFysischeEigenschap = LengteFysischeEigenschap;
     }
 
-    public FysischeEigenschap getBreedte() {
-        return Breedte;
+    public FysischeEigenschap getBreedteFysischeEigenschap() {
+        return BreedteFysischeEigenschap;
     }
 
-    public void setBreedte(FysischeEigenschap Breedte) {
-        this.Breedte = Breedte;
+    public void setBreedteFysischeEigenschap(FysischeEigenschap BreedteFysischeEigenschap) {
+        this.BreedteFysischeEigenschap = BreedteFysischeEigenschap;
     }
 
-    public FysischeEigenschap getDiameter() {
-        return Diameter;
+    public FysischeEigenschap getDiameterFysischeEigenschap() {
+        return DiameterFysischeEigenschap;
     }
 
-    public void setDiameter(FysischeEigenschap Diameter) {
-        this.Diameter = Diameter;
+    public void setDiameterFysischeEigenschap(FysischeEigenschap DiameterFysischeEigenschap) {
+        this.DiameterFysischeEigenschap = DiameterFysischeEigenschap;
     }
 
-    public Omschrijving getKleur() {
-        return Kleur;
+    public Omschrijving getKleurOmschrijving() {
+        return KleurOmschrijving;
     }
 
-    public void setKleur(Omschrijving Kleur) {
-        this.Kleur = Kleur;
+    public void setKleurOmschrijving(Omschrijving KleurOmschrijving) {
+        this.KleurOmschrijving = KleurOmschrijving;
     }
 
-    public Omschrijving getAfwerking() {
-        return Afwerking;
+    public Omschrijving getAfwerkingOmschrijving() {
+        return AfwerkingOmschrijving;
     }
 
-    public void setAfwerking(Omschrijving Afwerking) {
-        this.Afwerking = Afwerking;
+    public void setAfwerkingOmschrijving(Omschrijving AfwerkingOmschrijving) {
+        this.AfwerkingOmschrijving = AfwerkingOmschrijving;
     }
 
-    public BTWpercentage getBTWpercentage() {
+    public BTWPercentage getBTWpercentage() {
         return BTWpercentage;
     }
 
-    public void setBTWpercentage(BTWpercentage BTWpercentage) {
+    public void setBTWpercentage(BTWPercentage BTWpercentage) {
         this.BTWpercentage = BTWpercentage;
     }
 
@@ -334,14 +328,6 @@ public class VerkoopProduct implements New {
 
     public void setVerkoopprijs(double Verkoopprijs) {
         this.Verkoopprijs = Verkoopprijs;
-    }
-
-    public Eenheid getVerkoopeenheid() {
-        return Verkoopeenheid;
-    }
-
-    public void setVerkoopeenheid(Eenheid Verkoopeenheid) {
-        this.Verkoopeenheid = Verkoopeenheid;
     }
 
     public VariantGroep getVariantGroep() {
@@ -392,20 +378,20 @@ public class VerkoopProduct implements New {
         this.LotnummerAanbrenger = LotnummerAanbrenger;
     }
 
-    public Omschrijving getProductBeschrijving() {
-        return ProductBeschrijving;
+    public Omschrijving getProductBeschrijvingOmschrijving() {
+        return ProductBeschrijvingOmschrijving;
     }
 
-    public void setProductBeschrijving(Omschrijving ProductBeschrijving) {
-        this.ProductBeschrijving = ProductBeschrijving;
+    public void setProductBeschrijvingOmschrijving(Omschrijving ProductBeschrijvingOmschrijving) {
+        this.ProductBeschrijvingOmschrijving = ProductBeschrijvingOmschrijving;
     }
 
-    public Omschrijving getGebruiksaanwijzing() {
-        return Gebruiksaanwijzing;
+    public Omschrijving getGebruiksaanwijzingOmschrijving() {
+        return GebruiksaanwijzingOmschrijving;
     }
 
-    public void setGebruiksaanwijzing(Omschrijving Gebruiksaanwijzing) {
-        this.Gebruiksaanwijzing = Gebruiksaanwijzing;
+    public void setGebruiksaanwijzingOmschrijving(Omschrijving GebruiksaanwijzingOmschrijving) {
+        this.GebruiksaanwijzingOmschrijving = GebruiksaanwijzingOmschrijving;
     }
 
     public Winstmarge getWinstmarge() {
@@ -424,21 +410,63 @@ public class VerkoopProduct implements New {
         this.DistributieWijze = DistributieWijze;
     }
 
-    public Omschrijving getIngrediënten() {
-        return Ingrediënten;
+    public Omschrijving getIngrediëntenOmschrijving() {
+        return IngrediëntenOmschrijving;
     }
 
-    public void setIngrediënten(Omschrijving Ingrediënten) {
-        this.Ingrediënten = Ingrediënten;
+    public void setIngrediëntenOmschrijving(Omschrijving IngrediëntenOmschrijving) {
+        this.IngrediëntenOmschrijving = IngrediëntenOmschrijving;
+    }
+
+    public List<GoedgekeurdeIngave> getGoedgekeurdeIngaves() {
+        return GoedgekeurdeIngaves;
+    }
+
+    public void setGoedgekeurdeIngaves(List<GoedgekeurdeIngave> GoedgekeurdeIngaves) {
+        this.GoedgekeurdeIngaves = GoedgekeurdeIngaves;
+    }
+
+    public List<AankoopProductVerkoopProduct> getVerkoopProductAankoopProduct() {
+        return VerkoopProductAankoopProduct;
+    }
+
+    public void setVerkoopProductAankoopProduct(List<AankoopProductVerkoopProduct> VerkoopProductAankoopProduct) {
+        this.VerkoopProductAankoopProduct = VerkoopProductAankoopProduct;
+    }
+
+    public List<VerkoopProductBasisRecept> getVerkoopProductBasisRecepten() {
+        return VerkoopProductBasisRecepten;
+    }
+
+    public void setVerkoopProductBasisRecepten(List<VerkoopProductBasisRecept> VerkoopProductBasisRecepten) {
+        this.VerkoopProductBasisRecepten = VerkoopProductBasisRecepten;
+    }
+
+    public List<VerkoopProductTaak> getVerkoopProductTaken() {
+        return VerkoopProductTaken;
+    }
+
+    public void setVerkoopProductTaken(List<VerkoopProductTaak> VerkoopProductTaken) {
+        this.VerkoopProductTaken = VerkoopProductTaken;
+    }
+
+    public List<VerkoopProductMaterieel> getVerkoopProductMaterielen() {
+        return VerkoopProductMaterielen;
+    }
+
+    public void setVerkoopProductMaterielen(List<VerkoopProductMaterieel> VerkoopProductMaterielen) {
+        this.VerkoopProductMaterielen = VerkoopProductMaterielen;
+    }
+
+    
+    @Override
+    public void setId(int id) {
+        this.VerkoopProductId = id;
     }
 
     @Override
-    public void setId(int id) {
-        this.VerkoopProductId=id;
-    }
-         @Override
     public int getId() {
         return this.VerkoopProductId;
     }
-        
+
 }

@@ -11,19 +11,25 @@ import Algemeen.Omschrijving;
 import Algemeen.Openingstijd;
 import Bedrijven.BankRekeningNummer;
 import Bedrijven.Fabrikant;
+import Bedrijven.PrivateLabel;
 import Bedrijven.Verlof;
 import Bedrijven.Vestiging;
 import Bestellingen.BestelGroep;
 import Bestellingen.UitgaandeBestelling;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.AnalytischeRekening;
+import Boekhouding.BTWPercentage;
 import Boekhouding.Bank;
 import Boekhouding.BetalingsVoorwaarde;
 import Boekhouding.Dagboek;
+import Boekhouding.OnrechtstreekseKost;
+import Boekhouding.VasteKost;
+import Boekhouding.Winstmarge;
 import Import.Import;
 import Leveringen.Leverancier;
 import Leveringen.LeveranciersGroep;
 import Leveringen.LeveringsDag;
+import Materialen.BarcodePrefix;
 import Materialen.Etiket;
 import Materialen.Materieelgroep;
 import Materialen.Onderhoud;
@@ -32,12 +38,34 @@ import Materialen.Verpakking;
 import Old.Boekhouding.Bankinstelling;
 import Old.Etiket.EtiketTekst;
 import Old.Materieel;
+import Old.Parameters.MicrobiologischeParameter;
 import Producten.AankoopProduct;
+import Producten.AfgewerktProduct;
+import Producten.DistributieWijze;
+import Producten.FysischeEigenschap;
+import Producten.OptieGroep;
 import Producten.ProductCategorie;
 import Producten.ProductGroep;
 import Producten.ProductSubGroep;
+import Producten.Productiegroep;
 import Producten.ReceptProduct;
 import Producten.Recepten.BasisRecept;
+import Producten.Recepten.Job;
+import Producten.Recepten.Receptgroep;
+import Producten.VariantGroep;
+import Producten.VerkoopProduct;
+import Producten.VerkoopProductGroep;
+import Producten.VerkoopsBarcode;
+import Producten.Verkoopsverdeelgroep;
+import Producten.Verkoopsverpakking;
+import Producten.VoorstellingOpProductielijst;
+import Tracering.LotnummerAanbrenger;
+import Tracering.LotnummerDrager;
+import Tracering.LotnummerType;
+import TussenTabellen.VestigingAankoopProduct;
+import Utils.Util;
+import Voorraden.BewaarTemperatuur;
+import Voorraden.Bewaarconditie;
 import Voorraden.VoorraadPlaats;
 import enums.BtwCode;
 import enums.DayOfWeek;
@@ -48,6 +76,7 @@ import enums.Land;
 import enums.LeveringsFrequenties;
 import enums.MuntEenheid;
 import enums.Printertype;
+import enums.SoortFysischeEigenschap;
 import enums.Taal;
 import enums.VerpakkingsEenheid;
 import enums.Webshop_API;
@@ -61,6 +90,61 @@ import java.util.stream.Collectors;
  * @author stefa
  */
 public class Mapper {
+
+    private static Eenheid convertRecepteenheid(int id) {
+        switch (id) {
+            case -30:
+                return Eenheid.Meter;
+            case -21:
+                return Eenheid.Milliliter;
+            case -20:
+                return Eenheid.Liter;
+            case -11:
+                return Eenheid.Gram;
+            case -10:
+                return Eenheid.Kilogram;
+            case -3:
+                return Eenheid.Stuk;
+            case -2:
+                return Eenheid.PerPersoon;
+            case -1:
+                return Eenheid.Minuten;
+            default:
+                return Eenheid.Kolijoule;
+        }
+    }
+
+    private static VerpakkingsEenheid convertVerpakkingsEenheid(String eenheid) {
+        switch (eenheid) {
+            case "KG":
+                return VerpakkingsEenheid.Eenheid;
+            default:
+                return VerpakkingsEenheid.Verpakking;
+        }
+    }
+
+    private static VerpakkingsEenheid convertVerpakkingsEenheid(int eenheid) {
+        switch (eenheid) {
+            case 0:
+                return VerpakkingsEenheid.Eenheid;
+            case 1:
+                return VerpakkingsEenheid.Colli;
+            case 2:
+                return VerpakkingsEenheid.Verpakking;
+            default:
+                return VerpakkingsEenheid.Verpakking;
+        }
+    }
+
+    private static BigDecimal getBigDecimal(String gtin) {
+        BigDecimal big;
+        if (gtin != null && !gtin.equals("")) {
+            big = new BigDecimal(gtin);
+        } else {
+            big = new BigDecimal(0);
+        }
+        return big;
+    }
 
     //give old objects, get new objects.
     public static List<Boekhouding.Bank> oldBankinstellingToNewBank() {
@@ -353,6 +437,15 @@ public class Mapper {
                     receptProduct);
 
             newAankoopproducten.add(newAankoopproduct);
+            Bedrijven.Bedrijf bedrijf = oldBedrijfToNewBedrijf().stream().filter(e -> e.getId() == a.getId_bedrijf()).findFirst().orElse(new Bedrijven.Bedrijf());
+            bedrijf.setId(a.getId_bedrijf());
+            List<Vestiging> vestigingen = bedrijf.getVestigingen();
+            vestigingen.forEach(v -> {
+                TussenTabellen.VestigingAankoopProduct tussen = new VestigingAankoopProduct(v, newAankoopproduct);
+                newAankoopproduct.getAankoopProductvestigingen().add(tussen);
+                v.getVestigingAankoopProduct().add(tussen);
+            });
+
         });
 
         return newAankoopproducten;
@@ -542,13 +635,13 @@ public class Mapper {
     public static List<Materialen.Materieelgroep> oldMaterieelgroepToNewMaterieelGroep() {
         List<Old.MaterieelGroep> materieelGroep = Import.getMaterieelgroep().stream().map(e -> (Old.MaterieelGroep) e).collect(Collectors.toList());
         List<Materialen.Materieelgroep> newMaterieelGroep = new ArrayList();
-        
-        materieelGroep.forEach(e->{
-            Omschrijving omschrijving = new Omschrijving(-1,e.getOmschrijvingn(),e.getOmschrijvingf(),e.getOmschrijvinge());
-            Materialen.Materieelgroep matGroep = new Materieelgroep(e.getId_materieelgroep(),omschrijving, false);
+
+        materieelGroep.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Materialen.Materieelgroep matGroep = new Materieelgroep(e.getId_materieelgroep(), omschrijving, false);
             newMaterieelGroep.add(matGroep);
         });
-        
+
         return newMaterieelGroep;
     }
 
@@ -557,72 +650,385 @@ public class Mapper {
         List<Old.Materieel> materieel = Import.getMaterieel().stream().map(e -> (Old.Materieel) e).collect(Collectors.toList());
 
         materieel.forEach(e -> {
-            Materialen.Materieelgroep matGroep = oldMaterieelgroepToNewMaterieelGroep().stream().filter(g->g.getId()==e.getId_materieelgroep()).findFirst().orElse(new Materieelgroep());
+            Materialen.Materieelgroep matGroep = oldMaterieelgroepToNewMaterieelGroep().stream().filter(g -> g.getId() == e.getId_materieelgroep()).findFirst().orElse(new Materieelgroep());
             matGroep.setId(e.getId_materieelgroep());
             Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
-            Leverancier leverancier = oldLeverantierToNewLeverancier().stream().filter(l->l.getId()==e.getId_leverancier()).findFirst().orElse(new Leverancier());
+            Leverancier leverancier = oldLeverantierToNewLeverancier().stream().filter(l -> l.getId() == e.getId_leverancier()).findFirst().orElse(new Leverancier());
             leverancier.setId(e.getId_leverancier());
             Materialen.Onderhoud onderhoud = new Onderhoud();
             onderhoud.setId(-1);
+
             Materialen.Materieel mat = new Materialen.Materieel(e.getId_materieel(), matGroep, e.getTechnische_keuring(), e.getDatum_laatste_keuring(), e.getDatum_volgende_keuring(), omschrijving, leverancier, e.getGebruiksaanwijzing(), e.getVeiligheidsfiche(), e.getLink_technische_keuring(), e.getLink_onderhoudschema(), e.getLink_ingebruikstelling(), e.getLink_foto(), e.getBlokkeren(), e.getGebruiksaanwijzing(), e.getVeiligheidsfiche(), onderhoud);
             newMaterieel.add(mat);
         });
-        
+
         return newMaterieel;
     }
 
-    private static Eenheid convertRecepteenheid(int id) {
-        switch (id) {
-            case -30:
-                return Eenheid.Meter;
-            case -21:
-                return Eenheid.Milliliter;
-            case -20:
-                return Eenheid.Liter;
-            case -11:
-                return Eenheid.Gram;
-            case -10:
-                return Eenheid.Kilogram;
-            case -3:
-                return Eenheid.Stuk;
-            case -2:
-                return Eenheid.PerPersoon;
-            case -1:
-                return Eenheid.Minuten;
-            default:
-                return Eenheid.Kolijoule;
-        }
+    public static List<Producten.Productiegroep> oldProductiegroepToNewProductiegroep() {
+        List<Producten.Productiegroep> newProductieGroepen = new ArrayList();
+        List<Old.Product.Productiegroep> productiegroepen = Import.getProductiegroepen().stream().map(e -> (Old.Product.Productiegroep) e).collect(Collectors.toList());
+
+        productiegroepen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            AlgemeneRekening algemeneRek = oldBoekhoudrekeningToAlgemeneRekening().stream().filter(r -> r.getId() == e.getId_algemene_rekening()).findFirst().orElse(new AlgemeneRekening());
+            algemeneRek.setId(e.getId_algemene_rekening());
+
+            Producten.Productiegroep productieGroep = new Productiegroep(e.getId_produktiegroep(), omschrijving, algemeneRek, e.getAfdrukkenreceptenlijst(), e.getOpmerking_meenemen());
+            newProductieGroepen.add(productieGroep);
+        });
+
+        return newProductieGroepen;
     }
 
-    private static VerpakkingsEenheid convertVerpakkingsEenheid(String eenheid) {
-        switch (eenheid) {
-            case "KG":
-                return VerpakkingsEenheid.Eenheid;
-            default:
-                return VerpakkingsEenheid.Verpakking;
-        }
+    public static List<Producten.Recepten.Receptgroep> oldReceptengroepToNewReceptenGroep() {
+        List<Producten.Recepten.Receptgroep> newReceptengroepen = new ArrayList();
+        List<Old.Recept.Receptgroep> receptengroepen = Import.getReceptgroepen().stream().map(e -> (Old.Recept.Receptgroep) e).collect(Collectors.toList());
+
+        receptengroepen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Producten.Recepten.Receptgroep receptGroep = new Receptgroep(e.getId_receptgroep(), omschrijving);
+            newReceptengroepen.add(receptGroep);
+        });
+
+        return newReceptengroepen;
     }
 
-    private static VerpakkingsEenheid convertVerpakkingsEenheid(int eenheid) {
-        switch (eenheid) {
-            case 0:
-                return VerpakkingsEenheid.Eenheid;
-            case 1:
-                return VerpakkingsEenheid.Colli;
-            case 2:
-                return VerpakkingsEenheid.Verpakking;
-            default:
-                return VerpakkingsEenheid.Eenheid;
-        }
+    public static List<Voorraden.Bewaarconditie> oldBewaarconditieToNewBewaarconditie() {
+        List<Voorraden.Bewaarconditie> newBewaarcondities = new ArrayList();
+        List<Old.Bewaarconditie> bewaarcondities = Import.getBewaarcondities().stream().map(e -> (Old.Bewaarconditie) e).collect(Collectors.toList());
+
+        bewaarcondities.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Voorraden.Bewaarconditie bewaarconditie = new Bewaarconditie(e.getId_bewaarconditie(), omschrijving, false);
+            newBewaarcondities.add(bewaarconditie);
+        });
+
+        return newBewaarcondities;
     }
 
-    private static BigDecimal getBigDecimal(String gtin) {
-        BigDecimal big;
-        if (gtin != null && !gtin.equals("")) {
-            big = new BigDecimal(gtin);
-        } else {
-            big = new BigDecimal(0);
-        }
-        return big;
+    public static List<Voorraden.BewaarTemperatuur> oldBewaarTemperatuurToNewBewaarTemperatuur() {
+        List<Voorraden.BewaarTemperatuur> newBewaartemperaturen = new ArrayList();
+        List<Old.Bewaartemperatuur> bewaartemperaturen = Import.getBewaartemperaturen().stream().map(e -> (Old.Bewaartemperatuur) e).collect(Collectors.toList());
+
+        bewaartemperaturen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Voorraden.BewaarTemperatuur bewaarTemperatuur = new BewaarTemperatuur(e.getId_bewaartemperatuur(), omschrijving, e.getBewaartemperatuur_minimum(), e.getBewaartemperatuur_maximum(), false);
+            newBewaartemperaturen.add(bewaarTemperatuur);
+        });
+        return newBewaartemperaturen;
+    }
+
+    public static List<Producten.Verkoopsverdeelgroep> oldVerdeelgroepToNewVerdeelgroep() {
+        List<Producten.Verkoopsverdeelgroep> newVerkoopsverdeelgroepen = new ArrayList();
+        List<Old.Verdeelgroep> verdeelgroepen = Import.getVerdeelgroepen().stream().map(e -> (Old.Verdeelgroep) e).collect(Collectors.toList());
+
+        verdeelgroepen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Producten.Verkoopsverdeelgroep verdeelGroep = new Verkoopsverdeelgroep(e.getId_verdeelgroep(), omschrijving, false);
+            newVerkoopsverdeelgroepen.add(verdeelGroep);
+        });
+        return newVerkoopsverdeelgroepen;
+    }
+
+    public static List<Producten.Verkoopsverpakking> oldVerkoopsverpakkingToNewVerkoopsverpakking() {
+        List<Producten.Verkoopsverpakking> newVerkoopsverpakking = new ArrayList();
+        List<Old.Verkoopsverpakking> verkoopsverpakkingen = Import.getVerkoopsverpakkingen().stream().map(e -> (Old.Verkoopsverpakking) e).collect(Collectors.toList());
+
+        verkoopsverpakkingen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Producten.Verkoopsverdeelgroep verdeelgroep = oldVerdeelgroepToNewVerdeelgroep().stream().filter(t -> t.getId() == e.getId_verdeelgroep()).findFirst().orElse(new Verkoopsverdeelgroep());
+            verdeelgroep.setId(e.getId_verdeelgroep());
+            Producten.Verkoopsverpakking verpakking = new Verkoopsverpakking(e.getId_verkoopsverpakking(), omschrijving, verdeelgroep, e.getHoeveelheid_verpakking(), e.getHoeveelheid_grootverpakking(), e.getVerdelen_grootverpakking(), e.getCombineren_meerdere_producten(), false);
+            newVerkoopsverpakking.add(verpakking);
+        });
+
+        return newVerkoopsverpakking;
+    }
+
+    public static List<Boekhouding.VasteKost> oldVastekostToNewVastekost() {
+        List<Boekhouding.VasteKost> newVastekosten = new ArrayList();
+        List<Old.Percentage.PercentageVasteKost> vastekosten = Import.getPercentagevastekosten().stream().map(e -> (Old.Percentage.PercentageVasteKost) e).collect(Collectors.toList());
+
+        vastekosten.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Boekhouding.VasteKost vasteKost = new VasteKost(e.getId_vaste_kost(), omschrijving, e.getPercentage_atelierkosten(), e.getPercentage_verkoopkosten(), e.getPercentage_beheerskosten(), e.getPercentage_andere(), false);
+            newVastekosten.add(vasteKost);
+        });
+        return newVastekosten;
+    }
+
+    public static List<Boekhouding.OnrechtstreekseKost> oldOnrechtstreekseKostToNewOnrechtstreekseKost() {
+        List<Boekhouding.OnrechtstreekseKost> newOnrechtstreekseKosten = new ArrayList();
+        List<Old.Percentage.PercentageOnrechtstreekseProductiekost> onrechtstreeksekosten = Import.getPercentageonrechtstreekseproductiekosten().stream().map(e -> (Old.Percentage.PercentageOnrechtstreekseProductiekost) e).collect(Collectors.toList());
+
+        onrechtstreeksekosten.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Boekhouding.OnrechtstreekseKost onrechtstreekseKost = new OnrechtstreekseKost(e.getId_onrechtstreekse_produktiekost(), omschrijving, e.getPercentage(), false);
+            newOnrechtstreekseKosten.add(onrechtstreekseKost);
+        });
+        return newOnrechtstreekseKosten;
+    }
+
+    public static List<Producten.AfgewerktProduct> oldAfgewerktProductToNewAfgewerktProduct() {
+        List<Producten.AfgewerktProduct> newAfgewerktProducten = new ArrayList();
+        List<Old.Afgewerkteproducten.Afgewerktproduct> afgewerkteproducten = Import.getAfgewerkteproducten().stream().map(e -> (Old.Afgewerkteproducten.Afgewerktproduct) e).collect(Collectors.toList());
+
+        afgewerkteproducten.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Producten.Productiegroep productieGroep = oldProductiegroepToNewProductiegroep().stream().filter(g -> g.getId() == e.getId_produktiegroep()).findFirst().orElse(new Producten.Productiegroep());
+            productieGroep.setId(e.getId_produktiegroep());
+            Producten.Recepten.Receptgroep receptGroep = oldReceptengroepToNewReceptenGroep().stream().filter(r -> r.getReceptgroepId() == e.getId_receptgroep()).findFirst().orElse(new Producten.Recepten.Receptgroep());
+            receptGroep.setId(e.getId_receptgroep());
+            Voorraden.VoorraadProduct voorraadProduct = new Voorraden.VoorraadProduct(-1, new Omschrijving(), e.getVoorraad(), e.getVoorraad_maandag(), e.getVoorraad_dinsdag(), e.getVoorraad_woensdag(), e.getVoorraad_donderdag(), e.getVoorraad_vrijdag(), e.getVoorraad_zaterdag(), e.getVoorraad_zondag());
+            VoorraadPlaats voorraadPlaats = oldVoorraadPlaatsToNewVoorraadPlaats().stream().filter(v -> v.getId() == e.getId_voorraadplaats()).findFirst().orElse(new VoorraadPlaats());
+            voorraadPlaats.setId(e.getId_voorraadplaats());
+            Etiket etiket = oldEtiketToNewEtiket().stream().filter(t -> t.getId() == e.getId_etiket()).findFirst().orElse(new Etiket());
+            etiket.setId(e.getId_etiket());
+            Bewaarconditie bewaarconditie = oldBewaarconditieToNewBewaarconditie().stream().filter(t -> t.getId() == e.getId_bewaarconditie()).findFirst().orElse(new Bewaarconditie());
+            bewaarconditie.setId(e.getId_bewaarconditie());
+            Voorraden.BewaarTemperatuur bewaarTemperatuur = oldBewaarTemperatuurToNewBewaarTemperatuur().stream().filter(t -> t.getId() == e.getId_bewaartemperatuur()).findFirst().orElse(new BewaarTemperatuur());
+            bewaarTemperatuur.setId(e.getId_bewaartemperatuur());
+            Omschrijving bereidingswijze = new Omschrijving(-1, e.getBereidingswijze(), e.getBereidingswijze(), e.getBereidingswijze());
+            VoorstellingOpProductielijst voorstelling = new VoorstellingOpProductielijst(-1, e.getLijn_na_produktielijst(), e.getArcering_op_produktielijst());
+            Job job = new Job();
+            job.setId(e.getId_job());
+            Producten.Verkoopsverpakking verpakking = oldVerkoopsverpakkingToNewVerkoopsverpakking().stream().filter(t -> t.getId() == e.getId_verkoopsverpakking()).findFirst().orElse(new Verkoopsverpakking());
+            verpakking.setId(e.getId_verkoopsverpakking());
+            VasteKost vasteKost = oldVastekostToNewVastekost().stream().filter(t -> t.getId() == e.getId_vaste_kost()).findFirst().orElse(new VasteKost());
+            vasteKost.setId(e.getId_vaste_kost());
+            OnrechtstreekseKost onrechtstreekseKost = oldOnrechtstreekseKostToNewOnrechtstreekseKost().stream().filter(t -> t.getId() == e.getId_onrechtstreekse_produktiekost()).findFirst().orElse(new OnrechtstreekseKost());
+            onrechtstreekseKost.setId(e.getId_onrechtstreekse_produktiekost());
+
+            Producten.AfgewerktProduct afgewerktProduct = new AfgewerktProduct(e.getId_afgewerkt_product(), "", omschrijving, productieGroep,
+                    receptGroep, convertRecepteenheid(e.getId_recepteenheid()), e.getMoet_gewogen_worden(), e.getMaximaal_meetgewicht(),
+                    e.getRelatieve_marge(), e.getAbsolute_marge(), e.getVaste_kost_per_eenheid(), e.getEenheidsgewicht(), Eenheid.Gram,
+                    true, e.getDagproduktie(), voorraadProduct, voorraadPlaats, e.getOmschrijving_voorraadplaats(), e.getVoorraad_minimum(), e.getVoorraad_maximum(), e.getEtiket(),
+                    etiket, e.getEenheden_etiket(), etiket, bewaarconditie, bewaarTemperatuur, e.getMinimum_aantal_dagen_houdbaar(), bereidingswijze, e.getBestandsnaam_foto(), voorstelling, e.getRecept_wijzigbaar(), job,
+                    verpakking, vasteKost, onrechtstreekseKost, e.getBlokkeren(), e.getProduktie_hoeveelheid());
+
+            newAfgewerktProducten.add(afgewerktProduct);
+
+        });
+        return newAfgewerktProducten;
+    }
+
+    public static List<Producten.VerkoopProductGroep> oldVerkoopProductGroepToNewVerkoopProductGroep() {
+        List<Producten.VerkoopProductGroep> newVerkoopProductgroepen = new ArrayList();
+        List<Old.Verkoopproducten.Verkoopproductgroep> verkoopproductgroepen = Import.getVerkoopproductgroepen().stream().map(e -> (Old.Verkoopproducten.Verkoopproductgroep) e).collect(Collectors.toList());
+
+        verkoopproductgroepen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Productiegroep groep = oldProductiegroepToNewProductiegroep().stream().filter(t -> t.getId() == e.getDefault_produktiegroep()).findFirst().orElse(new Productiegroep());
+            groep.setId(e.getDefault_produktiegroep());
+            Producten.VerkoopProductGroep verkoopProductGroep = new VerkoopProductGroep(e.getId_verkoopproductgroep(), omschrijving, e.getFolder_afbeeldingen(), groep, e.getOnline1());
+            newVerkoopProductgroepen.add(verkoopProductGroep);
+        });
+        return newVerkoopProductgroepen;
+    }
+
+    public static List<Materialen.BarcodePrefix> oldBarcodePrefixenToNewBarcodePrefixen() {
+        List<Materialen.BarcodePrefix> newBarcodePrefixen = new ArrayList();
+        List<Old.Etiket.BarcodePrefix> barcodeprefixen = Import.getBarcodesprefixen().stream().map(e -> (Old.Etiket.BarcodePrefix) e).collect(Collectors.toList());
+
+        barcodeprefixen.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Materialen.BarcodePrefix newPrefix = new BarcodePrefix(e.getId_barcodeprefix(), e.getId_barcodeprefix(), omschrijving, e.getPositie_van_tot_artikelcode(), e.getPositie_van_tot_verkoopprijs(), Integer.valueOf(e.getInvoeggetal().length()>0? e.getInvoeggetal() : "0"), false);
+            newBarcodePrefixen.add(newPrefix);
+        });
+        return newBarcodePrefixen;
+    }
+
+    public static List<Bedrijven.PrivateLabel> oldKlantPrivateLabelToNewPrivateLabel() {
+        List<Bedrijven.PrivateLabel> newPrivateLabels = new ArrayList();
+        List<Old.Klant.KlantPrivateLabel> privatelabels = Import.getKlantenlabel().stream().map(e -> (Old.Klant.KlantPrivateLabel) e).collect(Collectors.toList());
+        List<Old.Aanspreektitel> aansprekingen = Import.getAansprekingen().stream().map(old -> (Old.Aanspreektitel) old).collect(Collectors.toList());
+
+        privatelabels.forEach(e -> {
+            String aanspreking = aansprekingen.stream().filter(t -> t.getId_aanspreektitel() == e.getId_aanspreking()).map(t -> t.getOmschrijvingn()).findFirst().get();
+            Adres adres = new Adres(-1, e.getStraat(), e.getHuisnummer(), "", e.getPostcode(), e.getWoonplaats(), Land.België);
+            Bedrijven.PrivateLabel newLabel = new PrivateLabel(e.getId_private_label(), aanspreking, e.getNaam(), adres, Taal.Nederlands, e.getUrl(), e.getBestandsnaam_private_logo(), e.getTelefoonnummer());
+            newPrivateLabels.add(newLabel);
+        });
+
+        return newPrivateLabels;
+    }
+
+    public static List<Boekhouding.BTWPercentage> oldBtwcodeToNewBTWPercentage() {
+        List<Boekhouding.BTWPercentage> newBtwPercentages = new ArrayList();
+        List<Old.Boekhouding.Btwcode> btwpercentages = Import.getBtwcodes().stream().map(e -> (Old.Boekhouding.Btwcode) e).collect(Collectors.toList());
+
+        btwpercentages.forEach(e -> {
+            AlgemeneRekening aftrekbaar = oldBoekhoudrekeningToAlgemeneRekening().stream().filter(t -> t.getId() == e.getId_algemene_rekening_aftrekbaar()).findFirst().orElse(new AlgemeneRekening());
+            aftrekbaar.setId(e.getId_algemene_rekening_aftrekbaar());
+            AlgemeneRekening verschuldigd = oldBoekhoudrekeningToAlgemeneRekening().stream().filter(t -> t.getId() == e.getId_algemene_rekening_verschuldigd()).findFirst().orElse(new AlgemeneRekening());
+            verschuldigd.setId(e.getId_algemene_rekening_verschuldigd());
+
+            Boekhouding.BTWPercentage btwPercentage = new BTWPercentage(e.getId_btwcode(), e.getCodeboekhouding(), e.getPercentage(), aftrekbaar, verschuldigd, false);
+            newBtwPercentages.add(btwPercentage);
+        });
+
+        return newBtwPercentages;
+    }
+
+    public static List<Producten.VariantGroep> oldVariantHoofdingToNewVariantGroep() {
+        List<Producten.VariantGroep> newVariantgroepen = new ArrayList();
+        List<Old.VariantHoofding> varianten = Import.getVariantenhoofding().stream().map(e -> (Old.VariantHoofding) e).collect(Collectors.toList());
+
+        varianten.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Producten.VariantGroep groep = new VariantGroep(e.getId_variant_header(), omschrijving, e.getBlokkeren());
+            newVariantgroepen.add(groep);
+        });
+
+        return newVariantgroepen;
+    }
+
+    public static List<Producten.OptieGroep> oldOptieHoofdingToNewOptiegroep() {
+        List<OptieGroep> newOptiegroepen = new ArrayList();
+        List<Old.OptieHoofding> optiehoofding = Import.getOptieshoofding().stream().map(e -> (Old.OptieHoofding) e).collect(Collectors.toList());
+
+        optiehoofding.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            OptieGroep optieGroep = new OptieGroep(e.getId_option_header(), omschrijving, e.getBlokkeren());
+            newOptiegroepen.add(optieGroep);
+        });
+
+        return newOptiegroepen;
+    }
+
+    public static List<Producten.MicrobiologischeParameter> oldMicrobiologischeToNewMicrobiologische() {
+        List<Producten.MicrobiologischeParameter> newMicrobioparameters = new ArrayList();
+        List<Old.Parameters.MicrobiologischeParameter> micros = Import.getMicrobiologischeparameters().stream().map(e -> (Old.Parameters.MicrobiologischeParameter) e).collect(Collectors.toList());
+
+        micros.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            String technisch = e.getOmschrijving1() + "," + e.getOmschrijving2() + "," + e.getOmschrijving3() + "," + e.getOmschrijving4() + "," + e.getOmschrijving5() + "," + e.getOmschrijving6() + "," + e.getOmschrijving7() + "," + e.getOmschrijving8() + "," + e.getOmschrijving9();
+            Omschrijving tekstTechnischeFiche = new Omschrijving(-1, technisch, "", "");
+            Producten.MicrobiologischeParameter parameter = new Producten.MicrobiologischeParameter(e.getId_microbiologische_parameter(), omschrijving, tekstTechnischeFiche);
+
+            newMicrobioparameters.add(parameter);
+        });
+
+        return newMicrobioparameters;
+    }
+
+    public static List<Tracering.LotnummerType> oldLotnummerTypeToNewLotnummerType() {
+        List<Tracering.LotnummerType> newLotnummerTypes = new ArrayList();
+        List<Old.Lotnummer.LotnummerType> lotnummertypes = Import.getLotnummertypes().stream().map(e -> (Old.Lotnummer.LotnummerType) e).collect(Collectors.toList());
+
+        lotnummertypes.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Tracering.LotnummerType lotnummerType = new LotnummerType(e.getId_lotnummer_type(), omschrijving, false);
+            newLotnummerTypes.add(lotnummerType);
+        });
+        return newLotnummerTypes;
+    }
+
+    public static List<Tracering.LotnummerDrager> oldLotnummerDragerToNewLotnummerDrager() {
+        List<Tracering.LotnummerDrager> newLotnummerdragers = new ArrayList();
+        List<Old.Lotnummer.LotnummerDrager> lotnummerdragers = Import.getLotnummerdragers().stream().map(e -> (Old.Lotnummer.LotnummerDrager) e).collect(Collectors.toList());
+
+        lotnummerdragers.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Tracering.LotnummerDrager drager = new LotnummerDrager(e.getId_lotnummer_drager(), omschrijving, false);
+            newLotnummerdragers.add(drager);
+        });
+        return newLotnummerdragers;
+    }
+
+    public static List<Tracering.LotnummerAanbrenger> oldLotnummerAanbrengerToNewLotnummerAanbrenger() {
+        List<Tracering.LotnummerAanbrenger> newLotnummerAanbrengers = new ArrayList();
+        List<Old.Lotnummer.LotnummerAanbrenger> lotnummeraanbrengers = Import.getLotnummeraanbrengers().stream().map(e -> (Old.Lotnummer.LotnummerAanbrenger) e).collect(Collectors.toList());
+
+        lotnummeraanbrengers.forEach(e -> {
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Tracering.LotnummerAanbrenger aanbrenger = new LotnummerAanbrenger(e.getId_lotnummer_aanbrenger(), omschrijving, false);
+            newLotnummerAanbrengers.add(aanbrenger);
+        });
+        return newLotnummerAanbrengers;
+    }
+    
+    public static List<Boekhouding.Winstmarge> oldWinstmargesToNewWinstmarge(){
+        List<Boekhouding.Winstmarge> newWinstmarges = new ArrayList();
+        List<Old.Percentage.PercentageWinstmarge> winstmarges = Import.getPercentagewinstmarges().stream().map(e -> (Old.Percentage.PercentageWinstmarge) e).collect(Collectors.toList());
+        
+        winstmarges.forEach(e->{
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Boekhouding.Winstmarge winstmarge = new Winstmarge(e.getId_winstmarge(), e.getPercentage(), omschrijving);
+            newWinstmarges.add(winstmarge);
+        });
+        
+        return newWinstmarges;
+    }
+    
+    public static List<Producten.DistributieWijze> oldDistributieWijzeToNewDistribibutieWijze(){
+         List<Producten.DistributieWijze> newDistributieWijzes = new ArrayList();
+        List<Old.Distributiewijze> distri = Import.getDistributiewijzes().stream().map(e -> (Old.Distributiewijze) e).collect(Collectors.toList());
+        
+        distri.forEach(e->{
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Producten.DistributieWijze distributieWijze = new DistributieWijze(e.getId_distributiewijze(), omschrijving);
+            newDistributieWijzes.add(distributieWijze);
+        });
+        
+        return newDistributieWijzes;
+        
+    }
+
+    public static List<Producten.VerkoopProduct> oldVerkoopProductenToNewVerkoopProducten() {
+        List<Producten.VerkoopProduct> newVerkoopProducten = new ArrayList();
+        List<Old.Verkoopproducten.Verkoopproduct> verkoopproducten = Import.getVerkoopproducten().stream().map(e -> (Old.Verkoopproducten.Verkoopproduct) e).collect(Collectors.toList());
+
+        verkoopproducten.forEach(e -> {
+            VerkoopProductGroep verkoopproductgroep = oldVerkoopProductGroepToNewVerkoopProductGroep().stream().filter(t -> t.getId() == e.getId_verkoopproductgroep()).findFirst().orElse(new VerkoopProductGroep());
+            verkoopproductgroep.setId(e.getId_verkoopproductgroep());
+            BarcodePrefix prefix = oldBarcodePrefixenToNewBarcodePrefixen().stream().filter(t -> t.getId() == e.getId_barcodeprefix()).findFirst().orElse(new BarcodePrefix());
+            prefix.setId(e.getId_barcodeprefix());
+            PrivateLabel label = oldKlantPrivateLabelToNewPrivateLabel().stream().filter(t -> t.getId() == e.getId_private_label()).findFirst().orElse(new PrivateLabel());
+            label.setId(e.getId_private_label());
+            VerkoopsBarcode verpakkingBarcode = new VerkoopsBarcode(0, Util.BigDecimal(e.getGtin_verpakking()), e.getAfdrukken_etiket_verpakking());
+            VerkoopsBarcode colliBarcode = new VerkoopsBarcode(0, Util.BigDecimal(e.getGtin_colli()), e.getAfdrukken_etiket_colli());
+            VerkoopsBarcode palletBarcode = new VerkoopsBarcode(0, Util.BigDecimal(e.getGtin_palet()), e.getAfdrukken_etiket_palet());
+            Verkoopsverpakking vermeldingLeveringsbon = oldVerkoopsverpakkingToNewVerkoopsverpakking().stream().filter(t -> t.getId() == e.getId_verkoopsverpakking()).findFirst().orElse(new Verkoopsverpakking());
+            vermeldingLeveringsbon.setId(e.getId_verkoopsverpakking());
+            FysischeEigenschap gewicht = new FysischeEigenschap(-1, SoortFysischeEigenschap.Gewicht, e.getFysische_eigenschappen_gewicht_doel(), Eenheid.values()[Integer.valueOf(e.getFysische_eigenschappen_gewicht_eenheid())], e.getFysische_eigenschappen_gewicht_variatie(), null);
+            FysischeEigenschap hoogte = new FysischeEigenschap(-1, SoortFysischeEigenschap.Hoogte, e.getFysische_eigenschappen_hoogte_doel(), Eenheid.values()[Integer.valueOf(e.getFysische_eigenschappen_hoogte_eenheid())], e.getFysische_eigenschappen_hoogte_variatie(), null);
+            FysischeEigenschap lengte = new FysischeEigenschap(-1, SoortFysischeEigenschap.Lengte, e.getFysische_eigenschappen_lengte_doel(), Eenheid.values()[Integer.valueOf(e.getFysische_eigenschappen_lengte_eenheid())], e.getFysische_eigenschappen_lengte_variatie(), null);
+            FysischeEigenschap breedte = new FysischeEigenschap(-1, SoortFysischeEigenschap.Breedte, e.getFysische_eigenschappen_breedte_doel(), Eenheid.values()[Integer.valueOf(e.getFysische_eigenschappen_breedte_eenheid())], e.getFysische_eigenschappen_breedte_variatie(), null);
+            FysischeEigenschap diameter = new FysischeEigenschap(-1, SoortFysischeEigenschap.Diameter, e.getFysische_eigenschappen_diameter_doel(), Eenheid.values()[Integer.valueOf(e.getFysische_eigenschappen_diameter_eenheid())], e.getFysische_eigenschappen_diameter_variatie(), null);
+            Omschrijving kleurOmschrijving = new Omschrijving(-1, e.getFysische_eigenschappen_kleurn(), e.getFysische_eigenschappen_kleurf(), "");
+            Omschrijving afwerkingOmschrijving = new Omschrijving(-1, e.getFysische_eigenschappen_afwerkingn(), e.getFysische_eigenschappen_afwerkingf(), "");
+            BTWPercentage percentage = oldBtwcodeToNewBTWPercentage().stream().filter(t -> t.getId() == e.getId_btwcode()).findFirst().get();
+            VariantGroep variantGroep = oldVariantHoofdingToNewVariantGroep().stream().filter(t -> t.getId() == e.getId_variant_header()).findFirst().orElse(new VariantGroep());
+            variantGroep.setId(e.getId_variant_header());
+            OptieGroep optieGroep = oldOptieHoofdingToNewOptiegroep().stream().filter(t -> t.getId() == e.getId_option_header()).findFirst().orElse(new OptieGroep());
+            optieGroep.setId(e.getId_option_header());
+            Producten.MicrobiologischeParameter micro = oldMicrobiologischeToNewMicrobiologische().stream().filter(t -> t.getId() == e.getId_microbiologische_parameter()).findFirst().orElse(new Producten.MicrobiologischeParameter());
+            micro.setId(e.getId_microbiologische_parameter());
+            LotnummerType lotnummerType = oldLotnummerTypeToNewLotnummerType().stream().filter(t -> t.getId() == e.getId_lotnummer_type()).findFirst().orElse(new LotnummerType());
+            lotnummerType.setId(e.getId_lotnummer_type());
+            LotnummerDrager lotnummerDrager = oldLotnummerDragerToNewLotnummerDrager().stream().filter(t -> t.getId() == e.getId_lotnummer_drager()).findFirst().orElse(new LotnummerDrager());
+            lotnummerDrager.setId(e.getId_lotnummer_drager());
+            LotnummerAanbrenger lotnummerAanbrenger = oldLotnummerAanbrengerToNewLotnummerAanbrenger().stream().filter(t->t.getId()==e.getId_lotnummer_aanbrenger()).findFirst().orElse(new LotnummerAanbrenger());
+            lotnummerAanbrenger.setId(e.getId_lotnummer_aanbrenger());
+            Omschrijving productBeschrijving =  new Omschrijving(-1, e.getProductbeschrijvingn(), e.getProductbeschrijvingf(), "");
+            Omschrijving gebruiksAanwijzing = new Omschrijving(-1, e.getGebruiksaanwijzingn(), e.getGebruiksaanwijzingf(), "");
+            Winstmarge marge = oldWinstmargesToNewWinstmarge().stream().filter(t->t.getId()==e.getId_winstmarge()).findFirst().orElse(new Winstmarge());
+            marge.setId(e.getId_winstmarge());
+            DistributieWijze distributieWijze = oldDistributieWijzeToNewDistribibutieWijze().stream().filter(t->t.getId()==e.getId_distributiewijze()).findFirst().orElse(new DistributieWijze());
+            distributieWijze.setId(e.getId_distributiewijze());
+            Omschrijving ingredienten = new Omschrijving(-1, e.getIngredientenn(), e.getIngredientenf(), e.getIngredientene());
+            
+            Producten.VerkoopProduct verkoopProduct = new VerkoopProduct(e.getId_verkoopproduct(), e.getOnline_beschikbaar(), e.getOnline_laatst_aangemaakt(),
+                    "Geen code opgegeven", verkoopproductgroep, prefix, label, convertVerpakkingsEenheid(e.getId_verpakkingseenheid()), convertVerpakkingsEenheid(e.getId_verpakkingseenheid2()), e.getAantal_stuks_verpakking(),
+                    verpakkingBarcode, e.getAantal_verpakkingen_colli(), colliBarcode, e.getAantal_collis_pallet(), palletBarcode,
+                    vermeldingLeveringsbon, gewicht, hoogte, lengte, breedte, diameter, kleurOmschrijving, afwerkingOmschrijving, percentage, e.getHuidige_verkoopprijs1(), Eenheid.values()[e.getId_verkoopeenheid()],
+                    variantGroep, optieGroep, micro, lotnummerType, lotnummerDrager, lotnummerAanbrenger, productBeschrijving, gebruiksAanwijzing, marge, distributieWijze, ingredienten);
+            
+            newVerkoopProducten.add(verkoopProduct);
+        });
+        
+        return newVerkoopProducten;
     }
 }

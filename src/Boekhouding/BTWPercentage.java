@@ -16,8 +16,8 @@ public class BTWPercentage implements New{
     public int BTWpercentageId;
     public String ExterneCode;
     public double Percentage;
-    public AlgemeneRekening AlgemeneRekeningAftrekbaar;
-    public AlgemeneRekening AlgemeneRekeningVerschuldigd;
+    public AlgemeneRekening AlgemeneRekeningAftrekbaarAlgemeneRekening;
+    public AlgemeneRekening AlgemeneRekeningVerschuldigdAlgemeneRekening;
     public boolean Blokkeren;
 
     public BTWPercentage() {
@@ -27,8 +27,8 @@ public class BTWPercentage implements New{
         this.BTWpercentageId = BTWpercentageId;
         this.ExterneCode = ExterneCode;
         this.Percentage = Percentage;
-        this.AlgemeneRekeningAftrekbaar = AlgemeneRekeningAftrekbaar;
-        this.AlgemeneRekeningVerschuldigd = AlgemeneRekeningVerschuldigd;
+        this.AlgemeneRekeningAftrekbaarAlgemeneRekening = AlgemeneRekeningAftrekbaar;
+        this.AlgemeneRekeningVerschuldigdAlgemeneRekening = AlgemeneRekeningVerschuldigd;
         this.Blokkeren = Blokkeren;
     }
 
@@ -56,20 +56,20 @@ public class BTWPercentage implements New{
         this.Percentage = Percentage;
     }
 
-    public AlgemeneRekening getAlgemeneRekeningAftrekbaar() {
-        return AlgemeneRekeningAftrekbaar;
+    public AlgemeneRekening getAlgemeneRekeningAftrekbaarAlgemeneRekening() {
+        return AlgemeneRekeningAftrekbaarAlgemeneRekening;
     }
 
-    public void setAlgemeneRekeningAftrekbaar(AlgemeneRekening AlgemeneRekeningAftrekbaar) {
-        this.AlgemeneRekeningAftrekbaar = AlgemeneRekeningAftrekbaar;
+    public void setAlgemeneRekeningAftrekbaarAlgemeneRekening(AlgemeneRekening AlgemeneRekeningAftrekbaarAlgemeneRekening) {
+        this.AlgemeneRekeningAftrekbaarAlgemeneRekening = AlgemeneRekeningAftrekbaarAlgemeneRekening;
     }
 
-    public AlgemeneRekening getAlgemeneRekeningVerschuldigd() {
-        return AlgemeneRekeningVerschuldigd;
+    public AlgemeneRekening getAlgemeneRekeningVerschuldigdAlgemeneRekening() {
+        return AlgemeneRekeningVerschuldigdAlgemeneRekening;
     }
 
-    public void setAlgemeneRekeningVerschuldigd(AlgemeneRekening AlgemeneRekeningVerschuldigd) {
-        this.AlgemeneRekeningVerschuldigd = AlgemeneRekeningVerschuldigd;
+    public void setAlgemeneRekeningVerschuldigdAlgemeneRekening(AlgemeneRekening AlgemeneRekeningVerschuldigdAlgemeneRekening) {
+        this.AlgemeneRekeningVerschuldigdAlgemeneRekening = AlgemeneRekeningVerschuldigdAlgemeneRekening;
     }
 
     public boolean isBlokkeren() {

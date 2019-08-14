@@ -6,6 +6,7 @@
 package Producten;
 
 import New.New;
+import java.math.BigDecimal;
 
 /**
  *
@@ -14,13 +15,13 @@ import New.New;
 public class VerkoopsBarcode implements New{
 
     public int VerkoopsBarcodeId;
-    public long GTIN;
+    public BigDecimal GTIN;
     public boolean Afdrukken;
 
     public VerkoopsBarcode() {
     }
 
-    public VerkoopsBarcode(int VerkoopsBarcodeId, long GTIN, boolean Afdrukken) {
+    public VerkoopsBarcode(int VerkoopsBarcodeId, BigDecimal GTIN, boolean Afdrukken) {
         this.VerkoopsBarcodeId = VerkoopsBarcodeId;
         this.GTIN = GTIN;
         this.Afdrukken = Afdrukken;
@@ -34,11 +35,11 @@ public class VerkoopsBarcode implements New{
         this.VerkoopsBarcodeId = VerkoopsBarcodeId;
     }
 
-    public long getGTIN() {
+    public BigDecimal getGTIN() {
         return GTIN;
     }
 
-    public void setGTIN(long GTIN) {
+    public void setGTIN(BigDecimal GTIN) {
         this.GTIN = GTIN;
     }
 

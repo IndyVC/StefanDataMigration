@@ -19,9 +19,9 @@ public class BarcodePrefix implements New{
 
     public Omschrijving Omschrijving;
 
-    public int PositiesArtikelcode;
+    public String PositiesArtikelcode;
 
-    public int PositiesVerkoopprijs;
+    public String PositiesVerkoopprijs;
 
     public int Invoeggetal;
 
@@ -30,7 +30,7 @@ public class BarcodePrefix implements New{
     public BarcodePrefix() {
     }
 
-    public BarcodePrefix(int BarcodePrefixId, int Prefix, Omschrijving Omschrijving, int PositiesArtikelcode, int PositiesVerkoopprijs, int Invoeggetal, boolean Extern) {
+    public BarcodePrefix(int BarcodePrefixId, int Prefix, Omschrijving Omschrijving, String PositiesArtikelcode, String PositiesVerkoopprijs, int Invoeggetal, boolean Extern) {
         this.BarcodePrefixId = BarcodePrefixId;
         this.Prefix = Prefix;
         this.Omschrijving = Omschrijving;
@@ -64,19 +64,19 @@ public class BarcodePrefix implements New{
         this.Omschrijving = Omschrijving;
     }
 
-    public int getPositiesArtikelcode() {
+    public String getPositiesArtikelcode() {
         return PositiesArtikelcode;
     }
 
-    public void setPositiesArtikelcode(int PositiesArtikelcode) {
+    public void setPositiesArtikelcode(String PositiesArtikelcode) {
         this.PositiesArtikelcode = PositiesArtikelcode;
     }
 
-    public int getPositiesVerkoopprijs() {
+    public String getPositiesVerkoopprijs() {
         return PositiesVerkoopprijs;
     }
 
-    public void setPositiesVerkoopprijs(int PositiesVerkoopprijs) {
+    public void setPositiesVerkoopprijs(String PositiesVerkoopprijs) {
         this.PositiesVerkoopprijs = PositiesVerkoopprijs;
     }
 

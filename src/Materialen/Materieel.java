@@ -30,35 +30,22 @@ public class Materieel implements New {
 
     public int MaterieelId;
     public Materieelgroep Materieelgroep;
-
     public boolean MoetGekeurdWorden;
-
     public Date LaatsteKeuring;
     public Date VolgendeKeuring;
-
     public Omschrijving Omschrijving;
-
     public Leverancier Leverancier;
-
     public String GebruiksaanwijzingBestand;
-
     public String VeiligheidsficheBestand;
-
     public String TechnischeKeuringBestand;
-
     public String OnderhoudsschemaBestand;
-
     public String IngebruikstellingBestand;
-
     public String Foto;
-
     public boolean Blokkeren;
-
     public String Gebruiksaanwijzing;
-
     public String Veiligheidsfiche;
-
     public Onderhoud Onderhoud;
+    
     public List<BasisProductMaterieel> MaterieelBasisProducten;
     public List<AfgewerktProductMaterieel> MaterieelAfgewerktProducten;
     public List<VerkoopProductMaterieel> MaterieelVerkoopProducten;
