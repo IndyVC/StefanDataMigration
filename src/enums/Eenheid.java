@@ -10,5 +10,5 @@ package enums;
  * @author stefa
  */
 public enum Eenheid {
-    Kilogram, Gram, Milliliter, Liter, Stuk, PerPersoon, Minuten, Meter, Milligram, Kilocalorie, Kolijoule;
+    Kilogram, Gram, Milliliter, Liter, Stuk, PerPersoon, Minuten, Meter, Milligram, Kilocalorie, Kolijoule,Centimeter,NietGespecifieerd;
 }

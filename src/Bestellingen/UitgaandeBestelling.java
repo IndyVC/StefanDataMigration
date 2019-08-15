@@ -6,7 +6,7 @@
 package Bestellingen;
 
 import New.New;
-import Producten.ReceptProduct;
+import Producten.AankoopProduct;
 import enums.Eenheid;
 import enums.VerpakkingsEenheid;
 import java.sql.Date;
@@ -31,12 +31,14 @@ public class UitgaandeBestelling implements New {
     public double Eenheidsgewicht;
     public double Totaal;
     public double GeleverdeHoeveelheid;
-    public ReceptProduct ReceptProduct;
+    public AankoopProduct AankoopProduct;
+    public boolean Geleverd;
+    public boolean InOpmaak;
     
     public UitgaandeBestelling() {
     }
 
-    public UitgaandeBestelling(int UitgaandeBestellingId, Date DatumBestelbon, Date DatumGewensteLevering, String Opmerking, boolean Afgewerkt, int Volgnummer, double Hoeveelheid, VerpakkingsEenheid Eenheid, double Eenheidsprijs, double AantalEenhedenVerpakking, double AantalVerpakkingenColi, double Eenheidsgewicht, double Totaal, double GeleverdeHoeveelheid, ReceptProduct ReceptProduct) {
+    public UitgaandeBestelling(int UitgaandeBestellingId, Date DatumBestelbon, Date DatumGewensteLevering, String Opmerking, boolean Afgewerkt, int Volgnummer, double Hoeveelheid, VerpakkingsEenheid VerpakkingsEenheid, double Eenheidsprijs, double AantalEenhedenVerpakking, double AantalVerpakkingenColi, double Eenheidsgewicht, double Totaal, double GeleverdeHoeveelheid, AankoopProduct AankoopProduct, boolean Geleverd, boolean InOpmaak) {
         this.UitgaandeBestellingId = UitgaandeBestellingId;
         this.DatumBestelbon = DatumBestelbon;
         this.DatumGewensteLevering = DatumGewensteLevering;
@@ -44,15 +46,35 @@ public class UitgaandeBestelling implements New {
         this.Afgewerkt = Afgewerkt;
         this.Volgnummer = Volgnummer;
         this.Hoeveelheid = Hoeveelheid;
-        this.VerpakkingsEenheid = Eenheid;
+        this.VerpakkingsEenheid = VerpakkingsEenheid;
         this.Eenheidsprijs = Eenheidsprijs;
         this.AantalEenhedenVerpakking = AantalEenhedenVerpakking;
         this.AantalVerpakkingenColi = AantalVerpakkingenColi;
         this.Eenheidsgewicht = Eenheidsgewicht;
         this.Totaal = Totaal;
         this.GeleverdeHoeveelheid = GeleverdeHoeveelheid;
-        this.ReceptProduct = ReceptProduct;
+        this.AankoopProduct = AankoopProduct;
+        this.Geleverd = Geleverd;
+        this.InOpmaak = InOpmaak;
     }
+
+    public boolean isGeleverd() {
+        return Geleverd;
+    }
+
+    public void setGeleverd(boolean Geleverd) {
+        this.Geleverd = Geleverd;
+    }
+
+    public boolean isInOpmaak() {
+        return InOpmaak;
+    }
+
+    public void setInOpmaak(boolean InOpmaak) {
+        this.InOpmaak = InOpmaak;
+    }
+
+   
 
     public int getUitgaandeBestellingId() {
         return UitgaandeBestellingId;
@@ -166,15 +188,25 @@ public class UitgaandeBestelling implements New {
         this.GeleverdeHoeveelheid = GeleverdeHoeveelheid;
     }
 
-    public ReceptProduct getReceptProduct() {
-        return ReceptProduct;
+    public VerpakkingsEenheid getVerpakkingsEenheid() {
+        return VerpakkingsEenheid;
     }
 
-    public void setReceptProduct(ReceptProduct ReceptProduct) {
-        this.ReceptProduct = ReceptProduct;
+    public void setVerpakkingsEenheid(VerpakkingsEenheid VerpakkingsEenheid) {
+        this.VerpakkingsEenheid = VerpakkingsEenheid;
     }
 
-    
+    public AankoopProduct getAankoopProduct() {
+        return AankoopProduct;
+    }
+
+    public void setAankoopProduct(AankoopProduct AankoopProduct) {
+        this.AankoopProduct = AankoopProduct;
+    }
+
+  
+
+  
     @Override
     public void setId(int id) {
         this.UitgaandeBestellingId = id;

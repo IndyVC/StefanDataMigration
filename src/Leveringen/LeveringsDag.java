@@ -6,7 +6,6 @@
 package Leveringen;
 
 import New.New;
-import TussenTabellen.LeverancierLeveringsDag;
 import enums.DayOfWeek;
 import java.util.List;
 

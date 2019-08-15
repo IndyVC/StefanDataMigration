@@ -20,18 +20,16 @@ public class FysischeEigenschap implements New{
     public double FysischeEigenschapDoel;
     public Eenheid FysischeEigenschapEenheid;
     public double FysischeEigenschapVariatie;
-    public BasisProduct BasisProduct;
 
     public FysischeEigenschap() {
     }
 
-    public FysischeEigenschap(int FysischeEigenschapId, SoortFysischeEigenschap SoortFysischeEigenschap, double FysischeEigenschapDoel, Eenheid FysischeEigenschapEenheid, double FysischeEigenschapVariatie, BasisProduct BasisProduct) {
+    public FysischeEigenschap(int FysischeEigenschapId, SoortFysischeEigenschap SoortFysischeEigenschap, double FysischeEigenschapDoel, Eenheid FysischeEigenschapEenheid, double FysischeEigenschapVariatie) {
         this.FysischeEigenschapId = FysischeEigenschapId;
         this.SoortFysischeEigenschap = SoortFysischeEigenschap;
         this.FysischeEigenschapDoel = FysischeEigenschapDoel;
         this.FysischeEigenschapEenheid = FysischeEigenschapEenheid;
         this.FysischeEigenschapVariatie = FysischeEigenschapVariatie;
-        this.BasisProduct = BasisProduct;
     }
 
     public int getFysischeEigenschapId() {
@@ -72,14 +70,6 @@ public class FysischeEigenschap implements New{
 
     public void setFysischeEigenschapVariatie(double FysischeEigenschapVariatie) {
         this.FysischeEigenschapVariatie = FysischeEigenschapVariatie;
-    }
-
-    public BasisProduct getBasisProduct() {
-        return BasisProduct;
-    }
-
-    public void setBasisProduct(BasisProduct BasisProduct) {
-        this.BasisProduct = BasisProduct;
     }
 
     @Override

@@ -60,6 +60,7 @@ import Producten.VerkoopProductGroep;
 import Producten.VerkoopsBarcode;
 import Producten.Verkoopsverdeelgroep;
 import Producten.Verkoopsverpakking;
+import Producten.VoorbereidProduct;
 import Producten.VoorstellingOpProductielijst;
 import Tracering.LotnummerAanbrenger;
 import Tracering.LotnummerDrager;
@@ -143,11 +144,13 @@ public class Export {
     private static List<Winstmarge> newWinstmarges;
     private static List<DistributieWijze> newDistributiewijzes;
     private static List<VerkoopProduct> newVerkoopProducten;
+    private static List<VoorbereidProduct> newVoorbereideProducten;
+    private static List<Job> newJobs;
 
     public static void export() {
         Import.readOld();
 
-        System.out.println("EXPORT BBANK");
+        System.out.println("EXPORT BANK");
         exportBanken(); //done
         System.out.println("EXPORT BEDRIJF");
         exportBedrijf(); //done
@@ -157,8 +160,6 @@ public class Export {
         exportReceptProducten(); // |T|DONE             RECEPT PRODUCT NOG OPVULLEN: ReceptProductTaken; ReceptProductMaterielen;       MATERIEEL EN TAKEN KAN NIET GEVONDEN WORDEN? //Tot nu toe blijven dze leeg, associaties mss verkeerd 
         System.out.println("EXPORT BESTELVOORSTELLEN");
         exportBestelvoorstellen(); //done
-        System.out.println("EXPORT BESTELBONNEN EN UITGAANDEBESTELLINGEN");
-        exportBestelbonnenUitgaandeBestellingen(); //done
         System.out.println("EXPORT LEVERANCIERSGROEPEN");
         exportLeveranciersGroepen(); //done
         System.out.println("EXPORT BETALINGSVOORWAARDES");
@@ -187,6 +188,8 @@ public class Export {
         exportProductcategorieën(); //done
         System.out.println("EXPORT AANKOOPPRODUCTEN");
         exportAankoopproducten(); //AANKOOPPRODUCT NOG OPVULLEN: AankoopProductenVerkoopProducten;
+        System.out.println("EXPORT UITGAANDEBESTELLINGEN");
+        //TOO LONG! exportBestelbonnenUitgaandeBestellingen();
         System.out.println("EXPORT BASISRECEPTEN");
         exportBasisRecepten();  //BASIS RECEPT NOG OPVULLEN: Jobs; BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten; 
         System.out.println("EXPORT MATERIEELGROEPEN");
@@ -239,6 +242,9 @@ public class Export {
         exportDistributiewijzes(); //done
         System.out.println("EXPORT VERKOOPPRODUCT");
         exportVerkoopProducten(); //VERKOOPPRODUCT NOG OPVULLEN: GoedgekeurdeIngaves; VerkoopProductAankoopProduct; VerkoopProductBasisRecepten; VerkoopProductTaken; VerkoopProductMaterielen;
+        System.out.println("EXPORT VOORBEREIDEPRODUCTEN");
+        exportVoorbereideProducten(); //VOORBEREIDPRODUCT NOG OPVULLEN: VoorbereidProductBasisRecepten; VoorbereidProductTaken; VoorbereidProductMaterielen;
+
     }
 
     public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {
@@ -362,15 +368,6 @@ public class Export {
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, true, true);
         DB.insert(newReceptProducten, "ReceptProducten", ReceptProduct.class, true, false);
-    }
-
-    //EERSTE KEER UITGAANDEBESTELLING EN BESTELBON
-    public static void exportBestelbonnenUitgaandeBestellingen() {
-        newUitgaandBestellingen = Mapper.oldBestelbonDetailsToNewUitgaandeBestelling();
-        newBestelbonnen = Mapper.oldBestelbonHoofdingToNewBestelbon();
-
-        DB.insert(newUitgaandBestellingen, "UitgaandeBestellingen", UitgaandeBestelling.class, true, true);
-        DB.insert(newBestelbonnen, "Bestelbonnen", Bestelbon.class, true, false);
     }
 
     //EERSTE KEER LEVERANCIERSGROEPEN
@@ -626,6 +623,15 @@ public class Export {
 
     }
 
+    //EERSTE KEER UITGAANDEBESTELLING EN BESTELBON
+    public static void exportBestelbonnenUitgaandeBestellingen() {
+        newUitgaandBestellingen = Mapper.oldBestelbonDetailsToNewUitgaandeBestelling();
+        newBestelbonnen = Mapper.oldBestelbonHoofdingToNewBestelbon();
+
+        DB.insert(newUitgaandBestellingen, "UitgaandeBestellingen", UitgaandeBestelling.class, true, true);
+        DB.insert(newBestelbonnen, "Bestelbonnen", Bestelbon.class, true, false);
+    }
+
     //EERSTE KEER AANKOOPPRODUCTEN
     private static void exportAankoopproducten() {
         newAankoopproducten = Mapper.oldAankoopproductToNewAankoopproduct();
@@ -679,6 +685,16 @@ public class Export {
 
         DB.insert(tussen, "VestigingAankoopProduct", VestigingAankoopProduct.class, true, true);
 
+//        Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList()).forEach(e -> {
+//
+//            AankoopProduct aankoopProduct = newAankoopproducten.stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(null);
+//            UitgaandeBestelling uitgaandeBestelling = newUitgaandBestellingen.stream().filter(t -> t.getId() == e.getId_bestelbon()).findFirst().orElse(null);
+//            if (uitgaandeBestelling != null && aankoopProduct != null) {
+//                uitgaandeBestelling.setAankoopProduct(aankoopProduct);
+//                String query = String.format("UPDATE UitgaandeBestellingen SET AankoopProductId = %d WHERE UitgaandeBestellingId = %d", aankoopProduct.getId(), uitgaandeBestelling.getId());
+//                DB.executeCustomQuery(query);
+//            }
+//        });
     }
 
     // EERSTE KEER BASISRECEPTEN + Tussen tabel receptproduct-basisrecept
@@ -865,6 +881,8 @@ public class Export {
             onrechtstreekseKosten.add(e.getOnrechtstreekseKost());
         });
 
+        newJobs = jobs;
+
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
         DB.insert(removeDuplicates(receptGroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
@@ -1031,8 +1049,18 @@ public class Export {
         DB.insert(newDistributiewijzes, "DistributieWijzes", DistributieWijze.class, true, false);
     }
 
+    //EERSTE KEER FYSISCHE EIGENSCHAP, VERKOOPSBARCODE EN VERKOOPPRODUCTEN
     public static void exportVerkoopProducten() {
         newVerkoopProducten = Mapper.oldVerkoopProductenToNewVerkoopProducten();
+        List<Productiegroep> productiegroepen = new ArrayList<>(); //NIET eerste keer has ID
+        List<VoorraadProduct> voorraadProducten = new ArrayList();// NIET eerste keer NO ID
+        List<VoorraadPlaats> voorraadPlaatsen = new ArrayList();// NIET eerste keer has id
+        List<Etiket> etiketten = new ArrayList();// NIET eerste keer has id
+        List<Bewaarconditie> bewaarcondities = new ArrayList(); //NIET eerste keer has ID
+        List<BewaarTemperatuur> bewaarTemperaturen = new ArrayList(); // NIET eerste keer has id
+        List<Job> jobs = new ArrayList(); //NIET eerste keer NO id
+        List<VasteKost> vasteKosten = new ArrayList(); //NIET eerste keer has id
+        List<OnrechtstreekseKost> onrechtstreekseKosten = new ArrayList(); //NIET eerste keer has id
         List<VerkoopProductGroep> verkoopProductenGroepen = new ArrayList(); //has id
         List<BarcodePrefix> barcodePrefixen = new ArrayList(); //has id
         List<PrivateLabel> privateLabels = new ArrayList(); //has Id
@@ -1051,6 +1079,17 @@ public class Export {
         List<DistributieWijze> distributiewijzes = new ArrayList(); //has id
 
         newVerkoopProducten.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            omschrijvingen.add(e.getBereidingswijzeOmschrijving());
+            productiegroepen.add(e.getProductiegroep());
+            voorraadProducten.add(e.getVoorraadProduct());
+            voorraadPlaatsen.add(e.getVoorraadPlaats());
+            etiketten.add(e.getVoorraadEtiketEtiket());
+            bewaarcondities.add(e.getBewaarConditie());
+            bewaarTemperaturen.add(e.getBewaarTemperatuur());
+            jobs.add(e.getJob());
+            vasteKosten.add(e.getVasteKost());
+            onrechtstreekseKosten.add(e.getOnrechtstreekseKost());
             verkoopProductenGroepen.add(e.getVerkoopProductGroep());
             barcodePrefixen.add(e.getBarcodePrefix());
             privateLabels.add(e.getPrivateLabel());
@@ -1078,6 +1117,15 @@ public class Export {
             distributiewijzes.add(e.getDistributieWijze());
             omschrijvingen.add(e.getIngrediëntenOmschrijving());
         });
+        DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
+        DB.insert(deleteDuplicates(voorraadProducten), "VoorraadProducten", VoorraadProduct.class, false, true);
+        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
+        DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
+        DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
+        DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
+        DB.insert(removeDuplicates(jobs, newJobs), "Jobs", Job.class, false, true);
+        DB.insert(removeDuplicates(vasteKosten, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
+        DB.insert(removeDuplicates(onrechtstreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(verkoopProductenGroepen, newVerkoopProductgroep), "VerkoopProductGroepen", VerkoopProductGroep.class, false, false);
         DB.insert(removeDuplicates(barcodePrefixen, newBarcodePrefixen), "BarcodePrefixes", BarcodePrefix.class, false, false);
@@ -1093,9 +1141,60 @@ public class Export {
         DB.insert(removeDuplicates(lotnummerAanbrengers, newLotnummerAanbrengers), "LotnummerAanbrengers", LotnummerAanbrenger.class, false, false);
         DB.insert(removeDuplicates(winstmarges, newWinstmarges), "Winstmarges", Winstmarge.class, false, false);
         DB.insert(removeDuplicates(distributiewijzes, newDistributiewijzes), "DistributieWijzes", DistributieWijze.class, false, false);
-    
+
         DB.insert(newVerkoopProducten, "VerkoopProduct", VerkoopProduct.class, true, false);
-        
+
+    }
+
+    //EERSTE KEER VOORBEREIDPRODUCT
+    public static void exportVoorbereideProducten() {
+        newVoorbereideProducten = Mapper.oldVoorbereidProductToNewVoorbereidProduct();
+        List<Omschrijving> omschrijvingen = new ArrayList(); //no id
+        List<Productiegroep> productiegroepen = new ArrayList(); //has id
+        List<Receptgroep> receptgroepen = new ArrayList(); // has id
+        List<VoorraadProduct> voorraadProducten = new ArrayList(); //no id
+        List<VoorraadPlaats> voorraadPlaatsen = new ArrayList(); //has id
+        List<Etiket> etiketten = new ArrayList(); //has id
+        List<Bewaarconditie> bewaarcondities = new ArrayList(); // has id
+        List<BewaarTemperatuur> bewaarTemperaturen = new ArrayList(); //has id
+        List<VoorstellingOpProductielijst> voorstellingen = new ArrayList(); //no id
+        List<Job> jobs = new ArrayList(); // no id
+        List<Verkoopsverpakking> verkoopverpakking = new ArrayList(); //has id
+        List<VasteKost> vasteKosten = new ArrayList(); //has id
+        List<OnrechtstreekseKost> onrechtstreekseKosten = new ArrayList(); //has id
+
+        newVoorbereideProducten.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            omschrijvingen.add(e.getBereidingswijzeOmschrijving());
+            productiegroepen.add(e.getProductiegroep());
+            receptgroepen.add(e.getReceptgroep());
+            voorraadPlaatsen.add(e.getVoorraadplaats());
+            voorraadProducten.add(e.getVoorraadProduct());
+            etiketten.add(e.getVerdeelEtiketEtiket());
+            bewaarcondities.add(e.getBewaarconditie());
+            bewaarTemperaturen.add(e.getBewaarTemperatuur());
+            voorstellingen.add(e.getVoorstellingOpProductielijst());
+            jobs.add(e.getJob());
+            verkoopverpakking.add(e.getVerkoopsverpakking());
+            vasteKosten.add(e.getVasteKost());
+            onrechtstreekseKosten.add(e.getOnrechtstreekseKost());
+        });
+
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
+        DB.insert(removeDuplicates(receptgroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
+        DB.insert(deleteDuplicates(voorraadProducten), "VoorraadProducten", VoorraadProduct.class, false, true);
+        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
+        DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
+        DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
+        DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
+        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
+        DB.insert(removeDuplicates(jobs, newJobs), "Jobs", Job.class, false, false);
+        DB.insert(removeDuplicates(verkoopverpakking, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
+        DB.insert(removeDuplicates(vasteKosten, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
+        DB.insert(removeDuplicates(onrechtstreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
+
+        DB.insert(newVoorbereideProducten, "VoorbereidProduct", VoorbereidProduct.class, true, false);
     }
 
 }

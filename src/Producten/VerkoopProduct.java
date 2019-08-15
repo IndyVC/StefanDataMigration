@@ -5,16 +5,22 @@
  */
 package Producten;
 
+import Algemeen.ExcelLocatie;
 import java.sql.Date;
 
 import Algemeen.Omschrijving;
 import Bedrijven.PrivateLabel;
 import Boekhouding.BTWPercentage;
+import Boekhouding.OnrechtstreekseKost;
+import Boekhouding.VasteKost;
 import Boekhouding.Winstmarge;
 import Materialen.BarcodePrefix;
+import Materialen.Etiket;
 import Materialen.Verpakking;
 import New.New;
 import Producten.Recepten.BasisRecept;
+import Producten.Recepten.Job;
+import Producten.Recepten.Receptgroep;
 import Producten.Recepten.Taak;
 import Tracering.LotnummerAanbrenger;
 import Tracering.LotnummerDrager;
@@ -23,6 +29,10 @@ import TussenTabellen.AankoopProductVerkoopProduct;
 import TussenTabellen.VerkoopProductBasisRecept;
 import TussenTabellen.VerkoopProductMaterieel;
 import TussenTabellen.VerkoopProductTaak;
+import Voorraden.BewaarTemperatuur;
+import Voorraden.Bewaarconditie;
+import Voorraden.VoorraadPlaats;
+import Voorraden.VoorraadProduct;
 import enums.Eenheid;
 import enums.VerpakkingsEenheid;
 import java.util.ArrayList;
@@ -41,8 +51,8 @@ public class VerkoopProduct implements New {
     public VerkoopProductGroep VerkoopProductGroep;
     public BarcodePrefix BarcodePrefix;
     public PrivateLabel PrivateLabel;
-    public VerpakkingsEenheid PrimaireVerpakkingVerpakking;
-    public VerpakkingsEenheid SecundaireVerpakkingVerpakking;
+    public VerpakkingsEenheid PrimaireVerpakking;
+    public VerpakkingsEenheid SecundaireVerpakking;
     public int StuksPerVerpakking;
     public VerkoopsBarcode VerpakkingsBarcodeVerkoopsBarcode;
     public int VerpakkingenPerColli;
@@ -71,71 +81,444 @@ public class VerkoopProduct implements New {
     public Winstmarge Winstmarge;
     public DistributieWijze DistributieWijze;
     public Omschrijving IngrediëntenOmschrijving;
+    private String ExterneCode;
+    private Omschrijving Omschrijving;
+    private Productiegroep Productiegroep;
+    private Receptgroep Receptgroep;
+    private Eenheid Recepteenheid;
+    private boolean MoetGewogenWorden;
+    private double MaximumWeeggewicht;
+    private double RelatieveMarge;
+    private double AbsoluteMarge;
+    private double BasisKostPerEenheid;
+    private double Eenheidsgewicht;
+    private Eenheid GewichtEenheid;
+    private boolean Goedgekeurd;
+    private boolean DagProductie;
+    private VoorraadProduct VoorraadProduct;
+    private VoorraadPlaats VoorraadPlaats;
+    private String ExtraVermeldingVoorraadPlaats;
+    private double MinimumVoorraad;
+    private double MaximumVoorraad;
+    private boolean EtiketAfdrukken;
+    private Etiket VoorraadEtiketEtiket;
+    private int EenhedenPerEtiket;
+    private Etiket VerdeelEtiketEtiket;
+    private Bewaarconditie BewaarConditie;
+    private BewaarTemperatuur BewaarTemperatuur;
+    private int MinimumAantalDagenHoudbaar;
+    private Omschrijving BereidingswijzeOmschrijving;
+    private String Foto;
+    private ExcelLocatie ExcelLocatie;
+    private VoorstellingOpProductielijst VoorstellingOpProductielijst;
+    private boolean ReceptWijzigbaar;
+    private Job Job;
+    private Verkoopsverpakking VerkoopsVerpaking;
+    private boolean Blokkeren;
+    private OnrechtstreekseKost OnrechtstreekseKost;
+    private VasteKost VasteKost;
 
+    
     public List<GoedgekeurdeIngave> GoedgekeurdeIngaves;
     public List<AankoopProductVerkoopProduct> VerkoopProductAankoopProduct;
 
     public List<VerkoopProductBasisRecept> VerkoopProductBasisRecepten;
     public List<VerkoopProductTaak> VerkoopProductTaken;
     public List<VerkoopProductMaterieel> VerkoopProductMaterielen;
-
+     
     public VerkoopProduct() {
     }
 
-    public VerkoopProduct(int VerkoopProductId, boolean OnlineBeschikbaar, Date OnlineLaatstAangemaakt, String GelinktMetCode, VerkoopProductGroep VerkoopProductGroep, BarcodePrefix BarcodePrefix, PrivateLabel PrivateLabel, VerpakkingsEenheid PrimaireVerpakkingVerpakking, VerpakkingsEenheid SecundaireVerpakkingVerpakking, int StuksPerVerpakking, VerkoopsBarcode VerpakkingsBarcodeVerkoopsBarcode, int VerpakkingenPerColli, VerkoopsBarcode ColliBarcodeVerkoopsBarcode, int CollisPerPallet, VerkoopsBarcode PalletBarcodeVerkoopsBarcode, Verkoopsverpakking VermeldingLeveringsbonVerkoopsverpakking, FysischeEigenschap GewichtFysischeEigenschap, FysischeEigenschap HoogteFysischeEigenschap, FysischeEigenschap LengteFysischeEigenschap, FysischeEigenschap BreedteFysischeEigenschap, FysischeEigenschap DiameterFysischeEigenschap, Omschrijving KleurOmschrijving, Omschrijving AfwerkingOmschrijving, BTWPercentage BTWpercentage, double Verkoopprijs, Eenheid Verkoopeenheid, VariantGroep VariantGroep, OptieGroep OptieGroep, MicrobiologischeParameter MicroBiologischeParameter, LotnummerType LotnummerType, LotnummerDrager LotnummerDrager, LotnummerAanbrenger LotnummerAanbrenger, Omschrijving ProductBeschrijvingOmschrijving, Omschrijving GebruiksaanwijzingOmschrijving, Winstmarge Winstmarge, DistributieWijze DistributieWijze, Omschrijving IngrediëntenOmschrijving) {
+    public VerkoopProduct(int VerkoopProductid, String externeCode, Omschrijving omschrijving, Productiegroep productiegroep, Receptgroep receptgroep, Eenheid recepteenheid, boolean moetGewogenWorden, double maximumWeeggewicht,
+            double relativeMarge, double absoluteMarge, double basiskostPerEenheid, double eenheidsgewicht, Eenheid gewichtEenheid, boolean goedgekeurd, boolean dagProductie, VoorraadProduct voorraadproduct, VoorraadPlaats voorraadplaats,
+            String extraVermeldingVoorraadPlaats, double minimumVoorraad, double maximumVoorraad, boolean etiketAfdrukken, Etiket voorraadEtiket, int eenhedenPerEtiket, Etiket verdeelEtiket, Bewaarconditie bewaarconditie,
+            BewaarTemperatuur bewaartemperatuur, int minimumAantalHoudbaar, Omschrijving bereidingswijze, String foto, ExcelLocatie excelLocatie, VoorstellingOpProductielijst voorstellingOpProductielijst, boolean receptWijzigbaar, Job job,
+            Verkoopsverpakking verkoopsverpakking, VasteKost vasteKost, OnrechtstreekseKost onrechtstreekseKost, boolean blokkeren, boolean onlineBeschikbaar, Date onlineLaatstAangemaakt, String gelinktMetCode, VerkoopProductGroep verkoopProductGroep,
+            BarcodePrefix barcodePrefix, PrivateLabel privateLabel, VerpakkingsEenheid primaireVerpakking, VerpakkingsEenheid secundaireVerpakking, int stuksPerVerpakking, VerkoopsBarcode verpakkingsBarcode, int verpakkingenPerColli,
+            VerkoopsBarcode colliBarcode, int collisPerPallet, VerkoopsBarcode palletBarcode, Verkoopsverpakking vermeldingLeveringsbon, FysischeEigenschap gewicht, FysischeEigenschap hoogte, FysischeEigenschap lengte, FysischeEigenschap breedte,
+            FysischeEigenschap diameter, Omschrijving kleur, Omschrijving afwerking, BTWPercentage btwPercentage, double verkoopprijs, Eenheid verkoopeenheid, VariantGroep variantGroep, OptieGroep optieGroep,
+            MicrobiologischeParameter microBiologischeParameter, LotnummerType lotnummerType, LotnummerDrager lotnummerDrager, LotnummerAanbrenger lotnummerAanbrenger, Omschrijving productBeschrijving, Omschrijving gebruiksaanwijzing,
+            Winstmarge winstMarge, DistributieWijze distributieWijze, Omschrijving ingrediënten) {
+
+        this.ExterneCode = externeCode;
+        this.Omschrijving = omschrijving;
+        this.Productiegroep = productiegroep;
+        this.Receptgroep = receptgroep;
+        this.Recepteenheid = recepteenheid;
+        this.MoetGewogenWorden = moetGewogenWorden;
+        this.MaximumWeeggewicht = maximumWeeggewicht;
+        this.RelatieveMarge = relativeMarge;
+        this.AbsoluteMarge = absoluteMarge;
+        this.BasisKostPerEenheid = basiskostPerEenheid;
+        this.Eenheidsgewicht = eenheidsgewicht;
+        this.GewichtEenheid = gewichtEenheid;
+        this.Goedgekeurd = goedgekeurd;
+        this.DagProductie = dagProductie;
+        this.VoorraadProduct = voorraadproduct;
+        this.VoorraadPlaats = voorraadplaats;
+        this.ExtraVermeldingVoorraadPlaats = extraVermeldingVoorraadPlaats;
+        this.MinimumVoorraad = minimumVoorraad;
+        this.MaximumVoorraad = maximumVoorraad;
+        this.EtiketAfdrukken = etiketAfdrukken;
+        this.VoorraadEtiketEtiket = voorraadEtiket;
+        this.EenhedenPerEtiket = eenhedenPerEtiket;
+        this.VerdeelEtiketEtiket = verdeelEtiket;
+        this.BewaarConditie = bewaarconditie;
+        this.BewaarTemperatuur = bewaartemperatuur;
+        this.MinimumAantalDagenHoudbaar = minimumAantalHoudbaar;
+        this.BereidingswijzeOmschrijving = bereidingswijze;
+        this.Foto = foto;
+        this.ExcelLocatie = excelLocatie;
+        this.VoorstellingOpProductielijst = voorstellingOpProductielijst;
+        this.ReceptWijzigbaar = receptWijzigbaar;
+        this.Job = job;
+        this.VerkoopsVerpaking = verkoopsverpakking;
+        this.VasteKost = vasteKost;
+        this.OnrechtstreekseKost = onrechtstreekseKost;
+        this.Blokkeren = blokkeren;
         this.VerkoopProductId = VerkoopProductId;
-        this.OnlineBeschikbaar = OnlineBeschikbaar;
-        this.OnlineLaatstAangemaakt = OnlineLaatstAangemaakt;
-        this.GelinktMetCode = GelinktMetCode;
-        this.VerkoopProductGroep = VerkoopProductGroep;
-        this.BarcodePrefix = BarcodePrefix;
-        this.PrivateLabel = PrivateLabel;
-        this.PrimaireVerpakkingVerpakking = PrimaireVerpakkingVerpakking;
-        this.SecundaireVerpakkingVerpakking = SecundaireVerpakkingVerpakking;
-        this.StuksPerVerpakking = StuksPerVerpakking;
+        this.OnlineBeschikbaar = onlineBeschikbaar;
+        this.OnlineLaatstAangemaakt = onlineLaatstAangemaakt;
+        this.GelinktMetCode = gelinktMetCode;
+        this.VerkoopProductGroep = verkoopProductGroep;
+        this.BarcodePrefix = barcodePrefix;
+        this.PrivateLabel = privateLabel;
+        this.PrimaireVerpakking = primaireVerpakking;
+        this.SecundaireVerpakking = secundaireVerpakking;
+        this.StuksPerVerpakking = stuksPerVerpakking;
         this.VerpakkingsBarcodeVerkoopsBarcode = VerpakkingsBarcodeVerkoopsBarcode;
-        this.VerpakkingenPerColli = VerpakkingenPerColli;
-        this.ColliBarcodeVerkoopsBarcode = ColliBarcodeVerkoopsBarcode;
-        this.CollisPerPallet = CollisPerPallet;
-        this.PalletBarcodeVerkoopsBarcode = PalletBarcodeVerkoopsBarcode;
-        this.VermeldingLeveringsbonVerkoopsverpakking = VermeldingLeveringsbonVerkoopsverpakking;
-        this.GewichtFysischeEigenschap = GewichtFysischeEigenschap;
-        this.HoogteFysischeEigenschap = HoogteFysischeEigenschap;
-        this.LengteFysischeEigenschap = LengteFysischeEigenschap;
-        this.BreedteFysischeEigenschap = BreedteFysischeEigenschap;
-        this.DiameterFysischeEigenschap = DiameterFysischeEigenschap;
-        this.KleurOmschrijving = KleurOmschrijving;
-        this.AfwerkingOmschrijving = AfwerkingOmschrijving;
-        this.BTWpercentage = BTWpercentage;
-        this.Verkoopprijs = Verkoopprijs;
-        this.Verkoopeenheid = Verkoopeenheid;
-        this.VariantGroep = VariantGroep;
-        this.OptieGroep = OptieGroep;
-        this.MicroBiologischeParameter = MicroBiologischeParameter;
-        this.LotnummerType = LotnummerType;
-        this.LotnummerDrager = LotnummerDrager;
-        this.LotnummerAanbrenger = LotnummerAanbrenger;
-        this.ProductBeschrijvingOmschrijving = ProductBeschrijvingOmschrijving;
-        this.GebruiksaanwijzingOmschrijving = GebruiksaanwijzingOmschrijving;
-        this.Winstmarge = Winstmarge;
-        this.DistributieWijze = DistributieWijze;
-        this.IngrediëntenOmschrijving = IngrediëntenOmschrijving;
+        this.VerpakkingenPerColli = verpakkingenPerColli;
+        this.ColliBarcodeVerkoopsBarcode = colliBarcode;
+        this.CollisPerPallet = collisPerPallet;
+        this.PalletBarcodeVerkoopsBarcode = palletBarcode;
+        this.VermeldingLeveringsbonVerkoopsverpakking = vermeldingLeveringsbon;
+        this.GewichtFysischeEigenschap = gewicht;
+        this.HoogteFysischeEigenschap = hoogte;
+        this.LengteFysischeEigenschap = lengte;
+        this.BreedteFysischeEigenschap = breedte;
+        this.DiameterFysischeEigenschap = diameter;
+        this.KleurOmschrijving = kleur;
+        this.AfwerkingOmschrijving=afwerking;
+        this.BTWpercentage = btwPercentage;
+        this.Verkoopprijs = verkoopprijs;
+        this.Verkoopeenheid = verkoopeenheid;
+        this.VariantGroep = variantGroep;
+        this.OptieGroep = optieGroep;
+        this.MicroBiologischeParameter= microBiologischeParameter;
+        this.LotnummerType=lotnummerType;
+        this.LotnummerDrager = lotnummerDrager;
+        this.LotnummerAanbrenger = lotnummerAanbrenger;
+        this.ProductBeschrijvingOmschrijving = productBeschrijving;
+        this.GebruiksaanwijzingOmschrijving=gebruiksaanwijzing;
+        this.Winstmarge=winstMarge;
+        this.DistributieWijze=distributieWijze;
+        this.IngrediëntenOmschrijving=ingrediënten;
+
     }
 
-    public VerpakkingsEenheid getPrimaireVerpakkingVerpakking() {
-        return PrimaireVerpakkingVerpakking;
+    public String getExterneCode() {
+        return ExterneCode;
     }
 
-    public void setPrimaireVerpakkingVerpakking(VerpakkingsEenheid PrimaireVerpakkingVerpakking) {
-        this.PrimaireVerpakkingVerpakking = PrimaireVerpakkingVerpakking;
+    public void setExterneCode(String ExterneCode) {
+        this.ExterneCode = ExterneCode;
     }
 
-    public VerpakkingsEenheid getSecundaireVerpakkingVerpakking() {
-        return SecundaireVerpakkingVerpakking;
+    public Omschrijving getOmschrijving() {
+        return Omschrijving;
     }
 
-    public void setSecundaireVerpakkingVerpakking(VerpakkingsEenheid SecundaireVerpakkingVerpakking) {
-        this.SecundaireVerpakkingVerpakking = SecundaireVerpakkingVerpakking;
+    public void setOmschrijving(Omschrijving Omschrijving) {
+        this.Omschrijving = Omschrijving;
+    }
+
+    public Productiegroep getProductiegroep() {
+        return Productiegroep;
+    }
+
+    public void setProductiegroep(Productiegroep Productiegroep) {
+        this.Productiegroep = Productiegroep;
+    }
+
+    public Receptgroep getReceptgroep() {
+        return Receptgroep;
+    }
+
+    public void setReceptgroep(Receptgroep Receptgroep) {
+        this.Receptgroep = Receptgroep;
+    }
+
+    public Eenheid getRecepteenheid() {
+        return Recepteenheid;
+    }
+
+    public void setRecepteenheid(Eenheid Recepteenheid) {
+        this.Recepteenheid = Recepteenheid;
+    }
+
+    public boolean isMoetGewogenWorden() {
+        return MoetGewogenWorden;
+    }
+
+    public void setMoetGewogenWorden(boolean MoetGewogenWorden) {
+        this.MoetGewogenWorden = MoetGewogenWorden;
+    }
+
+    public double getMaximumWeeggewicht() {
+        return MaximumWeeggewicht;
+    }
+
+    public void setMaximumWeeggewicht(double MaximumWeeggewicht) {
+        this.MaximumWeeggewicht = MaximumWeeggewicht;
+    }
+
+    public double getRelatieveMarge() {
+        return RelatieveMarge;
+    }
+
+    public void setRelatieveMarge(double RelatieveMarge) {
+        this.RelatieveMarge = RelatieveMarge;
+    }
+
+    public double getAbsoluteMarge() {
+        return AbsoluteMarge;
+    }
+
+    public void setAbsoluteMarge(double AbsoluteMarge) {
+        this.AbsoluteMarge = AbsoluteMarge;
+    }
+
+    public double getBasisKostPerEenheid() {
+        return BasisKostPerEenheid;
+    }
+
+    public void setBasisKostPerEenheid(double BasisKostPerEenheid) {
+        this.BasisKostPerEenheid = BasisKostPerEenheid;
+    }
+
+    public double getEenheidsgewicht() {
+        return Eenheidsgewicht;
+    }
+
+    public void setEenheidsgewicht(double Eenheidsgewicht) {
+        this.Eenheidsgewicht = Eenheidsgewicht;
+    }
+
+    public Eenheid getGewichtEenheid() {
+        return GewichtEenheid;
+    }
+
+    public void setGewichtEenheid(Eenheid GewichtEenheid) {
+        this.GewichtEenheid = GewichtEenheid;
+    }
+
+    public boolean isGoedgekeurd() {
+        return Goedgekeurd;
+    }
+
+    public void setGoedgekeurd(boolean Goedgekeurd) {
+        this.Goedgekeurd = Goedgekeurd;
+    }
+
+    public boolean isDagProductie() {
+        return DagProductie;
+    }
+
+    public void setDagProductie(boolean DagProductie) {
+        this.DagProductie = DagProductie;
+    }
+
+    public VoorraadProduct getVoorraadProduct() {
+        return VoorraadProduct;
+    }
+
+    public void setVoorraadProduct(VoorraadProduct VoorraadProduct) {
+        this.VoorraadProduct = VoorraadProduct;
+    }
+
+    public VoorraadPlaats getVoorraadPlaats() {
+        return VoorraadPlaats;
+    }
+
+    public void setVoorraadPlaats(VoorraadPlaats VoorraadPlaats) {
+        this.VoorraadPlaats = VoorraadPlaats;
+    }
+
+    public String getExtraVermeldingVoorraadPlaats() {
+        return ExtraVermeldingVoorraadPlaats;
+    }
+
+    public void setExtraVermeldingVoorraadPlaats(String ExtraVermeldingVoorraadPlaats) {
+        this.ExtraVermeldingVoorraadPlaats = ExtraVermeldingVoorraadPlaats;
+    }
+
+    public double getMinimumVoorraad() {
+        return MinimumVoorraad;
+    }
+
+    public void setMinimumVoorraad(double MinimumVoorraad) {
+        this.MinimumVoorraad = MinimumVoorraad;
+    }
+
+    public double getMaximumVoorraad() {
+        return MaximumVoorraad;
+    }
+
+    public void setMaximumVoorraad(double MaximumVoorraad) {
+        this.MaximumVoorraad = MaximumVoorraad;
+    }
+
+    public boolean isEtiketAfdrukken() {
+        return EtiketAfdrukken;
+    }
+
+    public void setEtiketAfdrukken(boolean EtiketAfdrukken) {
+        this.EtiketAfdrukken = EtiketAfdrukken;
+    }
+
+    public Etiket getVoorraadEtiketEtiket() {
+        return VoorraadEtiketEtiket;
+    }
+
+    public void setVoorraadEtiketEtiket(Etiket VoorraadEtiketEtiket) {
+        this.VoorraadEtiketEtiket = VoorraadEtiketEtiket;
+    }
+
+    public int getEenhedenPerEtiket() {
+        return EenhedenPerEtiket;
+    }
+
+    public void setEenhedenPerEtiket(int EenhedenPerEtiket) {
+        this.EenhedenPerEtiket = EenhedenPerEtiket;
+    }
+
+    public Etiket getVerdeelEtiketEtiket() {
+        return VerdeelEtiketEtiket;
+    }
+
+    public void setVerdeelEtiketEtiket(Etiket VerdeelEtiketEtiket) {
+        this.VerdeelEtiketEtiket = VerdeelEtiketEtiket;
+    }
+
+    public Bewaarconditie getBewaarConditie() {
+        return BewaarConditie;
+    }
+
+    public void setBewaarConditie(Bewaarconditie BewaarConditie) {
+        this.BewaarConditie = BewaarConditie;
+    }
+
+    public BewaarTemperatuur getBewaarTemperatuur() {
+        return BewaarTemperatuur;
+    }
+
+    public void setBewaarTemperatuur(BewaarTemperatuur BewaarTemperatuur) {
+        this.BewaarTemperatuur = BewaarTemperatuur;
+    }
+
+    public int getMinimumAantalDagenHoudbaar() {
+        return MinimumAantalDagenHoudbaar;
+    }
+
+    public void setMinimumAantalDagenHoudbaar(int MinimumAantalDagenHoudbaar) {
+        this.MinimumAantalDagenHoudbaar = MinimumAantalDagenHoudbaar;
+    }
+
+    public Omschrijving getBereidingswijzeOmschrijving() {
+        return BereidingswijzeOmschrijving;
+    }
+
+    public void setBereidingswijzeOmschrijving(Omschrijving BereidingswijzeOmschrijving) {
+        this.BereidingswijzeOmschrijving = BereidingswijzeOmschrijving;
+    }
+
+    public String getFoto() {
+        return Foto;
+    }
+
+    public void setFoto(String Foto) {
+        this.Foto = Foto;
+    }
+
+    public ExcelLocatie getExcelLocatie() {
+        return ExcelLocatie;
+    }
+
+    public void setExcelLocatie(ExcelLocatie ExcelLocatie) {
+        this.ExcelLocatie = ExcelLocatie;
+    }
+
+    public VoorstellingOpProductielijst getVoorstellingOpProductielijst() {
+        return VoorstellingOpProductielijst;
+    }
+
+    public void setVoorstellingOpProductielijst(VoorstellingOpProductielijst VoorstellingOpProductielijst) {
+        this.VoorstellingOpProductielijst = VoorstellingOpProductielijst;
+    }
+
+    public boolean isReceptWijzigbaar() {
+        return ReceptWijzigbaar;
+    }
+
+    public void setReceptWijzigbaar(boolean ReceptWijzigbaar) {
+        this.ReceptWijzigbaar = ReceptWijzigbaar;
+    }
+
+    public Job getJob() {
+        return Job;
+    }
+
+    public void setJob(Job Job) {
+        this.Job = Job;
+    }
+
+    public Verkoopsverpakking getVerkoopsVerpaking() {
+        return VerkoopsVerpaking;
+    }
+
+    public void setVerkoopsVerpaking(Verkoopsverpakking VerkoopsVerpaking) {
+        this.VerkoopsVerpaking = VerkoopsVerpaking;
+    }
+
+    public boolean isBlokkeren() {
+        return Blokkeren;
+    }
+
+    public void setBlokkeren(boolean Blokkeren) {
+        this.Blokkeren = Blokkeren;
+    }
+
+    public OnrechtstreekseKost getOnrechtstreekseKost() {
+        return OnrechtstreekseKost;
+    }
+
+    public void setOnrechtstreekseKost(OnrechtstreekseKost OnrechtstreekseKost) {
+        this.OnrechtstreekseKost = OnrechtstreekseKost;
+    }
+
+    public VasteKost getVasteKost() {
+        return VasteKost;
+    }
+
+    public void setVasteKost(VasteKost VasteKost) {
+        this.VasteKost = VasteKost;
+    }
+
+    
+    public VerpakkingsEenheid getPrimaireVerpakking() {
+        return PrimaireVerpakking;
+    }
+
+    public void setPrimaireVerpakking(VerpakkingsEenheid PrimaireVerpakking) {
+        this.PrimaireVerpakking = PrimaireVerpakking;
+    }
+
+    public VerpakkingsEenheid getSecundaireVerpakking() {
+        return SecundaireVerpakking;
+    }
+
+    public void setSecundaireVerpakking(VerpakkingsEenheid SecundaireVerpakking) {
+        this.SecundaireVerpakking = SecundaireVerpakking;
     }
 
     public Eenheid getVerkoopeenheid() {
@@ -458,7 +841,6 @@ public class VerkoopProduct implements New {
         this.VerkoopProductMaterielen = VerkoopProductMaterielen;
     }
 
-    
     @Override
     public void setId(int id) {
         this.VerkoopProductId = id;
