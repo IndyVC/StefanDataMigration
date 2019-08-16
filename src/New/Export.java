@@ -13,6 +13,7 @@ import Bedrijven.BankRekeningNummer;
 import Bedrijven.Bedrijf;
 import Bedrijven.Eigenaar;
 import Bedrijven.Fabrikant;
+import Bedrijven.FunctieVanPersoon;
 import Bedrijven.PrivateLabel;
 import Bedrijven.Verlof;
 import Bedrijven.Vestiging;
@@ -29,19 +30,28 @@ import Boekhouding.Dagboek;
 import Boekhouding.OnrechtstreekseKost;
 import Boekhouding.VasteKost;
 import Boekhouding.Winstmarge;
+import Gebruikers.Gebruiker;
+import Gebruikers.Werknemer;
 import Import.Import;
 import Leveringen.Leverancier;
 import Leveringen.LeveranciersGroep;
 import Leveringen.LeveringsDag;
+import Leveringen.Werkplek;
 import Materialen.BarcodePrefix;
 import Materialen.Etiket;
+import Materialen.IPAdres;
+import Materialen.Kneder;
 import Materialen.Materieel;
 import Materialen.Materieelgroep;
 import Materialen.Onderhoud;
 import Materialen.Printer;
 import Materialen.Verpakking;
+import Materialen.Weegschaal;
 import Producten.AankoopProduct;
 import Producten.AfgewerktProduct;
+import Producten.Allergeen;
+import Producten.AllergeenGroep;
+import Producten.BronVoedingswaarde;
 import Producten.DistributieWijze;
 import Producten.FysischeEigenschap;
 import Producten.MicrobiologischeParameter;
@@ -146,10 +156,20 @@ public class Export {
     private static List<VerkoopProduct> newVerkoopProducten;
     private static List<VoorbereidProduct> newVoorbereideProducten;
     private static List<Job> newJobs;
+    private static List<Gebruiker> newGebruikers;
+    private static List<FunctieVanPersoon> newFunctieVanPersonen;
+    private static List<Werknemer> newWerknemers;
+    private static List<Weegschaal> newWeegschalen;
+    private static List<Kneder> newKneders;
+    private static List<Werkplek> newWerkplekken;
+    private static List<AllergeenGroep> newAllergeenGroepen;
+    private static List<Allergeen> newAllergenen;
+    private static List<BronVoedingswaarde> newBronvoedingswaardes;
 
     public static void export() {
         Import.readOld();
 
+        /*
         System.out.println("EXPORT BANK");
         exportBanken(); //done
         System.out.println("EXPORT BEDRIJF");
@@ -244,7 +264,25 @@ public class Export {
         exportVerkoopProducten(); //VERKOOPPRODUCT NOG OPVULLEN: GoedgekeurdeIngaves; VerkoopProductAankoopProduct; VerkoopProductBasisRecepten; VerkoopProductTaken; VerkoopProductMaterielen;
         System.out.println("EXPORT VOORBEREIDEPRODUCTEN");
         exportVoorbereideProducten(); //VOORBEREIDPRODUCT NOG OPVULLEN: VoorbereidProductBasisRecepten; VoorbereidProductTaken; VoorbereidProductMaterielen;
-
+         */
+        System.out.println("EXPORT GEBRUIKERS");
+        //exportGebruikers();                           //ASPNETURSER tabel!!!???
+        System.out.println("EXPORT FUNCTIEVANPERSONEN");
+        exportFunctieVanPersonen();
+        System.out.println("EXPORT WERKNEMERS");
+        exportWerknemers();
+        System.out.println("EXPORT WEEGSCHALEN");
+        exportWeegschalen();
+        System.out.println("EXPORT KNEDERS");
+        exportKneders();
+        System.out.println("EXPORT WERKPLEKKEN");
+        exportWerkplekken();
+        System.out.println("EXPORT ALLERGEENGROEPEN");
+        exportAllergeengroepen();
+        System.out.println("EXPORT ALLERGENEN");
+        exportAllergenen();
+        System.out.println("EXPORT BRONVOEDINGSWAARDES");
+        exportBronvoedingswaardes();
     }
 
     public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {
@@ -1195,6 +1233,101 @@ public class Export {
         DB.insert(removeDuplicates(onrechtstreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
 
         DB.insert(newVoorbereideProducten, "VoorbereidProduct", VoorbereidProduct.class, true, false);
+    }
+
+    //EERSTE KEER GEBRUIKER
+    public static void exportGebruikers() {
+        newGebruikers = Mapper.oldGebruikersToNewGebruikers();
+        DB.insert(newGebruikers, "AspNetUsers", Gebruiker.class, true, false);
+    }
+
+    public static void exportFunctieVanPersonen() {
+        newFunctieVanPersonen = Mapper.oldPersoneelsKostenToFunctieVanPersonen();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newFunctieVanPersonen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(deleteDuplicates(newFunctieVanPersonen), "FunctieVanPersoonen", FunctieVanPersoon.class, true, false);
+    }
+
+    //EERSTE KEER WERKNEMERS
+    public static void exportWerknemers() {
+        newWerknemers = Mapper.oldWerknemersToNewWerknemer();
+        DB.insert(newWerknemers, "Werknemers", Werknemer.class, true, false);
+    }
+
+    //EERSTE KEER IPADRESSEN EN WEEEGSCHALEN
+    public static void exportWeegschalen() {
+        newWeegschalen = Mapper.oldWeegschaallToNewWeegschaal();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<IPAdres> ipadressen = new ArrayList();
+        newWeegschalen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            ipadressen.add(e.getIpAdres());
+        });
+
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(ipadressen, "IPAdres", IPAdres.class, true, true);
+        DB.insert(newWeegschalen, "Weegschaalen", Weegschaal.class, true, false);
+    }
+
+    //EERSTE KEER KNEDERS
+    public static void exportKneders() {
+        newKneders = Mapper.oldKnederToNewKneder();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newKneders.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newKneders, "Kneder", Kneder.class, true, false);
+    }
+
+    public static void exportWerkplekken() {
+        newWerkplekken = Mapper.oldWerkplekkenToNewWerkplekken();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newWerkplekken.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newWerkplekken, "Werkplekken", Werkplek.class, true, false);
+
+    }
+
+    public static void exportAllergeengroepen() {
+        newAllergeenGroepen = Mapper.oldAllergeenGroepenToNewAllergenenGroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newAllergeenGroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newAllergeenGroepen, "AllergeenGroepen", AllergeenGroep.class, true, false);
+    }
+
+    public static void exportAllergenen() {
+        newAllergenen = Mapper.oldAllergenenToNewAllergenen();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<AllergeenGroep> allergeengroepen = new ArrayList();
+        newAllergenen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            omschrijvingen.add(e.getEtiketOmschrijvingOmschrijving());
+            allergeengroepen.add(e.getAllergeenGroep());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(allergeengroepen, newAllergeenGroepen), "AllergeenGroepen", AllergeenGroep.class, false, false);
+        DB.insert(newAllergenen, "Allergenen", Allergeen.class, true, false);
+    }
+
+    public static void exportBronvoedingswaardes() {
+        newBronvoedingswaardes = Mapper.oldBronvoedingswaardeToNewBronvoedingswaarde();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newBronvoedingswaardes.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newBronvoedingswaardes, "", BronVoedingswaarde.class, true, false);
+
     }
 
 }

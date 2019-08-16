@@ -81,42 +81,42 @@ public class VerkoopProduct implements New {
     public Winstmarge Winstmarge;
     public DistributieWijze DistributieWijze;
     public Omschrijving IngrediëntenOmschrijving;
-    private String ExterneCode;
-    private Omschrijving Omschrijving;
-    private Productiegroep Productiegroep;
-    private Receptgroep Receptgroep;
-    private Eenheid Recepteenheid;
-    private boolean MoetGewogenWorden;
-    private double MaximumWeeggewicht;
-    private double RelatieveMarge;
-    private double AbsoluteMarge;
-    private double BasisKostPerEenheid;
-    private double Eenheidsgewicht;
-    private Eenheid GewichtEenheid;
-    private boolean Goedgekeurd;
-    private boolean DagProductie;
-    private VoorraadProduct VoorraadProduct;
-    private VoorraadPlaats VoorraadPlaats;
-    private String ExtraVermeldingVoorraadPlaats;
-    private double MinimumVoorraad;
-    private double MaximumVoorraad;
-    private boolean EtiketAfdrukken;
-    private Etiket VoorraadEtiketEtiket;
-    private int EenhedenPerEtiket;
-    private Etiket VerdeelEtiketEtiket;
-    private Bewaarconditie BewaarConditie;
-    private BewaarTemperatuur BewaarTemperatuur;
-    private int MinimumAantalDagenHoudbaar;
-    private Omschrijving BereidingswijzeOmschrijving;
-    private String Foto;
-    private ExcelLocatie ExcelLocatie;
-    private VoorstellingOpProductielijst VoorstellingOpProductielijst;
-    private boolean ReceptWijzigbaar;
-    private Job Job;
-    private Verkoopsverpakking VerkoopsVerpaking;
-    private boolean Blokkeren;
-    private OnrechtstreekseKost OnrechtstreekseKost;
-    private VasteKost VasteKost;
+    public String ExterneCode;
+    public Omschrijving Omschrijving;
+    public Productiegroep Productiegroep;
+    public Receptgroep Receptgroep;
+    public Eenheid Recepteenheid;
+    public boolean MoetGewogenWorden;
+    public double MaximumWeeggewicht;
+    public double RelatieveMarge;
+    public double AbsoluteMarge;
+    public double BasisKostPerEenheid;
+    public double Eenheidsgewicht;
+    public Eenheid GewichtEenheid;
+    public boolean Goedgekeurd;
+    public boolean DagProductie;
+    public VoorraadProduct VoorraadProduct;
+    public VoorraadPlaats VoorraadPlaats;
+    public String ExtraVermeldingVoorraadPlaats;
+    public double MinimumVoorraad;
+    public double MaximumVoorraad;
+    public boolean EtiketAfdrukken;
+    public Etiket VoorraadEtiketEtiket;
+    public int EenhedenPerEtiket;
+    public Etiket VerdeelEtiketEtiket;
+    public Bewaarconditie BewaarConditie;
+    public BewaarTemperatuur BewaarTemperatuur;
+    public int MinimumAantalDagenHoudbaar;
+    public Omschrijving BereidingswijzeOmschrijving;
+    public String Foto;
+    public ExcelLocatie ExcelLocatie;
+    public VoorstellingOpProductielijst VoorstellingOpProductielijst;
+    public boolean ReceptWijzigbaar;
+    public Job Job;
+    public Verkoopsverpakking VerkoopsVerpakking;
+    public boolean Blokkeren;
+    public OnrechtstreekseKost OnrechtstreekseKost;
+    public VasteKost VasteKost;
 
     
     public List<GoedgekeurdeIngave> GoedgekeurdeIngaves;
@@ -129,7 +129,7 @@ public class VerkoopProduct implements New {
     public VerkoopProduct() {
     }
 
-    public VerkoopProduct(int VerkoopProductid, String externeCode, Omschrijving omschrijving, Productiegroep productiegroep, Receptgroep receptgroep, Eenheid recepteenheid, boolean moetGewogenWorden, double maximumWeeggewicht,
+    public VerkoopProduct(int verkoopProductid, String externeCode, Omschrijving omschrijving, Productiegroep productiegroep, Receptgroep receptgroep, Eenheid recepteenheid, boolean moetGewogenWorden, double maximumWeeggewicht,
             double relativeMarge, double absoluteMarge, double basiskostPerEenheid, double eenheidsgewicht, Eenheid gewichtEenheid, boolean goedgekeurd, boolean dagProductie, VoorraadProduct voorraadproduct, VoorraadPlaats voorraadplaats,
             String extraVermeldingVoorraadPlaats, double minimumVoorraad, double maximumVoorraad, boolean etiketAfdrukken, Etiket voorraadEtiket, int eenhedenPerEtiket, Etiket verdeelEtiket, Bewaarconditie bewaarconditie,
             BewaarTemperatuur bewaartemperatuur, int minimumAantalHoudbaar, Omschrijving bereidingswijze, String foto, ExcelLocatie excelLocatie, VoorstellingOpProductielijst voorstellingOpProductielijst, boolean receptWijzigbaar, Job job,
@@ -172,11 +172,11 @@ public class VerkoopProduct implements New {
         this.VoorstellingOpProductielijst = voorstellingOpProductielijst;
         this.ReceptWijzigbaar = receptWijzigbaar;
         this.Job = job;
-        this.VerkoopsVerpaking = verkoopsverpakking;
+        this.VerkoopsVerpakking = verkoopsverpakking;
         this.VasteKost = vasteKost;
         this.OnrechtstreekseKost = onrechtstreekseKost;
         this.Blokkeren = blokkeren;
-        this.VerkoopProductId = VerkoopProductId;
+        this.VerkoopProductId = verkoopProductid;
         this.OnlineBeschikbaar = onlineBeschikbaar;
         this.OnlineLaatstAangemaakt = onlineLaatstAangemaakt;
         this.GelinktMetCode = gelinktMetCode;
@@ -186,7 +186,7 @@ public class VerkoopProduct implements New {
         this.PrimaireVerpakking = primaireVerpakking;
         this.SecundaireVerpakking = secundaireVerpakking;
         this.StuksPerVerpakking = stuksPerVerpakking;
-        this.VerpakkingsBarcodeVerkoopsBarcode = VerpakkingsBarcodeVerkoopsBarcode;
+        this.VerpakkingsBarcodeVerkoopsBarcode = verpakkingsBarcode;
         this.VerpakkingenPerColli = verpakkingenPerColli;
         this.ColliBarcodeVerkoopsBarcode = colliBarcode;
         this.CollisPerPallet = collisPerPallet;
@@ -472,12 +472,12 @@ public class VerkoopProduct implements New {
         this.Job = Job;
     }
 
-    public Verkoopsverpakking getVerkoopsVerpaking() {
-        return VerkoopsVerpaking;
+    public Verkoopsverpakking getVerkoopsVerpakking() {
+        return VerkoopsVerpakking;
     }
 
-    public void setVerkoopsVerpaking(Verkoopsverpakking VerkoopsVerpaking) {
-        this.VerkoopsVerpaking = VerkoopsVerpaking;
+    public void setVerkoopsVerpakking(Verkoopsverpakking VerkoopsVerpakking) {
+        this.VerkoopsVerpakking = VerkoopsVerpakking;
     }
 
     public boolean isBlokkeren() {

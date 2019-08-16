@@ -17,7 +17,7 @@ public class Allergeen implements New{
 
     public int AllergeenId;
 
-    public Omschrijving EtiketOmschrijving;
+    public Omschrijving EtiketOmschrijvingOmschrijving;
     public Omschrijving Omschrijving;
     public AllergeenType AllergeenType;
     public AllergeenGroep AllergeenGroep;
@@ -27,7 +27,7 @@ public class Allergeen implements New{
 
     public Allergeen(int AllergeenId, Omschrijving EtiketOmschrijving, Omschrijving Omschrijving, AllergeenType AllergeenType, AllergeenGroep AllergeenGroep) {
         this.AllergeenId = AllergeenId;
-        this.EtiketOmschrijving = EtiketOmschrijving;
+        this.EtiketOmschrijvingOmschrijving = EtiketOmschrijving;
         this.Omschrijving = Omschrijving;
         this.AllergeenType = AllergeenType;
         this.AllergeenGroep = AllergeenGroep;
@@ -41,12 +41,12 @@ public class Allergeen implements New{
         this.AllergeenId = AllergeenId;
     }
 
-    public Omschrijving getEtiketOmschrijving() {
-        return EtiketOmschrijving;
+    public Omschrijving getEtiketOmschrijvingOmschrijving() {
+        return EtiketOmschrijvingOmschrijving;
     }
 
-    public void setEtiketOmschrijving(Omschrijving EtiketOmschrijving) {
-        this.EtiketOmschrijving = EtiketOmschrijving;
+    public void setEtiketOmschrijvingOmschrijving(Omschrijving EtiketOmschrijvingOmschrijving) {
+        this.EtiketOmschrijvingOmschrijving = EtiketOmschrijvingOmschrijving;
     }
 
     public Omschrijving getOmschrijving() {

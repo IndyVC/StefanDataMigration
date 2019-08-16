@@ -15,7 +15,7 @@ import New.New;
 public class Kneder implements New{
 
     public int KnederId;
-    public double Inhoud;
+    public double InhoudInKg;
 
     public Omschrijving Omschrijving;
 
@@ -24,7 +24,7 @@ public class Kneder implements New{
 
     public Kneder(int KnederId, double Inhoud, Omschrijving Omschrijving) {
         this.KnederId = KnederId;
-        this.Inhoud = Inhoud;
+        this.InhoudInKg = Inhoud;
         this.Omschrijving = Omschrijving;
     }
 
@@ -36,12 +36,12 @@ public class Kneder implements New{
         this.KnederId = KnederId;
     }
 
-    public double getInhoud() {
-        return Inhoud;
+    public double getInhoudInKg() {
+        return InhoudInKg;
     }
 
-    public void setInhoud(double Inhoud) {
-        this.Inhoud = Inhoud;
+    public void setInhoudInKg(double InhoudInKg) {
+        this.InhoudInKg = InhoudInKg;
     }
 
     public Omschrijving getOmschrijving() {
