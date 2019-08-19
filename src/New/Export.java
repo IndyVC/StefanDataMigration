@@ -20,6 +20,8 @@ import Bedrijven.Vestiging;
 import Bestellingen.BestelGroep;
 import Bestellingen.BestelVoorstel;
 import Bestellingen.Bestelbon;
+import Bestellingen.KassaBestelling;
+import Bestellingen.Klant;
 import Bestellingen.UitgaandeBestelling;
 import Boekhouding.AlgemeneRekening;
 import Boekhouding.AnalytischeRekening;
@@ -45,17 +47,24 @@ import Materialen.Materieel;
 import Materialen.Materieelgroep;
 import Materialen.Onderhoud;
 import Materialen.Printer;
+import Materialen.Scanner;
 import Materialen.Verpakking;
 import Materialen.Weegschaal;
 import Producten.AankoopProduct;
 import Producten.AfgewerktProduct;
 import Producten.Allergeen;
 import Producten.AllergeenGroep;
+import Producten.Aroma;
+import Producten.BasisProduct;
 import Producten.BronVoedingswaarde;
 import Producten.DistributieWijze;
 import Producten.FysischeEigenschap;
+import Producten.Ingrediënt;
+import Producten.IngrediëntGroep;
 import Producten.MicrobiologischeParameter;
+import Producten.Optie;
 import Producten.OptieGroep;
+import Producten.Origine;
 import Producten.ProductCategorie;
 import Producten.ProductGroep;
 import Producten.ProductSubGroep;
@@ -64,6 +73,8 @@ import Producten.ReceptProduct;
 import Producten.Recepten.BasisRecept;
 import Producten.Recepten.Job;
 import Producten.Recepten.Receptgroep;
+import Producten.SoortPlantaardig;
+import Producten.Variant;
 import Producten.VariantGroep;
 import Producten.VerkoopProduct;
 import Producten.VerkoopProductGroep;
@@ -82,6 +93,7 @@ import Voorraden.BewaarTemperatuur;
 import Voorraden.Bewaarconditie;
 import Voorraden.VoorraadPlaats;
 import Voorraden.VoorraadProduct;
+import Voorraden.Voorraadcorrectie;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -165,11 +177,19 @@ public class Export {
     private static List<AllergeenGroep> newAllergeenGroepen;
     private static List<Allergeen> newAllergenen;
     private static List<BronVoedingswaarde> newBronvoedingswaardes;
+    private static List<Scanner> newScanners;
+    private static List<IngrediëntGroep> newIngredientGroepen;
+    private static List<Origine> newOrigines;
+    private static List<Ingrediënt> newIngredienten;
+    private static List<Optie> newOpties;
+    private static List<Variant> newVarianten;
+    private static List<Voorraadcorrectie> newVoorraadcorrecties;
+    private static List<BasisProduct> newBasisproducten;
+    private static List<KassaBestelling> newKassaBestellingRecords;
 
     public static void export() {
         Import.readOld();
 
-        /*
         System.out.println("EXPORT BANK");
         exportBanken(); //done
         System.out.println("EXPORT BEDRIJF");
@@ -264,7 +284,6 @@ public class Export {
         exportVerkoopProducten(); //VERKOOPPRODUCT NOG OPVULLEN: GoedgekeurdeIngaves; VerkoopProductAankoopProduct; VerkoopProductBasisRecepten; VerkoopProductTaken; VerkoopProductMaterielen;
         System.out.println("EXPORT VOORBEREIDEPRODUCTEN");
         exportVoorbereideProducten(); //VOORBEREIDPRODUCT NOG OPVULLEN: VoorbereidProductBasisRecepten; VoorbereidProductTaken; VoorbereidProductMaterielen;
-         */
         System.out.println("EXPORT GEBRUIKERS");
         //exportGebruikers();                           //ASPNETURSER tabel!!!???
         System.out.println("EXPORT FUNCTIEVANPERSONEN");
@@ -283,6 +302,24 @@ public class Export {
         exportAllergenen();
         System.out.println("EXPORT BRONVOEDINGSWAARDES");
         exportBronvoedingswaardes();
+        System.out.println("EXPORT SCANNERS");
+        exportScanners();
+        System.out.println("EXPORT INGREDIENTGROEPEN");
+        exportIngredientGroepen();
+        System.out.println("EXPORT ORIGINES");
+        exportOrigines();
+        System.out.println("EXPORT INGREDIENTEN");
+        expotIngredienten();
+        System.out.println("EXPORT OPTIES");
+        exportOpties();
+        System.out.println("EXPORT VARIANTEN");
+        exportVarianten();
+        System.out.println("EXPORT VOORRAADCORRECTIES");
+        exportVoorraadcorrecties();
+        System.out.println("EXPORT BASISPRODUCTEN");
+        exportBasisproducten();
+        System.out.println("EXPORT KASSABESTELLING RECORDS");
+        exportKassaBestellingRecords(); //GEBRUIKERS EN KLANTEN WERKEN HIER NOG NIET!!!
     }
 
     public static <T> List<T> removeDuplicates(List<T> newList, List<T> exists) {
@@ -1168,7 +1205,7 @@ public class Export {
         DB.insert(removeDuplicates(verkoopProductenGroepen, newVerkoopProductgroep), "VerkoopProductGroepen", VerkoopProductGroep.class, false, false);
         DB.insert(removeDuplicates(barcodePrefixen, newBarcodePrefixen), "BarcodePrefixes", BarcodePrefix.class, false, false);
         DB.insert(removeDuplicates(privateLabels, newPrivateLabels), "PrivateLabels", PrivateLabel.class, false, false);
-        DB.insert(verkoopsBarcode, "VerkoopsBarcode", VerkoopsBarcode.class, true, true);
+        DB.insert(verkoopsBarcode, "VerkoopsBarcodes", VerkoopsBarcode.class, true, true);
         DB.insert(removeDuplicates(verkoopsVerpakking, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
         DB.insert(fysischeEig, "FysischeEigenschappen", FysischeEigenschap.class, true, true);
         DB.insert(removeDuplicates(btwpercentages, newBtwpercentages), "BTWpercentages", BTWPercentage.class, false, false);
@@ -1283,6 +1320,7 @@ public class Export {
         DB.insert(newKneders, "Kneder", Kneder.class, true, false);
     }
 
+    //EERSTE KEER WERKPLEKKEN
     public static void exportWerkplekken() {
         newWerkplekken = Mapper.oldWerkplekkenToNewWerkplekken();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -1295,6 +1333,7 @@ public class Export {
 
     }
 
+    //EERSTE KEER ALLERGEENGROEPEN
     public static void exportAllergeengroepen() {
         newAllergeenGroepen = Mapper.oldAllergeenGroepenToNewAllergenenGroep();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -1305,6 +1344,7 @@ public class Export {
         DB.insert(newAllergeenGroepen, "AllergeenGroepen", AllergeenGroep.class, true, false);
     }
 
+    //EERSTE KEER ALLERGENEN
     public static void exportAllergenen() {
         newAllergenen = Mapper.oldAllergenenToNewAllergenen();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -1319,6 +1359,7 @@ public class Export {
         DB.insert(newAllergenen, "Allergenen", Allergeen.class, true, false);
     }
 
+    //EERSTE KEER BRONVOEDINGSWAARDES
     public static void exportBronvoedingswaardes() {
         newBronvoedingswaardes = Mapper.oldBronvoedingswaardeToNewBronvoedingswaarde();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -1326,8 +1367,176 @@ public class Export {
             omschrijvingen.add(e.getOmschrijving());
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
-        DB.insert(newBronvoedingswaardes, "", BronVoedingswaarde.class, true, false);
+        DB.insert(newBronvoedingswaardes, "BronVoedingswaarde", BronVoedingswaarde.class, true, false);
 
+    }
+
+    //EERSTE KEER SCANNERS
+    public static void exportScanners() {
+        newScanners = Mapper.oldWerkstationToNewScanner();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newScanners.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newScanners, "Scanners", Scanner.class, true, true);
+    }
+
+    //EERSTE KEER INGREDIENTGROEPEN
+    public static void exportIngredientGroepen() {
+        newIngredientGroepen = Mapper.oldIngredientGroepToNewIngredientGroep();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newIngredientGroepen.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newIngredientGroepen, "IngrediëntGroepen", IngrediëntGroep.class, true, false);
+    }
+
+    //EERSTE KEER ORIGINES
+    public static void exportOrigines() {
+        newOrigines = Mapper.oldOrigineToNewOrigine();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<IngrediëntGroep> ingredientGroepen = new ArrayList();
+
+        newOrigines.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            ingredientGroepen.add(e.getIngrediëntGroep());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(ingredientGroepen, newIngredientGroepen), "IngrediëntGroepen", IngrediëntGroep.class, false, false);
+        DB.insert(newOrigines, "Origines", Origine.class, true, false);
+    }
+
+    //EERSTE KEER INGREDIENTEN, AROMAS en 
+    public static void expotIngredienten() {
+        newIngredienten = Mapper.oldIngredientenToNewIngredienten();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<IngrediëntGroep> groep = new ArrayList();
+        List<Aroma> aromas = new ArrayList();
+        List<Origine> origines = new ArrayList();
+        List<SoortPlantaardig> soortPlantaardig = new ArrayList();
+
+        newIngredienten.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            groep.add(e.getIngrediëntGroep());
+            aromas.add(e.getAroma());
+            origines.add(e.getOrigine());
+            soortPlantaardig.add(e.getSoortPlantaardig());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(groep, newIngredientGroepen), "IngrediëntGroepen", IngrediëntGroep.class, false, false);
+        DB.insert(aromas, "Aromas", Aroma.class, true, true);
+        DB.insert(removeDuplicates(origines, newOrigines), "Origines", Origine.class, false, false);
+        DB.insert(soortPlantaardig, "SoortenPlantaardig", SoortPlantaardig.class, true, true);
+        DB.insert(newIngredienten, "Ingrediënt", Ingrediënt.class, true, false);
+    }
+
+    //EERSTE KEER OPTIES
+    public static void exportOpties() {
+        newOpties = Mapper.oldOptieDetailsToNewOpties();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<OptieGroep> optiegroepen = new ArrayList();
+        newOpties.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+            optiegroepen.add(e.getOptieGroep());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(optiegroepen, newOptiegroepen), "OptieGroepen", OptieGroep.class, false, false);
+        DB.insert(newOpties, "Opties", Optie.class, true, false);
+    }
+
+    //EERSTE KEER VARIANTEN
+    public static void exportVarianten() {
+        newVarianten = Mapper.oldVariantDetailToNewVariant();
+        List<VariantGroep> vargroepen = new ArrayList();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        newVarianten.forEach(e -> {
+            vargroepen.add(e.getVariantGroep());
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(vargroepen, newVariantgroepen), "VariantGroepen", VariantGroep.class, false, false);
+        DB.insert(deleteDuplicates(newVarianten), "Varianten", Variant.class, true, false);
+    }
+
+    //EERSTE KEER VOORRAADCORRECTIES
+    public static void exportVoorraadcorrecties() {
+        newVoorraadcorrecties = Mapper.oldVoorraadcorrectieToNewVoorraadCorrectie();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+
+        newVoorraadcorrecties.forEach(e -> {
+            omschrijvingen.add(e.getOmschrijving());
+        });
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(newVoorraadcorrecties, "Voorraadcorrecties", Voorraadcorrectie.class, true, false);
+    }
+
+    //EERSTE KEER BASISPRODUCTEN
+    private static void exportBasisproducten() {
+        newBasisproducten = Mapper.oldHalffabrikaatToNewBasisProduct();
+        List<Omschrijving> omschrijvingen = new ArrayList();
+        List<Productiegroep> productiegroepen = new ArrayList();
+        List<Receptgroep> receptgroepen = new ArrayList();
+        List<VoorraadProduct> voorraadProducten = new ArrayList();
+        List<VoorraadPlaats> voorraadPlaatsen = new ArrayList();
+        List<Etiket> etiketten = new ArrayList<>();
+        List<Bewaarconditie> bewaarcondities = new ArrayList<>();
+        List<BewaarTemperatuur> bewaarTemperaturen = new ArrayList();
+        List<VoorstellingOpProductielijst> voorstellingen = new ArrayList();
+        List<Job> jobs = new ArrayList();
+        List<Verkoopsverpakking> verpakkingen = new ArrayList();
+        List<VasteKost> vasteKoste = new ArrayList();
+        List<OnrechtstreekseKost> onrechtStreekseKosten = new ArrayList();
+        
+        
+        newBasisproducten.forEach(e->{
+            omschrijvingen.add(e.getOmschrijving());
+            omschrijvingen.add(e.getBereidingswijzeOmschrijving());
+            productiegroepen.add(e.getProductiegroep());
+            receptgroepen.add(e.getReceptgroep());
+            voorraadProducten.add(e.getVoorraadProduct());
+            voorraadPlaatsen.add(e.getVoorraadplaats());
+            etiketten.add(e.getVerdeelEtiketEtiket());
+            bewaarcondities.add(e.getBewaarconditie());
+            bewaarTemperaturen.add(e.getBewaarTemperatuur());
+            voorstellingen.add(e.getVoorstellingOpProductielijst());
+            jobs.add(e.getJob());
+            verpakkingen.add(e.getVerkoopsverpakking());
+            vasteKoste.add(e.getVasteKost());
+            onrechtStreekseKosten.add(e.getOnrechtstreekseKost());
+        });
+        
+         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
+        DB.insert(removeDuplicates(receptgroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
+        DB.insert(deleteDuplicates(voorraadProducten), "VoorraadProducten", VoorraadProduct.class, false, true);
+        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
+        DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
+        DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
+        DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
+        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
+        DB.insert(removeDuplicates(jobs, newJobs), "Jobs", Job.class, false, false);
+        DB.insert(removeDuplicates(verpakkingen, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
+        DB.insert(removeDuplicates(vasteKoste, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
+        DB.insert(removeDuplicates(onrechtStreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
+
+        DB.insert(newBasisproducten, "BasisProduct", BasisProduct.class, true, false);
+        
+        
+        
+    }
+
+    
+    public static void exportKassaBestellingRecords() {
+        newKassaBestellingRecords = Mapper.oldKassaBestellingHoofdingToNewKassaBestelling();
+        List<Bedrijf> bedrijven = new ArrayList();
+        List<Klant> klanten = new ArrayList();
+        List<Adres> adressen = new ArrayList();
+        List<Gebruiker> gebruikers = new ArrayList();
+        
+        //Dit afwerken. 
+        
     }
 
 }

@@ -14,5 +14,6 @@ public enum ScannerType
         Bluetooth,
         WiFi,
         Infrarood,
-        Bedraad
+        Bedraad,
+        NietGespecifieerd
     }

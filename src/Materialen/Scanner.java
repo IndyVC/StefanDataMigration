@@ -17,18 +17,18 @@ public class Scanner implements New {
     public int ScannerId;
         public ScannerType  ScannerType;
         public Omschrijving Omschrijving;
-        public boolean IsBatch;
-        public boolean GebruikenOpDitWerkstation;
+        public boolean Batch;
+        public String ActiefOpWerkstations;
 
     public Scanner() {
     }
 
-    public Scanner(int ScannerId, ScannerType ScannerType, Omschrijving Omschrijving, boolean IsBatch, boolean GebruikenOpDitWerkstation) {
+    public Scanner(int ScannerId, ScannerType ScannerType, Omschrijving Omschrijving, boolean IsBatch, String GebruikenOpDitWerkstation) {
         this.ScannerId = ScannerId;
         this.ScannerType = ScannerType;
         this.Omschrijving = Omschrijving;
-        this.IsBatch = IsBatch;
-        this.GebruikenOpDitWerkstation = GebruikenOpDitWerkstation;
+        this.Batch = IsBatch;
+        this.ActiefOpWerkstations = GebruikenOpDitWerkstation;
     }
 
     public int getScannerId() {
@@ -55,20 +55,20 @@ public class Scanner implements New {
         this.Omschrijving = Omschrijving;
     }
 
-    public boolean isIsBatch() {
-        return IsBatch;
+    public boolean isBatch() {
+        return Batch;
     }
 
-    public void setIsBatch(boolean IsBatch) {
-        this.IsBatch = IsBatch;
+    public void setBatch(boolean Batch) {
+        this.Batch = Batch;
     }
 
-    public boolean isGebruikenOpDitWerkstation() {
-        return GebruikenOpDitWerkstation;
+    public String isGebruikenOpDitWerkstation() {
+        return ActiefOpWerkstations;
     }
 
-    public void setGebruikenOpDitWerkstation(boolean GebruikenOpDitWerkstation) {
-        this.GebruikenOpDitWerkstation = GebruikenOpDitWerkstation;
+    public void setActiefOpWerkstations(String ActiefOpWerkstations) {
+        this.ActiefOpWerkstations = ActiefOpWerkstations;
     }
 
     @Override

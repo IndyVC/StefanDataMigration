@@ -7,7 +7,6 @@ package Producten;
 
 import Algemeen.Omschrijving;
 import New.New;
-import Old.Origine;
 import enums.FunctieVanIngrediënt;
 
 /**

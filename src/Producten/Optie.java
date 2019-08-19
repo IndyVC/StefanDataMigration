@@ -21,17 +21,17 @@ public class Optie implements New {
     public Omschrijving Omschrijving;
     public boolean Blokkeren;
 
-    public List<Optie> Opties;
+    //public List<Optie> Opties;
 
     public Optie() {
     }
 
-    public Optie(int OptieId, OptieGroep OptieGroep, Omschrijving Omschrijving, boolean Blokkeren, List<Optie> Opties) {
+    public Optie(int OptieId, OptieGroep OptieGroep, Omschrijving Omschrijving, boolean Blokkeren) {
         this.OptieId = OptieId;
         this.OptieGroep = OptieGroep;
         this.Omschrijving = Omschrijving;
         this.Blokkeren = Blokkeren;
-        this.Opties = Opties;
+        //this.Opties = Opties;
     }
 
     public int getOptieId() {
@@ -66,13 +66,13 @@ public class Optie implements New {
         this.Blokkeren = Blokkeren;
     }
 
-    public List<Optie> getOpties() {
-        return Opties;
-    }
-
-    public void setOpties(List<Optie> Opties) {
-        this.Opties = Opties;
-    }
+//    public List<Optie> getOpties() {
+//        return Opties;
+//    }
+//
+//    public void setOpties(List<Optie> Opties) {
+//        this.Opties = Opties;
+//    }
 
     @Override
     public void setId(int id) {
