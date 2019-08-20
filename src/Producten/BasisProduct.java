@@ -26,98 +26,102 @@ import Voorraden.Bewaarconditie;
 import Voorraden.VoorraadPlaats;
 import Voorraden.VoorraadProduct;
 import enums.Eenheid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author stefa
  */
-public class BasisProduct implements New{
-     public int BasisProductId;
-       public String ExterneCode;
+public class BasisProduct implements New {
 
-        public Omschrijving Omschrijving;
+    public int BasisProductId;
+    public String ExterneCode;
 
-        public Productiegroep Productiegroep;
+    public Omschrijving Omschrijving;
 
-        public Receptgroep Receptgroep;
+    public Productiegroep Productiegroep;
 
-        public Eenheid Recepteenheid;
+    public Receptgroep Receptgroep;
 
-        public boolean MoetGewogenWorden;
+    public Eenheid Recepteenheid;
 
-        public double MaximumWeeggewicht;
+    public boolean MoetGewogenWorden;
 
-        public double RelatieveMarge;
+    public double MaximumWeeggewicht;
 
-        public double AbsoluteMarge;
+    public double RelatieveMarge;
 
-        public double BasiskostPerEenheid;
+    public double AbsoluteMarge;
 
-        public double Eenheidsgewicht;
+    public double BasiskostPerEenheid;
 
-        public Eenheid GewichtEenheid;
+    public double Eenheidsgewicht;
 
-        public boolean Goedgekeurd;
+    public Eenheid GewichtEenheid;
 
-        public boolean DagProductie;
+    public boolean Goedgekeurd;
 
-        public VoorraadProduct VoorraadProduct;
+    public boolean DagProductie;
 
-        public VoorraadPlaats Voorraadplaats;
+    public VoorraadProduct VoorraadProduct;
 
-        public String ExtraVermeldingVoorraadPlaats;
+    public VoorraadPlaats Voorraadplaats;
 
-        public double MinimumVoorraad;
+    public String ExtraVermeldingVoorraadPlaats;
 
-        public double MaximumVoorraad;
+    public double MinimumVoorraad;
 
-        public boolean EtiketAfdrukken;
+    public double MaximumVoorraad;
 
-        public Etiket VoorraadEtiketEtiket;
+    public boolean EtiketAfdrukken;
 
-        public int EenhedenPerEtiket;
+    public Etiket VoorraadEtiketEtiket;
 
-        public Etiket VerdeelEtiketEtiket;
+    public int EenhedenPerEtiket;
 
-        public Bewaarconditie Bewaarconditie;
+    public Etiket VerdeelEtiketEtiket;
 
-        public BewaarTemperatuur BewaarTemperatuur;
+    public Bewaarconditie Bewaarconditie;
 
-        public int MinimumAantalDagenHoudbaar;
+    public BewaarTemperatuur BewaarTemperatuur;
 
-        public Omschrijving BereidingswijzeOmschrijving;
+    public int MinimumAantalDagenHoudbaar;
 
-        public String Foto;
+    public Omschrijving BereidingswijzeOmschrijving;
 
-        public ExcelLocatie ExcelLocatie;
-        public VoorstellingOpProductielijst VoorstellingOpProductielijst;
+    public String Foto;
 
-        public boolean ReceptWijzigbaar;
+    public ExcelLocatie ExcelLocatie;
+    public VoorstellingOpProductielijst VoorstellingOpProductielijst;
 
-        public Job Job;
+    public boolean ReceptWijzigbaar;
 
-        public Verkoopsverpakking Verkoopsverpakking;
+    public Job Job;
 
-        public VasteKost VasteKost;
+    public Verkoopsverpakking Verkoopsverpakking;
 
-        public OnrechtstreekseKost OnrechtstreekseKost;
+    public VasteKost VasteKost;
 
-        public boolean Blokkeren;
-        public List<FysischeEigenschap> FysischeEigenschappen;
-        public List<BasisProductVestiging> BasisProductVestigingen;
-        public List<Vestiging> Vestigingen;
-        public List<BasisProductBasisRecept> BasisProductBasisRecepten;
-        public List<BasisRecept> BasisRecepten;
-        public List<BasisProductTaak> BasisProductTaken;
-        public List<Taak> ReceptTaken;
-        public List<BasisProductMaterieel> BasisProductMaterielen;
-        public List<Materieel> ReceptMaterieel;
+    public OnrechtstreekseKost OnrechtstreekseKost;
+
+    public boolean Blokkeren;
+    //public List<FysischeEigenschap> FysischeEigenschappen;
+    public List<BasisProductVestiging> BasisProductVestigingen;
+    public List<BasisProductBasisRecept> BasisProductBasisRecepten;
+    public List<BasisProductTaak> BasisProductTaken;
+    public List<BasisProductMaterieel> BasisProductMaterielen;
 
     public BasisProduct() {
+        //FysischeEigenschappen = new ArrayList();
+        BasisProductVestigingen = new ArrayList();
+        BasisProductBasisRecepten = new ArrayList();
+        BasisProductTaken = new ArrayList();
+        BasisProductMaterielen = new ArrayList();
     }
 
     public BasisProduct(int BasisProductId, String ExterneCode, Omschrijving Omschrijving, Productiegroep Productiegroep, Receptgroep Receptgroep, Eenheid Recepteenheid, boolean MoetGewogenWorden, double MaximumWeeggewicht, double RelatieveMarge, double AbsoluteMarge, double BasiskostPerEenheid, double Eenheidsgewicht, Eenheid GewichtEenheid, boolean Goedgekeurd, boolean DagProductie, VoorraadProduct VoorraadProduct, VoorraadPlaats Voorraadplaats, String ExtraVermeldingVoorraadPlaats, double MinimumVoorraad, double MaximumVoorraad, boolean EtiketAfdrukken, Etiket VoorraadEtiket, int EenhedenPerEtiket, Etiket VerdeelEtiket, Bewaarconditie Bewaarconditie, BewaarTemperatuur BewaarTemperatuur, int MinimumAantalDagenHoudbaar, Omschrijving Bereidingswijze, String Foto, ExcelLocatie ExcelLocatie, VoorstellingOpProductielijst VoorstellingOpProductielijst, boolean ReceptWijzigbaar, Job Job, Verkoopsverpakking Verkoopsverpakking, VasteKost VasteKost, OnrechtstreekseKost OnrechtstreekseKost, boolean Blokkeren) {
+        this();
         this.BasisProductId = BasisProductId;
         this.ExterneCode = ExterneCode;
         this.Omschrijving = Omschrijving;
@@ -444,10 +448,6 @@ public class BasisProduct implements New{
     public void setBlokkeren(boolean Blokkeren) {
         this.Blokkeren = Blokkeren;
     }
-    
-    
-
- 
 
     public int getBasisProductId() {
         return BasisProductId;
@@ -457,13 +457,13 @@ public class BasisProduct implements New{
         this.BasisProductId = BasisProductId;
     }
 
-    public List<FysischeEigenschap> getFysischeEigenschappen() {
-        return FysischeEigenschappen;
-    }
-
-    public void setFysischeEigenschappen(List<FysischeEigenschap> FysischeEigenschappen) {
-        this.FysischeEigenschappen = FysischeEigenschappen;
-    }
+//    public List<FysischeEigenschap> getFysischeEigenschappen() {
+//        return FysischeEigenschappen;
+//    }
+//
+//    public void setFysischeEigenschappen(List<FysischeEigenschap> FysischeEigenschappen) {
+//        this.FysischeEigenschappen = FysischeEigenschappen;
+//    }
 
     public List<BasisProductVestiging> getBasisProductVestigingen() {
         return BasisProductVestigingen;
@@ -473,13 +473,7 @@ public class BasisProduct implements New{
         this.BasisProductVestigingen = BasisProductVestigingen;
     }
 
-    public List<Vestiging> getVestigingen() {
-        return Vestigingen;
-    }
 
-    public void setVestigingen(List<Vestiging> Vestigingen) {
-        this.Vestigingen = Vestigingen;
-    }
 
     public List<BasisProductBasisRecept> getBasisProductBasisRecepten() {
         return BasisProductBasisRecepten;
@@ -489,13 +483,7 @@ public class BasisProduct implements New{
         this.BasisProductBasisRecepten = BasisProductBasisRecepten;
     }
 
-    public List<BasisRecept> getBasisRecepten() {
-        return BasisRecepten;
-    }
 
-    public void setBasisRecepten(List<BasisRecept> BasisRecepten) {
-        this.BasisRecepten = BasisRecepten;
-    }
 
     public List<BasisProductTaak> getBasisProductTaken() {
         return BasisProductTaken;
@@ -505,14 +493,6 @@ public class BasisProduct implements New{
         this.BasisProductTaken = BasisProductTaken;
     }
 
-    public List<Taak> getReceptTaken() {
-        return ReceptTaken;
-    }
-
-    public void setReceptTaken(List<Taak> ReceptTaken) {
-        this.ReceptTaken = ReceptTaken;
-    }
-
     public List<BasisProductMaterieel> getBasisProductMaterielen() {
         return BasisProductMaterielen;
     }
@@ -520,23 +500,15 @@ public class BasisProduct implements New{
     public void setBasisProductMaterielen(List<BasisProductMaterieel> BasisProductMaterielen) {
         this.BasisProductMaterielen = BasisProductMaterielen;
     }
-
-    public List<Materieel> getReceptMaterieel() {
-        return ReceptMaterieel;
-    }
-
-    public void setReceptMaterieel(List<Materieel> ReceptMaterieel) {
-        this.ReceptMaterieel = ReceptMaterieel;
+    
+    @Override
+    public void setId(int id) {
+        this.BasisProductId = id;
     }
 
     @Override
-    public void setId(int id) {
-        this.BasisProductId=id;
-    }
-         @Override
     public int getId() {
         return this.BasisProductId;
     }
-        
-        
+
 }

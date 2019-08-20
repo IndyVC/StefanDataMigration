@@ -23,7 +23,7 @@ public class KassabestellingRecord implements New {
     public Bedrijf Bedrijf;
     public int Volgnummer;
     public double Hoeveelheid;
-    public VerkoopProduct VerkoopProductId;
+    public VerkoopProduct VerkoopProduct;
     public int Aantal_Personen;
     public Variant Variant;
     public VariantGroep VariantGroep;
@@ -31,17 +31,17 @@ public class KassabestellingRecord implements New {
     public OptieGroep OptieGroep;
     public String Opmerking;
     public boolean VerdeelticketAfdrukken;
-    public KassaBestelling KassaBestelling;
+    public Kassabestelling KassaBestelling;
 
     public KassabestellingRecord() {
     }
 
-    public KassabestellingRecord(int KassaBestellingRecordId, Bedrijf Bedrijf, int Volgnummer, double Hoeveelheid, VerkoopProduct VerkoopProductId, int Aantal_Personen, Variant Variant, VariantGroep VariantGroep, Optie Optie, OptieGroep OptieGroep, String Opmerking, boolean VerdeelticketAfdrukken, KassaBestelling KassaBestelling) {
+    public KassabestellingRecord(int KassaBestellingRecordId, Bedrijf Bedrijf, int Volgnummer, double Hoeveelheid, VerkoopProduct VerkoopProductId, int Aantal_Personen, Variant Variant, VariantGroep VariantGroep, Optie Optie, OptieGroep OptieGroep, String Opmerking, boolean VerdeelticketAfdrukken, Kassabestelling KassaBestelling) {
         this.KassaBestellingRecordId = KassaBestellingRecordId;
         this.Bedrijf = Bedrijf;
         this.Volgnummer = Volgnummer;
         this.Hoeveelheid = Hoeveelheid;
-        this.VerkoopProductId = VerkoopProductId;
+        this.VerkoopProduct = VerkoopProductId;
         this.Aantal_Personen = Aantal_Personen;
         this.Variant = Variant;
         this.VariantGroep = VariantGroep;
@@ -52,11 +52,11 @@ public class KassabestellingRecord implements New {
         this.KassaBestelling = KassaBestelling;
     }
 
-    public KassaBestelling getKassaBestelling() {
+    public Kassabestelling getKassaBestelling() {
         return KassaBestelling;
     }
 
-    public void setKassaBestelling(KassaBestelling KassaBestelling) {
+    public void setKassaBestelling(Kassabestelling KassaBestelling) {
         this.KassaBestelling = KassaBestelling;
     }
 
@@ -92,12 +92,12 @@ public class KassabestellingRecord implements New {
         this.Hoeveelheid = Hoeveelheid;
     }
 
-    public VerkoopProduct getVerkoopProductId() {
-        return VerkoopProductId;
+    public VerkoopProduct getVerkoopProduct() {
+        return VerkoopProduct;
     }
 
-    public void setVerkoopProductId(VerkoopProduct VerkoopProductId) {
-        this.VerkoopProductId = VerkoopProductId;
+    public void setVerkoopProduct(VerkoopProduct VerkoopProduct) {
+        this.VerkoopProduct = VerkoopProduct;
     }
 
     public int getAantal_Personen() {

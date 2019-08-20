@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Bestellingen;
+import java.sql.Date;
 
 import Adressen.Adres;
 import Algemeen.BereikbaarheidOpDag;
@@ -26,6 +27,7 @@ import TussenTabellen.KlantVerlof;
 import enums.InhoudLeveringsbonnen;
 import enums.MuntEenheid;
 import enums.Solvabiliteit;
+import enums.Taal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +42,8 @@ public class Klant implements New {
     public String Roepnaam;
     public String NaamVerantwoordelijke;
     public boolean SeizoensKlant;
-    public String BeginSeizoensPeriode;
-    public String EindeSeizoensPeriode;
+    public Date BeginSeizoensPeriode;
+    public Date EindeSeizoensPeriode;
     public String TitelverdeellijstenRaster;
     public String TelefoonNr1;
     public String TelefoonNr2;
@@ -77,12 +79,11 @@ public class Klant implements New {
     public boolean KlantAfdrukkenOpverdeelEtiketten;
     public String TitelVerdeellijst;
     public KlantVerdeelGroep Verdeelgroep;
-
+ 
     public List<ContactPersoon> ContactPersonen;
     public List<BankRekeningNummer> BankRekeningNummers;
     public List<LeveringsToer> LeveringsToeren;
     public List<Opmerking> Opmerkingen;
-
     public List<KlantOpeningstijd> KlantOpeningstijden;
     public List<KlantVerlof> KlantVerlof;
     public List<KlantKorting> KlantKortingen;
@@ -92,50 +93,61 @@ public class Klant implements New {
     public Klant() {
     }
 
-    public Klant(int klantId, String naam, String roepnaam, String naamVerantwoordelijke, boolean seizoensKlant, String beginSeizoensPeriode, String eindeSeizoensPeriode, String titelverdeellijstenRaster, String telefoonNr1, String gsmNr, String email, String website, BoekhoudRekening boekhoudRekening, String webshopId, String ondernemingsNr, MuntEenheid muntEenheid, boolean domiciliëring, boolean bedragInTekst, Solvabiliteit solvabiliteit, boolean prijzenGroeperenOpFactuur, boolean nettoPrijzenOpFactuur, boolean prijzenExlusiefBtwOpFactuur, boolean klantGeblokkeerd, Dagboek dagboek, boolean factuurElektronischVerzenden, String bewaarMapElektronischeFacturenEnCreditNotas, FacturatiePeriode facturatiePeriode, BetalingsVoorwaarde betalingsVoorwaarde, InhoudLeveringsbonnen inhoudLeveringsbonnen, boolean gratisAantallenOpLeveringsbonnen, boolean kortingsPercentagesOpLeveringsbonnen, boolean nettoTeBetalenOpLeveringsbonnen, boolean verkoopprijzenExlusiefBtwOpLeveringsbonnen, int aantalExemplarenLeveringsbonnen, int aantalExemplarenFacturen, boolean opvolgenLeeggoed, boolean afdrukkenEtikettenVerpakkingen, boolean afdrukkenKlantOpVerdeellijst, boolean klantAfdrukkenOpverdeelEtiketten, String titelVerdeellijst, KlantVerdeelGroep verdeelGroep, String telefoonNr2) {
-        KlantId = klantId;
-        Naam = naam;
-        Roepnaam = roepnaam;
-        NaamVerantwoordelijke = naamVerantwoordelijke;
-        SeizoensKlant = seizoensKlant;
-        BeginSeizoensPeriode = beginSeizoensPeriode;
-        EindeSeizoensPeriode = eindeSeizoensPeriode;
-        TitelverdeellijstenRaster = titelverdeellijstenRaster;
-        TelefoonNr1 = telefoonNr1;
-        TelefoonNr2 = telefoonNr2;
-        GsmNr = gsmNr;
-        Email = email;
-        Website = website;
-        BoekhoudRekening = boekhoudRekening;
-        WebShop = webshopId;
-        OndernemingsNr = ondernemingsNr;
-        MuntEenheid = muntEenheid;
-        Domiciliëring = domiciliëring;
-        BedragInTekst = bedragInTekst;
-        Solvabiliteit = solvabiliteit;
-        PrijzenGroeperenOpFactuur = prijzenGroeperenOpFactuur;
-        NettoPrijzenOpFactuur = nettoPrijzenOpFactuur;
-        PrijzenExclusiefBtwOpFactuur = prijzenExlusiefBtwOpFactuur;
-        KlantGeblokkeerd = klantGeblokkeerd;
-        Dagboek = dagboek;
-        FactuurElektronischVerzenden = factuurElektronischVerzenden;
-        BewaarMapElektronischeFacturenEnCreditNotas = bewaarMapElektronischeFacturenEnCreditNotas;
-        FacturatiePeiode = facturatiePeriode;
-        BetalingsVoorwaarde = betalingsVoorwaarde;
-        InhoudLeveringsbonnen = inhoudLeveringsbonnen;
-        GratisAantallenOpLeveringsbonnen = gratisAantallenOpLeveringsbonnen;
-        KortingsPercentagesOpLeveringsbonnen = kortingsPercentagesOpLeveringsbonnen;
-        NettoTeBetalenOpLeveringsbonnen = nettoTeBetalenOpLeveringsbonnen;
-        VerkoopprijzenExlusiefBtwOpLeveringsbonnen = verkoopprijzenExlusiefBtwOpLeveringsbonnen;
-        AantalExemplarenLeveringsbonnen = aantalExemplarenLeveringsbonnen;
-        AantalExemplarenFacturen = aantalExemplarenFacturen;
-        OpvolgenLeeggoed = opvolgenLeeggoed;
-        AfdrukkenEtikettenVerpakkingen = afdrukkenEtikettenVerpakkingen;
-        AfdrukkenKlantOpVerdeellijst = afdrukkenKlantOpVerdeellijst;
-        KlantAfdrukkenOpverdeelEtiketten = klantAfdrukkenOpverdeelEtiketten;
-        TitelVerdeellijst = titelVerdeellijst;
-        Verdeelgroep = verdeelGroep;
+    public Klant(int klantId, String naam, String roepnaam, boolean blokkeren,String ondernemingsnummer,String emailVerzendbon, Date beginSeizoen,Date eindSeizoen, String titelRaster, KlantVerdeelGroep klantverdeelgroep ){
+        this.KlantId=klantId;
+        this.Naam = naam;
+        this.Roepnaam = roepnaam;
+        this.KlantGeblokkeerd=blokkeren;
+        this.OndernemingsNr=ondernemingsnummer;
+        this.Email = emailVerzendbon;
+        this.BeginSeizoensPeriode = beginSeizoen;
+        this.EindeSeizoensPeriode = eindSeizoen;
+        this.Verdeelgroep = klantverdeelgroep;
     }
+//    public Klant(int klantId, String naam, String roepnaam, String naamVerantwoordelijke, boolean seizoensKlant, String beginSeizoensPeriode, String eindeSeizoensPeriode, String titelverdeellijstenRaster, String telefoonNr1, String gsmNr, String email, String website, BoekhoudRekening boekhoudRekening, String webshopId, String ondernemingsNr, MuntEenheid muntEenheid, boolean domiciliëring, boolean bedragInTekst, Solvabiliteit solvabiliteit, boolean prijzenGroeperenOpFactuur, boolean nettoPrijzenOpFactuur, boolean prijzenExlusiefBtwOpFactuur, boolean klantGeblokkeerd, Dagboek dagboek, boolean factuurElektronischVerzenden, String bewaarMapElektronischeFacturenEnCreditNotas, FacturatiePeriode facturatiePeriode, BetalingsVoorwaarde betalingsVoorwaarde, InhoudLeveringsbonnen inhoudLeveringsbonnen, boolean gratisAantallenOpLeveringsbonnen, boolean kortingsPercentagesOpLeveringsbonnen, boolean nettoTeBetalenOpLeveringsbonnen, boolean verkoopprijzenExlusiefBtwOpLeveringsbonnen, int aantalExemplarenLeveringsbonnen, int aantalExemplarenFacturen, boolean opvolgenLeeggoed, boolean afdrukkenEtikettenVerpakkingen, boolean afdrukkenKlantOpVerdeellijst, boolean klantAfdrukkenOpverdeelEtiketten, String titelVerdeellijst, KlantVerdeelGroep verdeelGroep, String telefoonNr2) {
+//        KlantId = klantId;
+//        Naam = naam;
+//        Roepnaam = roepnaam;
+//        NaamVerantwoordelijke = naamVerantwoordelijke;
+//        SeizoensKlant = seizoensKlant;
+//        BeginSeizoensPeriode = beginSeizoensPeriode;
+//        EindeSeizoensPeriode = eindeSeizoensPeriode;
+//        TitelverdeellijstenRaster = titelverdeellijstenRaster;
+//        TelefoonNr1 = telefoonNr1;
+//        TelefoonNr2 = telefoonNr2;
+//        GsmNr = gsmNr;
+//        Email = email;
+//        Website = website;
+//        BoekhoudRekening = boekhoudRekening;
+//        WebShop = webshopId;
+//        OndernemingsNr = ondernemingsNr;
+//        MuntEenheid = muntEenheid;
+//        Domiciliëring = domiciliëring;
+//        BedragInTekst = bedragInTekst;
+//        Solvabiliteit = solvabiliteit;
+//        PrijzenGroeperenOpFactuur = prijzenGroeperenOpFactuur;
+//        NettoPrijzenOpFactuur = nettoPrijzenOpFactuur;
+//        PrijzenExclusiefBtwOpFactuur = prijzenExlusiefBtwOpFactuur;
+//        KlantGeblokkeerd = klantGeblokkeerd;
+//        Dagboek = dagboek;
+//        FactuurElektronischVerzenden = factuurElektronischVerzenden;
+//        BewaarMapElektronischeFacturenEnCreditNotas = bewaarMapElektronischeFacturenEnCreditNotas;
+//        FacturatiePeiode = facturatiePeriode;
+//        BetalingsVoorwaarde = betalingsVoorwaarde;
+//        InhoudLeveringsbonnen = inhoudLeveringsbonnen;
+//        GratisAantallenOpLeveringsbonnen = gratisAantallenOpLeveringsbonnen;
+//        KortingsPercentagesOpLeveringsbonnen = kortingsPercentagesOpLeveringsbonnen;
+//        NettoTeBetalenOpLeveringsbonnen = nettoTeBetalenOpLeveringsbonnen;
+//        VerkoopprijzenExlusiefBtwOpLeveringsbonnen = verkoopprijzenExlusiefBtwOpLeveringsbonnen;
+//        AantalExemplarenLeveringsbonnen = aantalExemplarenLeveringsbonnen;
+//        AantalExemplarenFacturen = aantalExemplarenFacturen;
+//        OpvolgenLeeggoed = opvolgenLeeggoed;
+//        AfdrukkenEtikettenVerpakkingen = afdrukkenEtikettenVerpakkingen;
+//        AfdrukkenKlantOpVerdeellijst = afdrukkenKlantOpVerdeellijst;
+//        KlantAfdrukkenOpverdeelEtiketten = klantAfdrukkenOpverdeelEtiketten;
+//        TitelVerdeellijst = titelVerdeellijst;
+//        Verdeelgroep = verdeelGroep;
+//    }
 
     public int getKlantId() {
         return KlantId;
@@ -177,19 +189,19 @@ public class Klant implements New {
         this.SeizoensKlant = SeizoensKlant;
     }
 
-    public String getBeginSeizoensPeriode() {
+    public Date getBeginSeizoensPeriode() {
         return BeginSeizoensPeriode;
     }
 
-    public void setBeginSeizoensPeriode(String BeginSeizoensPeriode) {
+    public void setBeginSeizoensPeriode(Date BeginSeizoensPeriode) {
         this.BeginSeizoensPeriode = BeginSeizoensPeriode;
     }
 
-    public String getEindeSiezoensPeriode() {
+    public Date getEindeSiezoensPeriode() {
         return EindeSeizoensPeriode;
     }
 
-    public void setEindeSiezoensPeriode(String EindeSiezoensPeriode) {
+    public void setEindeSiezoensPeriode(Date EindeSiezoensPeriode) {
         this.EindeSeizoensPeriode = EindeSiezoensPeriode;
     }
 
