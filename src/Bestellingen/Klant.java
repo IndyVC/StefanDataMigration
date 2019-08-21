@@ -14,11 +14,11 @@ import Bedrijven.BankRekeningNummer;
 import Bedrijven.Verlof;
 import Boekhouding.BetalingsVoorwaarde;
 import Boekhouding.BoekhoudRekening;
+import Boekhouding.Dagboek;
 import Boekhouding.FacturatiePeriode;
 import Boekhouding.Korting;
 import Leveringen.LeveringsToer;
 import New.New;
-import Old.Dagboek;
 import TussenTabellen.KlantAdres;
 import TussenTabellen.KlantBereikbaarheidOpDag;
 import TussenTabellen.KlantKorting;
@@ -28,6 +28,7 @@ import enums.InhoudLeveringsbonnen;
 import enums.MuntEenheid;
 import enums.Solvabiliteit;
 import enums.Taal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class Klant implements New {
     public String Email;
     public String Website;
     public BoekhoudRekening BoekhoudRekening;
-    public String WebShop;
+    public String WebShopId;
     public String OndernemingsNr;
     public MuntEenheid MuntEenheid;
     public boolean Domiciliëring;
@@ -64,7 +65,7 @@ public class Klant implements New {
     public Dagboek Dagboek;
     public boolean FactuurElektronischVerzenden;
     public String BewaarMapElektronischeFacturenEnCreditNotas;
-    public FacturatiePeriode FacturatiePeiode;
+    public FacturatiePeriode FacturatiePeriode;
     public BetalingsVoorwaarde BetalingsVoorwaarde;
     public InhoudLeveringsbonnen InhoudLeveringsbonnen;
     public boolean GratisAantallenOpLeveringsbonnen;
@@ -78,22 +79,22 @@ public class Klant implements New {
     public boolean AfdrukkenKlantOpVerdeellijst;
     public boolean KlantAfdrukkenOpverdeelEtiketten;
     public String TitelVerdeellijst;
-    public KlantVerdeelGroep Verdeelgroep;
+    public KlantVerdeelGroep VerdeelgroepKlantVerdeelGroep;
  
     public List<ContactPersoon> ContactPersonen;
     public List<BankRekeningNummer> BankRekeningNummers;
     public List<LeveringsToer> LeveringsToeren;
-    public List<Opmerking> Opmerkingen;
-    public List<KlantOpeningstijd> KlantOpeningstijden;
     public List<KlantVerlof> KlantVerlof;
     public List<KlantKorting> KlantKortingen;
-    public List<KlantBereikbaarheidOpDag> KlantBereikbaarOpDagen;
+    public List<BereikbaarheidOpDag> BereikbaarheidOpDagen;
     public List<KlantAdres> KlantAdressen;
 
     public Klant() {
+        this.BereikbaarheidOpDagen = new ArrayList();
     }
 
     public Klant(int klantId, String naam, String roepnaam, boolean blokkeren,String ondernemingsnummer,String emailVerzendbon, Date beginSeizoen,Date eindSeizoen, String titelRaster, KlantVerdeelGroep klantverdeelgroep ){
+        this();
         this.KlantId=klantId;
         this.Naam = naam;
         this.Roepnaam = roepnaam;
@@ -102,7 +103,27 @@ public class Klant implements New {
         this.Email = emailVerzendbon;
         this.BeginSeizoensPeriode = beginSeizoen;
         this.EindeSeizoensPeriode = eindSeizoen;
-        this.Verdeelgroep = klantverdeelgroep;
+        this.VerdeelgroepKlantVerdeelGroep = klantverdeelgroep;
+        this.SeizoensKlant = false;
+        this.Domiciliëring = true;
+        this.BedragInTekst = true;
+        this.PrijzenGroeperenOpFactuur = true;
+        this.NettoPrijzenOpFactuur = true;
+        this.PrijzenExclusiefBtwOpFactuur = false;
+        this.KlantGeblokkeerd = false;
+        this.FactuurElektronischVerzenden = false;
+        this.GratisAantallenOpLeveringsbonnen = true;
+        this.KortingsPercentagesOpLeveringsbonnen = true;
+        this.NettoTeBetalenOpLeveringsbonnen = true;
+        this.VerkoopprijzenExlusiefBtwOpLeveringsbonnen = false;
+        this.OpvolgenLeeggoed = false;
+        this.AfdrukkenEtikettenVerpakkingen = true;
+        this.AfdrukkenKlantOpVerdeellijst = true;
+        this.KlantAfdrukkenOpverdeelEtiketten = true;
+        MuntEenheid = MuntEenheid.Euro;
+        Solvabiliteit = Solvabiliteit.GeenProbleem;
+        InhoudLeveringsbonnen = InhoudLeveringsbonnen.Aantallen;
+        
     }
 //    public Klant(int klantId, String naam, String roepnaam, String naamVerantwoordelijke, boolean seizoensKlant, String beginSeizoensPeriode, String eindeSeizoensPeriode, String titelverdeellijstenRaster, String telefoonNr1, String gsmNr, String email, String website, BoekhoudRekening boekhoudRekening, String webshopId, String ondernemingsNr, MuntEenheid muntEenheid, boolean domiciliëring, boolean bedragInTekst, Solvabiliteit solvabiliteit, boolean prijzenGroeperenOpFactuur, boolean nettoPrijzenOpFactuur, boolean prijzenExlusiefBtwOpFactuur, boolean klantGeblokkeerd, Dagboek dagboek, boolean factuurElektronischVerzenden, String bewaarMapElektronischeFacturenEnCreditNotas, FacturatiePeriode facturatiePeriode, BetalingsVoorwaarde betalingsVoorwaarde, InhoudLeveringsbonnen inhoudLeveringsbonnen, boolean gratisAantallenOpLeveringsbonnen, boolean kortingsPercentagesOpLeveringsbonnen, boolean nettoTeBetalenOpLeveringsbonnen, boolean verkoopprijzenExlusiefBtwOpLeveringsbonnen, int aantalExemplarenLeveringsbonnen, int aantalExemplarenFacturen, boolean opvolgenLeeggoed, boolean afdrukkenEtikettenVerpakkingen, boolean afdrukkenKlantOpVerdeellijst, boolean klantAfdrukkenOpverdeelEtiketten, String titelVerdeellijst, KlantVerdeelGroep verdeelGroep, String telefoonNr2) {
 //        KlantId = klantId;
@@ -132,7 +153,7 @@ public class Klant implements New {
 //        Dagboek = dagboek;
 //        FactuurElektronischVerzenden = factuurElektronischVerzenden;
 //        BewaarMapElektronischeFacturenEnCreditNotas = bewaarMapElektronischeFacturenEnCreditNotas;
-//        FacturatiePeiode = facturatiePeriode;
+//        FacturatiePeriode = facturatiePeriode;
 //        BetalingsVoorwaarde = betalingsVoorwaarde;
 //        InhoudLeveringsbonnen = inhoudLeveringsbonnen;
 //        GratisAantallenOpLeveringsbonnen = gratisAantallenOpLeveringsbonnen;
@@ -146,7 +167,7 @@ public class Klant implements New {
 //        AfdrukkenKlantOpVerdeellijst = afdrukkenKlantOpVerdeellijst;
 //        KlantAfdrukkenOpverdeelEtiketten = klantAfdrukkenOpverdeelEtiketten;
 //        TitelVerdeellijst = titelVerdeellijst;
-//        Verdeelgroep = verdeelGroep;
+//        VerdeelgroepKlantVerdeelGroep = verdeelGroep;
 //    }
 
     public int getKlantId() {
@@ -173,6 +194,62 @@ public class Klant implements New {
         this.Roepnaam = Roepnaam;
     }
 
+    public Date getBeginSeizoensPeriode() {
+        return BeginSeizoensPeriode;
+    }
+
+    public void setBeginSeizoensPeriode(Date BeginSeizoensPeriode) {
+        this.BeginSeizoensPeriode = BeginSeizoensPeriode;
+    }
+
+    public Date getEindeSeizoensPeriode() {
+        return EindeSeizoensPeriode;
+    }
+
+    public void setEindeSeizoensPeriode(Date EindeSeizoensPeriode) {
+        this.EindeSeizoensPeriode = EindeSeizoensPeriode;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String Email) {
+        this.Email = Email;
+    }
+
+    public String getOndernemingsNr() {
+        return OndernemingsNr;
+    }
+
+    public void setOndernemingsNr(String OndernemingsNr) {
+        this.OndernemingsNr = OndernemingsNr;
+    }
+
+    public boolean isKlantGeblokkeerd() {
+        return KlantGeblokkeerd;
+    }
+
+    public void setKlantGeblokkeerd(boolean KlantGeblokkeerd) {
+        this.KlantGeblokkeerd = KlantGeblokkeerd;
+    }
+
+    public KlantVerdeelGroep getVerdeelgroepKlantVerdeelGroep() {
+        return VerdeelgroepKlantVerdeelGroep;
+    }
+
+    public void setVerdeelgroepKlantVerdeelGroep(KlantVerdeelGroep VerdeelgroepKlantVerdeelGroep) {
+        this.VerdeelgroepKlantVerdeelGroep = VerdeelgroepKlantVerdeelGroep;
+    }
+
+    public List<KlantAdres> getKlantAdressen() {
+        return KlantAdressen;
+    }
+
+    public void setKlantAdressen(List<KlantAdres> KlantAdressen) {
+        this.KlantAdressen = KlantAdressen;
+    }
+
     public String getNaamVerantwoordelijke() {
         return NaamVerantwoordelijke;
     }
@@ -187,22 +264,6 @@ public class Klant implements New {
 
     public void setSeizoensKlant(boolean SeizoensKlant) {
         this.SeizoensKlant = SeizoensKlant;
-    }
-
-    public Date getBeginSeizoensPeriode() {
-        return BeginSeizoensPeriode;
-    }
-
-    public void setBeginSeizoensPeriode(Date BeginSeizoensPeriode) {
-        this.BeginSeizoensPeriode = BeginSeizoensPeriode;
-    }
-
-    public Date getEindeSiezoensPeriode() {
-        return EindeSeizoensPeriode;
-    }
-
-    public void setEindeSiezoensPeriode(Date EindeSiezoensPeriode) {
-        this.EindeSeizoensPeriode = EindeSiezoensPeriode;
     }
 
     public String getTitelverdeellijstenRaster() {
@@ -237,14 +298,6 @@ public class Klant implements New {
         this.GsmNr = GsmNr;
     }
 
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String Email) {
-        this.Email = Email;
-    }
-
     public String getWebsite() {
         return Website;
     }
@@ -262,19 +315,11 @@ public class Klant implements New {
     }
 
     public String getWebShop() {
-        return WebShop;
+        return WebShopId;
     }
 
     public void setWebShop(String WebShop) {
-        this.WebShop = WebShop;
-    }
-
-    public String getOndernemingsNr() {
-        return OndernemingsNr;
-    }
-
-    public void setOndernemingsNr(String OndernemingsNr) {
-        this.OndernemingsNr = OndernemingsNr;
+        this.WebShopId = WebShop;
     }
 
     public MuntEenheid getMuntEenheid() {
@@ -333,14 +378,6 @@ public class Klant implements New {
         this.PrijzenExclusiefBtwOpFactuur = PrijzenExclusiefBtwOpFactuur;
     }
 
-    public boolean isKlantGeblokkeerd() {
-        return KlantGeblokkeerd;
-    }
-
-    public void setKlantGeblokkeerd(boolean KlantGeblokkeerd) {
-        this.KlantGeblokkeerd = KlantGeblokkeerd;
-    }
-
     public Dagboek getDagboek() {
         return Dagboek;
     }
@@ -365,12 +402,12 @@ public class Klant implements New {
         this.BewaarMapElektronischeFacturenEnCreditNotas = BewaarMapElektronischeFacturenEnCreditNotas;
     }
 
-    public FacturatiePeriode getFacturatiePeiode() {
-        return FacturatiePeiode;
+    public FacturatiePeriode getFacturatiePeriode() {
+        return FacturatiePeriode;
     }
 
-    public void setFacturatiePeiode(FacturatiePeriode FacturatiePeiode) {
-        this.FacturatiePeiode = FacturatiePeiode;
+    public void setFacturatiePeriode(FacturatiePeriode FacturatiePeriode) {
+        this.FacturatiePeriode = FacturatiePeriode;
     }
 
     public BetalingsVoorwaarde getBetalingsVoorwaarde() {
@@ -477,14 +514,6 @@ public class Klant implements New {
         this.TitelVerdeellijst = TitelVerdeellijst;
     }
 
-    public KlantVerdeelGroep getVerdeelgroep() {
-        return Verdeelgroep;
-    }
-
-    public void setVerdeelgroep(KlantVerdeelGroep Verdeelgroep) {
-        this.Verdeelgroep = Verdeelgroep;
-    }
-
     public List<ContactPersoon> getContactPersonen() {
         return ContactPersonen;
     }
@@ -509,17 +538,6 @@ public class Klant implements New {
         this.LeveringsToeren = LeveringsToeren;
     }
 
-
-    public List<KlantOpeningstijd> getKlantOpeningstijden() {
-        return KlantOpeningstijden;
-    }
-
-    public void setKlantOpeningstijden(List<KlantOpeningstijd> KlantOpeningstijden) {
-        this.KlantOpeningstijden = KlantOpeningstijden;
-    }
-
-   
-
     public List<KlantVerlof> getKlantVerlof() {
         return KlantVerlof;
     }
@@ -527,8 +545,6 @@ public class Klant implements New {
     public void setKlantVerlof(List<KlantVerlof> KlantVerlof) {
         this.KlantVerlof = KlantVerlof;
     }
-
-   
 
     public List<KlantKorting> getKlantKortingen() {
         return KlantKortingen;
@@ -538,27 +554,19 @@ public class Klant implements New {
         this.KlantKortingen = KlantKortingen;
     }
 
- 
-    public List<KlantBereikbaarheidOpDag> getKlantBereikbaarOpDagen() {
-        return KlantBereikbaarOpDagen;
+    public List<BereikbaarheidOpDag> getBereikbaarOpDagen() {
+        return BereikbaarheidOpDagen;
     }
 
-    public void setKlantBereikbaarOpDagen(List<KlantBereikbaarheidOpDag> KlantBereikbaarOpDagen) {
-        this.KlantBereikbaarOpDagen = KlantBereikbaarOpDagen;
+    public void setBereikbaarOpDagen(List<BereikbaarheidOpDag> BereikbaarOpDagen) {
+        this.BereikbaarheidOpDagen = BereikbaarOpDagen;
     }
-
-    public List<KlantAdres> getKlantAdressen() {
-        return KlantAdressen;
-    }
-
-    public void setKlantAdressen(List<KlantAdres> KlantAdressen) {
-        this.KlantAdressen = KlantAdressen;
-    }
-
+    
+    
 
     @Override
     public void setId(int id) {
-        this.KlantId = id;
+        this.KlantId=id;
     }
 
     @Override
@@ -566,4 +574,5 @@ public class Klant implements New {
         return this.KlantId;
     }
 
+  
 }

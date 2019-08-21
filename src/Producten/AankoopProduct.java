@@ -14,6 +14,7 @@ import Boekhouding.AnalytischeRekening;
 import Materialen.Etiket;
 import Materialen.EtiketTekst;
 import New.New;
+import TussenTabellen.AankoopProductLeverancier;
 import TussenTabellen.AankoopProductVerkoopProduct;
 import TussenTabellen.VestigingAankoopProduct;
 import Voorraden.VoorraadPlaats;
@@ -29,7 +30,7 @@ import java.util.List;
  *
  * @author stefa
  */
-public class AankoopProduct implements New{
+public class AankoopProduct implements New {
 
     public int AankoopProductId;
     public Omschrijving Omschrijving;
@@ -78,11 +79,16 @@ public class AankoopProduct implements New{
     public ReceptProduct ReceptProduct;
     public List<VestigingAankoopProduct> AankoopProductvestigingen;
     public List<AankoopProductVerkoopProduct> AankoopProductenVerkoopProducten;
+    public List<AankoopProductLeverancier> AankoopProductLeveranciers;
 
     public AankoopProduct() {
+        this.AankoopProductenVerkoopProducten = new ArrayList();
+        this.AankoopProductvestigingen = new ArrayList();
+        this.AankoopProductLeveranciers = new ArrayList();
     }
 
     public AankoopProduct(int AankoopProductId, Omschrijving Omschrijving, ProductCategorie ProductCategorie, ProductGroep ProductGroep, ProductSubGroep ProductSubGroep, BestelGroep BestelGroep, VerpakkingsEenheid VerpakkingsEenheid, Eenheid AankoopEenheid, Eenheid VoorraadEenhied, Eenheid EtiketEenheid, double EenhedenPerVerpakking, double VerpakkingenPerOmverpakking, double NettoGewichtPerVerpakking, double BrutoGewichtPerVerpakking, double MinimumBestelHoeveelheid, double TeBestellenVeelvoud, int MinimumLeveringsTermijnInDagen, int MinimumAantalDagenHoudbaar, boolean NaarVoorRaad, double MinimumVoorraad, double MaximumVoorraad, VoorraadPlaats VoorraadPlaats, BtwCode BtwCode, AlgemeneRekening AlgemeneRekening, AnalytischeRekening AnalytischeRekening, boolean WordtDoorVerkocht, boolean Blokkeren, String ProductInfo, double GewichtPerEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, boolean EtiketIntern, Etiket Etiket, BigDecimal Gtin, EtiketTekst EtiketTekst, Fabrikant Fabrikant, double VerliesPercentage, String Foto, String BarcodeOpOmverpakking, boolean GaatOnmiddelijkInGebruik, boolean IsBeperktHoudbaarNaOpenen, int AantalDagenHoudbaarNaOpenen, Eenheid EenheidBijInGebruikName, int AantalLotenInGebruik, ReceptProduct ReceptProduct) {
+        this();
         this.AankoopProductId = AankoopProductId;
         this.Omschrijving = Omschrijving;
         this.ProductCategorie = ProductCategorie;
@@ -128,12 +134,18 @@ public class AankoopProduct implements New{
         this.EenheidBijInGebruikName = EenheidBijInGebruikName;
         this.AantalLotenInGebruik = AantalLotenInGebruik;
         this.ReceptProduct = ReceptProduct;
-        this.AankoopProductenVerkoopProducten = new ArrayList();
-        this.AankoopProductvestigingen = new ArrayList();
+
+    }
+
+    public List<AankoopProductLeverancier> getAankoopProductLeveranciers() {
+        return AankoopProductLeveranciers;
+    }
+
+    public void setAankoopProductLeveranciers(List<AankoopProductLeverancier> AankoopProductLeveranciers) {
+        this.AankoopProductLeveranciers = AankoopProductLeveranciers;
     }
 
     
-
     public int getAankoopProductId() {
         return AankoopProductId;
     }
@@ -230,8 +242,6 @@ public class AankoopProduct implements New{
         this.VerpakkingenPerOmverpakking = VerpakkingenPerOmverpakking;
     }
 
-
-
     public void setEenhedenPerVerpakking(int EenhedenPerVerpakking) {
         this.EenhedenPerVerpakking = EenhedenPerVerpakking;
     }
@@ -252,8 +262,6 @@ public class AankoopProduct implements New{
         this.TeBestellenVeelvoud = TeBestellenVeelvoud;
     }
 
-
-
     public void setVerpakkingenPerOmverpakking(int VerpakkingenPerOmverpakking) {
         this.VerpakkingenPerOmverpakking = VerpakkingenPerOmverpakking;
     }
@@ -273,10 +281,6 @@ public class AankoopProduct implements New{
     public void setBrutoGewichtPerVerpakking(double BrutoGewichtPerVerpakking) {
         this.BrutoGewichtPerVerpakking = BrutoGewichtPerVerpakking;
     }
-
-  
-
-    
 
     public void setTeBestellenVeelvoud(int TeBestellenVeelvoud) {
         this.TeBestellenVeelvoud = TeBestellenVeelvoud;
@@ -532,13 +536,12 @@ public class AankoopProduct implements New{
 
     @Override
     public void setId(int id) {
-        this.AankoopProductId=id;
+        this.AankoopProductId = id;
     }
 
     @Override
     public int getId() {
         return this.AankoopProductId;
     }
-    
 
 }

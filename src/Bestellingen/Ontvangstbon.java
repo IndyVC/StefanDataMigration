@@ -9,6 +9,7 @@ import Bedrijven.Bedrijf;
 import Gebruikers.Gebruiker;
 import Leveringen.Leverancier;
 import Materialen.Werkstation;
+import New.New;
 import Producten.AankoopProduct;
 import enums.Eenheid;
 import enums.MuntEenheid;
@@ -20,10 +21,9 @@ import java.sql.Date;
  *
  * @author stefa
  */
-public class Ontvangstbon {
-
-    public Bedrijf Bedrijf;
+public class Ontvangstbon implements New{
     public int OntvangstbonId;
+    public Bedrijf Bedrijf;
     public int OntvangstbonSamenstellingId;
     public int Volgnummer;
     public AankoopProduct AankoopProduct;
@@ -417,6 +417,16 @@ public class Ontvangstbon {
 
     public void setFactuurnummer(String Factuurnummer) {
         this.Factuurnummer = Factuurnummer;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.OntvangstbonId=id;
+    }
+
+    @Override
+    public int getId() {
+        return this.OntvangstbonId;
     }
     
     

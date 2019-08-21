@@ -13,6 +13,7 @@ import Boekhouding.BetalingsVoorwaarde;
 import Boekhouding.Dagboek;
 import Boekhouding.Link;
 import New.New;
+import TussenTabellen.AankoopProductLeverancier;
 import enums.BtwCode;
 import enums.LeveringsFrequenties;
 import enums.MuntEenheid;
@@ -20,6 +21,7 @@ import enums.Taal;
 import enums.Webshop_API;
 import java.util.List;
 import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  *
@@ -77,11 +79,16 @@ public class Leverancier implements New {
     public List<Verlof> Verloven;
     public List<Openingstijd> Openingstijden;
     public List<LeveringsDag> LeveringsDagen;
+    public List<AankoopProductLeverancier> LeverancierAankoopProducten;
 
     public Leverancier() {
+        LeverancierAankoopProducten = new ArrayList();
+        LeveringsDagen = new ArrayList();
+        Openingstijden = new ArrayList();
     }
 
     public Leverancier(int LeverancierId, String Aanspreking, String Naam, Adres Adres, Taal Taal, LeveranciersGroep LeveranciersGroep, boolean Blokkeren, String ContactNaam, String ContactTelefoonnummer, String ContactGsmnummer, String ContactFaxnummer, String ContactEmail, String UrlWebsite, String VertegenwoordigerNaam, String VertegenwoordigerTelefoonnummer, String VertegenwoordigerGsmnummer, String VertegenwoordigerFaxnummer, String VertegenwoordigerEmail, Date DatumAfspraak, String Info, String KlantCode, String BestellingTelefoonnummer, String BestellingFaxNummer, String BestellingEmail, String UrlWebshop, Webshop_API WebshopApi, String TekstBestelbon, Date Begindatum, Date Einddatum, LeveringsFrequenties Leveringsfrequentie, MuntEenheid Munteenheid, BetalingsVoorwaarde BetalingsVoorwaarde, double PercentageHandelskorting, double PercentageFinanciëleKorting, double KredietLimiet, boolean PrijzenInclusiefBTW, boolean NulPrijzenBijLevering, String BoekhoudingCode, Dagboek Dagboek, AlgemeneRekening AlgemeneRekening, BtwCode BtwCode, String OndernemingsNummer, String RechtspersonenRegister, String BankNummer, String AlgemeneInfo) {
+        this();
         this.LeverancierId = LeverancierId;
         this.Aanspreking = Aanspreking;
         this.Naam = Naam;
@@ -129,6 +136,15 @@ public class Leverancier implements New {
         this.AlgemeneInfo = AlgemeneInfo;
     }
 
+    public List<AankoopProductLeverancier> getLeverancierAankoopProducten() {
+        return LeverancierAankoopProducten;
+    }
+
+    public void setLeverancierAankoopProducten(List<AankoopProductLeverancier> LeverancierAankoopProducten) {
+        this.LeverancierAankoopProducten = LeverancierAankoopProducten;
+    }
+
+    
     public int getLeverancierId() {
         return LeverancierId;
     }
@@ -526,7 +542,7 @@ public class Leverancier implements New {
         this.LeverancierId = id;
     }
 
-     @Override
+    @Override
     public int getId() {
         return this.LeverancierId;
     }

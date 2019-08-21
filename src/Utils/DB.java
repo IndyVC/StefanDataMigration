@@ -13,6 +13,7 @@ import New.New;
 import Producten.ReceptProduct;
 import static Utils.Util.BigDecimal;
 import enums.AllergeenType;
+import enums.BereikbaarOpDag;
 import enums.BtwCode;
 import enums.CcpPva;
 import enums.DayOfWeek;
@@ -190,6 +191,8 @@ public class DB {
                                 statement.setInt(i, Webshop_API.valueOf(field.get(obj).toString()).ordinal());
                             } else if (field.get(obj) instanceof WeegschaalModel) {
                                 statement.setInt(i, WeegschaalModel.valueOf(field.get(obj).toString()).ordinal());
+                            }else if (field.get(obj) instanceof BereikbaarOpDag) {
+                                statement.setInt(i, BereikbaarOpDag.valueOf(field.get(obj).toString()).ordinal());
                             }
                         } else if (field.getType() == int.class) {
                             statement.setInt(i, field.getInt(obj));

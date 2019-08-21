@@ -7,6 +7,7 @@ package New;
 
 import Adressen.Adres;
 import Adressen.OntvangstAdres;
+import Algemeen.BereikbaarheidOpDag;
 import Algemeen.Omschrijving;
 import Algemeen.Openingstijd;
 import Bedrijven.BankRekeningNummer;
@@ -91,6 +92,7 @@ import Producten.VoorstellingOpProductielijst;
 import Tracering.LotnummerAanbrenger;
 import Tracering.LotnummerDrager;
 import Tracering.LotnummerType;
+import TussenTabellen.AankoopProductLeverancier;
 import TussenTabellen.AankoopProductVerkoopProduct;
 import TussenTabellen.KlantAdres;
 import TussenTabellen.ReceptProductBasisRecept;
@@ -199,6 +201,7 @@ public class Export {
     private static List<Werkstation> newWerkstations;
     private static List<Ontvangstbon> newOntvangstbonnen;
     private static List<Klant> newKlanten;
+    private static List<BereikbaarheidOpDag> newBereikbaarheidOpDagen;
 
     public static void export() {
         Import.readOld();
@@ -239,12 +242,12 @@ public class Export {
         exportProductgroepen(); //done
         System.out.println("EXPORT PRODUCTCATEGORIEEN");
         exportProductcategorieën(); //done
-        System.out.println("EXPORT AANKOOPPRODUCTEN");
-        exportAankoopproducten(); //done
         System.out.println("EXPORT UITGAANDEBESTELLINGEN");
         exportBestelbonnenUitgaandeBestellingen();
+        System.out.println("EXPORT AANKOOPPRODUCTEN");
+        exportAankoopproducten(); //done
         System.out.println("EXPORT BASISRECEPTEN");
-        exportBasisRecepten();  //BASIS RECEPT NOG OPVULLEN: BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten;  [Jobs; BESTAAT NIET] 
+        exportBasisRecepten();  // [BasisReceptBasisProducten; BasisReceptAfgewerkteProducten; BasisReceptverkoopProducten; BasisReceptVoorbereidProducten;  Jobs; BESTAAT NIET] 
         System.out.println("EXPORT MATERIEELGROEPEN");
         exportMaterieelGroepen(); //done
         System.out.println("EXPORT MATERIEEL");
@@ -268,7 +271,7 @@ public class Export {
         System.out.println("EXPORT ONRECHTSTREEKSE KOSTEN");
         exportOnrechtstreekseKosten();//done
         System.out.println("EXPORT AFGEWERKTE PRODUCTEN");
-        exportAfgewerkteProducten();// AfgewerktProductBasisRecepten; [AfgewerktProductTaken; AfgewerktProductMaterieel; BESTAAT NIET]
+        exportAfgewerkteProducten();// [AfgewerktProductBasisRecepten; AfgewerktProductTaken; AfgewerktProductMaterieel; BESTAAT NIET]
         System.out.println("EXPORT VERKOOP PRODUCTGROEPEN");
         exportVerkoopProductgroepen(); //done
         System.out.println("EXPORT BARCODEPREFIXEN");
@@ -294,11 +297,11 @@ public class Export {
         System.out.println("EXPORT DISTRIBUTIEWIJZES");
         exportDistributiewijzes(); //done
         System.out.println("EXPORT VERKOOPPRODUCT");
-        exportVerkoopProducten(); //VERKOOPPRODUCT NOG OPVULLEN: VerkoopProductBasisRecepten;
+        exportVerkoopProducten(); // [VerkoopProductBasisRecepten; BESTAAT NIET]
         System.out.println("EXPORT VOORBEREIDEPRODUCTEN");
-        exportVoorbereideProducten(); //VOORBEREIDPRODUCT NOG OPVULLEN: VoorbereidProductBasisRecepten; [VoorbereidProductTaken; VoorbereidProductMaterielen; BESTAAT NIET]
+        exportVoorbereideProducten(); //[VoorbereidProductBasisRecepten; VoorbereidProductTaken; VoorbereidProductMaterielen; BESTAAT NIET]
         System.out.println("EXPORT GEBRUIKERS");
-        //exportGebruikers();                           //ASPNETURSER tabel!!!???
+        //exportGebruikers(); //ASPNETURSER tabel!!!???
         System.out.println("EXPORT FUNCTIEVANPERSONEN");
         exportFunctieVanPersonen(); //done
         System.out.println("EXPORT WERKNEMERS");
@@ -330,7 +333,7 @@ public class Export {
         System.out.println("EXPORT VOORRAADCORRECTIES");
         exportVoorraadcorrecties(); //done
         System.out.println("EXPORT BASISPRODUCTEN");
-        exportBasisproducten();//OPVULLEN: BasisProductVestigingen; BasisProductBasisRecepten; [BasisProductTaken; BasisProductMaterielen; BESTAAT NIET]
+        exportBasisproducten();//OPVULLEN: BasisProductVestigingen; [BasisProductBasisRecepten; BasisProductTaken; BasisProductMaterielen; BESTAAT NIET]
         System.out.println("EXPORT KASSABESTELLING");
         exportKassabestellingen(); //GEBRUIKERS EN KLANTEN WERKEN HIER NOG NIET!!! Lijst van KassabestellingenRecords zijn ook nog niet opgevuld
         System.out.println("EXPORT KASSABESTELLING RECORDS");
@@ -343,6 +346,8 @@ public class Export {
         exportWerkstations(); //done
         System.out.println("EXPORT ONTVANGSTBONNEN");
         exportOntvangstbonnen(); //done
+        System.out.println("EXPORT BEREIKBAARHEID OP DAG");
+        exportBereikbaarheidOpDagen();
         System.out.println("EXPORT KLANTEN");
         exportKlanten(); //Op te vullen= Alle lijsten behalve KlantAdres, maar de andere bestaan allemaal niet?
 
@@ -748,7 +753,8 @@ public class Export {
         List<ProductSubGroep> productSubgroepen = new ArrayList();
         List<VoorraadPlaats> voorraadPlaatsen = new ArrayList();
         List<ReceptProduct> receptProducten = new ArrayList();
-        List<VestigingAankoopProduct> tussen = new ArrayList();
+        List<VestigingAankoopProduct> vestigingAankoopproducten = new ArrayList();
+        List<AankoopProductLeverancier> aankoopProductenLeveranciers = new ArrayList();
 
         newAankoopproducten.forEach(e -> {
             omschrijvingen.add(e.getOmschrijving());
@@ -762,10 +768,15 @@ public class Export {
             algemeneRekeningen.add(e.getAlgemeneRekening());
             productCategorien.add(e.getProductCategorie());
             receptProducten.add(e.getReceptProduct());
+
             e.getAankoopProductvestigingen().forEach(t -> {
-                tussen.add(t);
+                vestigingAankoopproducten.add(t);
+            });
+            e.getAankoopProductLeveranciers().forEach(t -> {
+                aankoopProductenLeveranciers.add(t);
             });
         });
+
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(algemeneRekeningen, newAlgemeneRekeningen), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
         DB.insert(removeDuplicates(productSubgroepen, newProductSubGroepen), "ProductSubGroep", ProductSubGroep.class, false, false);
@@ -785,19 +796,23 @@ public class Export {
             e.setAankoopProducten(aankoopProducten);
         });
 
-        DB.insert(tussen, "VestigingAankoopProduct", VestigingAankoopProduct.class, true, true);
+        DB.insert(vestigingAankoopproducten, "VestigingAankoopProduct", VestigingAankoopProduct.class, true, true);
+        DB.insert(aankoopProductenLeveranciers, "AankoopProductLeverancier", AankoopProductLeverancier.class, true, true);
 
-        //SKIPBIG
-//        Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList()).forEach(e -> {
-//
-//            AankoopProduct aankoopProduct = newAankoopproducten.stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(null);
-//            UitgaandeBestelling uitgaandeBestelling = newUitgaandBestellingen.stream().filter(t -> t.getId() == e.getId_bestelbon()).findFirst().orElse(null);
-//            if (uitgaandeBestelling != null && aankoopProduct != null) {
-//                uitgaandeBestelling.setAankoopProduct(aankoopProduct);
-//                String query = String.format("UPDATE UitgaandeBestellingen SET AankoopProductId = %d WHERE UitgaandeBestellingId = %d", aankoopProduct.getId(), uitgaandeBestelling.getId());
-//                DB.executeCustomQuery(query);
-//            }
-//        });
+        //BIGDATA
+        int i = 0;
+        for (Old.Bestelling.BestelbonDetail e : Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList())) {
+            if (i <= 20) {
+                AankoopProduct aankoopProduct = newAankoopproducten.stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(null);
+                UitgaandeBestelling uitgaandeBestelling = newUitgaandBestellingen.stream().filter(t -> t.getId() == e.getId_bestelbon()).findFirst().orElse(null);
+                if (uitgaandeBestelling != null && aankoopProduct != null) {
+                    uitgaandeBestelling.setAankoopProduct(aankoopProduct);
+                    String query = String.format("UPDATE UitgaandeBestellingen SET AankoopProductId = %d WHERE UitgaandeBestellingId = %d", aankoopProduct.getId(), uitgaandeBestelling.getId());
+                    DB.executeCustomQuery(query);
+                }
+            }
+            i++;
+        }
     }
 
     // EERSTE KEER BASISRECEPTEN + Tussen tabel receptproduct-basisrecept
@@ -1254,12 +1269,12 @@ public class Export {
             int idVerkoop = product.getId_verkoopproduct();
             AankoopProduct aankoop = newAankoopproducten.stream().filter(t -> t.getId() == idAankoop).findFirst().get();
             VerkoopProduct verkoop = newVerkoopProducten.stream().filter(t -> t.getId() == idVerkoop).findFirst().get();
-            TussenTabellen.AankoopProductVerkoopProduct av = new AankoopProductVerkoopProduct(aankoop,verkoop);
+            TussenTabellen.AankoopProductVerkoopProduct av = new AankoopProductVerkoopProduct(aankoop, verkoop);
             aankoop.setAankoopProductenVerkoopProducten(List.of(av));
             verkoop.setVerkoopProductAankoopProduct(List.of(av));
             tussentabel.add(av);
         });
-        
+
         DB.insert(tussentabel, "AankoopProductVerkoopProduct", AankoopProductVerkoopProduct.class, true, true);
     }
 
@@ -1564,8 +1579,8 @@ public class Export {
         DB.insert(removeDuplicates(onrechtStreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
         DB.insert(newBasisproducten, "BasisProduct", BasisProduct.class, true, false);
 
-        Import.getHalffabrikaten().forEach(e->{
-            
+        Import.getHalffabrikaten().forEach(e -> {
+
         });
     }
 
@@ -1722,13 +1737,21 @@ public class Export {
         DB.insert(newOntvangstbonnen, "Ontvangstbonnen", Ontvangstbon.class, true, true);
     }
 
-    private static void exportKlanten() {
+    //EERSTE KEER BEREIKBAARHEIDOPDAGEN
+    public static void exportBereikbaarheidOpDagen() {
+        newBereikbaarheidOpDagen = Mapper.oldKlantBestellingStandaardToNewBereikbaarheidOpDag();
+        DB.insert(newBereikbaarheidOpDagen, "BereikbaarhedenOpDagen", BereikbaarheidOpDag.class, true, true);
+
+    }
+
+    //EERSTE KEER KLANTEN, KLANTADRESSEN
+    public static void exportKlanten() {
         newKlanten = Mapper.oldKlantToNewKlant();
         List<KlantVerdeelGroep> verdeelgroepen = new ArrayList();
         List<KlantAdres> klantadressen = new ArrayList();
 
         newKlanten.forEach(e -> {
-            verdeelgroepen.add(e.getVerdeelgroep());
+            verdeelgroepen.add(e.getVerdeelgroepKlantVerdeelGroep());
             klantadressen.add(e.getKlantAdressen().get(0)); // oude klanten hebben er sws maar 1
         });
 
