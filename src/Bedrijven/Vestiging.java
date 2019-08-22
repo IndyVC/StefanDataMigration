@@ -18,7 +18,7 @@ import java.util.List;
  * @author stefa
  */
 public class Vestiging implements New {
-    
+
     public int VestigingId;
     public Bedrijf Bedrijf;
     public Omschrijving VestigingsOmschrijvingOmschrijving;
@@ -32,6 +32,8 @@ public class Vestiging implements New {
     public List<BasisProductVestiging> BasisProductVestiging;
 
     public Vestiging() {
+        VestigingAankoopProduct = new ArrayList();
+        BasisProductVestiging = new ArrayList();
     }
 
     public Vestiging(int VestgingId, Bedrijf Bedrijf, Omschrijving VestigingsOmschrijving, Adres Adres, String TelefoonNummer, String Email, BankRekeningNummer BankRekeningNummer, String OndernemingsNummer, String VestigingsNummer) {
@@ -152,16 +154,14 @@ public class Vestiging implements New {
         this.BasisProductVestiging = BasisProductVestiging;
     }
 
-    
     @Override
     public void setId(int id) {
-        this.VestigingId=id;
+        this.VestigingId = id;
     }
 
     @Override
     public int getId() {
         return this.VestigingId;
     }
-    
-    
+
 }

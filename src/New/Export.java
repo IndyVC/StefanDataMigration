@@ -26,6 +26,7 @@ import Bestellingen.KassabestellingRecord;
 import Bestellingen.Klant;
 import Bestellingen.KlantVerdeelGroep;
 import Bestellingen.Ontvangstbon;
+import Bestellingen.OrderPicking;
 import Bestellingen.UitgaandeBestelling;
 import Bestellingen.Verzendbon;
 import Boekhouding.AlgemeneRekening;
@@ -56,6 +57,9 @@ import Materialen.Scanner;
 import Materialen.Verpakking;
 import Materialen.Weegschaal;
 import Materialen.Werkstation;
+import static New.Mapper.oldBestelbonHoofdingToNewBestelbon;
+import Old.Bestelling.BestelbonDetail;
+import Old.Halffabrikaat;
 import Producten.AankoopProduct;
 import Producten.AfgewerktProduct;
 import Producten.Allergeen;
@@ -94,6 +98,7 @@ import Tracering.LotnummerDrager;
 import Tracering.LotnummerType;
 import TussenTabellen.AankoopProductLeverancier;
 import TussenTabellen.AankoopProductVerkoopProduct;
+import TussenTabellen.BasisProductVestiging;
 import TussenTabellen.KlantAdres;
 import TussenTabellen.ReceptProductBasisRecept;
 import TussenTabellen.VestigingAankoopProduct;
@@ -202,6 +207,7 @@ public class Export {
     private static List<Ontvangstbon> newOntvangstbonnen;
     private static List<Klant> newKlanten;
     private static List<BereikbaarheidOpDag> newBereikbaarheidOpDagen;
+    private static List<OrderPicking> newOrderpickings;
 
     public static void export() {
         Import.readOld();
@@ -212,7 +218,7 @@ public class Export {
         exportBedrijf(); //done
         System.out.println("EXPORT ONTVANGSTADRESSEN");
         exportOntvangstAdressen(); //done
-        System.out.println("EXPORT RECEPTPRODUCTEN (LISTS NOG NIET OPGEVULD)");
+        System.out.println("EXPORT RECEPTPRODUCTEN");
         exportReceptProducten(); //  [ReceptProductTaken; ReceptProductMaterielen; BESTAAT NIET]
         System.out.println("EXPORT BESTELVOORSTELLEN");
         exportBestelvoorstellen(); //done
@@ -350,6 +356,8 @@ public class Export {
         exportBereikbaarheidOpDagen();
         System.out.println("EXPORT KLANTEN");
         exportKlanten(); //Op te vullen= Alle lijsten behalve KlantAdres, maar de andere bestaan allemaal niet?
+        System.out.println("EXPORT ORDERPICKING");
+        exportOrderpicking();
 
     }
 
@@ -548,8 +556,6 @@ public class Export {
         DB.insert(leveringsdagen, "LeveringsDag", LeveringsDag.class, true, true);
         DB.insert(newLeveranciers, "Leverancier", Leverancier.class, true, false);
 
-        System.out.println("LONG OPERATION!");
-
         //SKIPBIG
         /*
         newLeveranciers.forEach(leverancier -> {
@@ -566,8 +572,6 @@ public class Export {
                 DB.executeCustomQuery(query);
             });
         });*/
-        System.out.println("DONE OPERATION!");
-
     }
 
     //EERSTE KEER BESTELGROEPEN
@@ -734,13 +738,35 @@ public class Export {
     public static void exportBestelbonnenUitgaandeBestellingen() {
         newUitgaandBestellingen = Mapper.oldBestelbonDetailsToNewUitgaandeBestelling();
         newBestelbonnen = Mapper.oldBestelbonHoofdingToNewBestelbon();
+        List<Old.Bestelling.BestelbonDetail> bestelbonnendetails = Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList());
 
-        DB.insert(newUitgaandBestellingen, "UitgaandeBestellingen", UitgaandeBestelling.class, true, true);
+        //Bestelbon zijn List opvullen.
+        newBestelbonnen.forEach(bon -> {
+            List<UitgaandeBestelling> bestellingen = new ArrayList();
+
+            for (int i = 0; i < newUitgaandBestellingen.size(); i++) {
+                if (bestelbonnendetails.get(i).getId_bestelbon() == bon.getId()) {
+                    bestellingen.add(newUitgaandBestellingen.get(i));
+                }
+            }
+            bon.setUitgaandeBestellingen(bestellingen);
+        });
+
+        for (Bestelbon e : newBestelbonnen) {
+            e.getUitgaandeBestellingen().forEach(t -> {
+                t.setOntvangstAdres(e.getOntvangstAdres());
+                t.setLeverancier(e.getLeverancier());
+                t.setBestelbonId(e.getBestelbonId());
+            });
+        }
+
         DB.insert(newBestelbonnen, "Bestelbonnen", Bestelbon.class, true, false);
+        DB.insert(newUitgaandBestellingen, "UitgaandeBestellingen", UitgaandeBestelling.class, true, true);
+
     }
 
     //EERSTE KEER AANKOOPPRODUCTEN
-    private static void exportAankoopproducten() {
+    public static void exportAankoopproducten() {
         newAankoopproducten = Mapper.oldAankoopproductToNewAankoopproduct();
         List<Omschrijving> omschrijvingen = new ArrayList();
         List<Etiket> etiketten = new ArrayList();
@@ -799,20 +825,24 @@ public class Export {
         DB.insert(vestigingAankoopproducten, "VestigingAankoopProduct", VestigingAankoopProduct.class, true, true);
         DB.insert(aankoopProductenLeveranciers, "AankoopProductLeverancier", AankoopProductLeverancier.class, true, true);
 
-        //BIGDATA
-        int i = 0;
-        for (Old.Bestelling.BestelbonDetail e : Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList())) {
-            if (i <= 20) {
-                AankoopProduct aankoopProduct = newAankoopproducten.stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(null);
-                UitgaandeBestelling uitgaandeBestelling = newUitgaandBestellingen.stream().filter(t -> t.getId() == e.getId_bestelbon()).findFirst().orElse(null);
-                if (uitgaandeBestelling != null && aankoopProduct != null) {
-                    uitgaandeBestelling.setAankoopProduct(aankoopProduct);
-                    String query = String.format("UPDATE UitgaandeBestellingen SET AankoopProductId = %d WHERE UitgaandeBestellingId = %d", aankoopProduct.getId(), uitgaandeBestelling.getId());
-                    DB.executeCustomQuery(query);
-                }
-            }
-            i++;
-        }
+//        //BIGDATA
+//        int i = 0;
+//        System.out.println(Import.getBestelbonnendetail().size());
+//        for (Old.Bestelling.BestelbonDetail e : Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList())) {
+//            if (i %100==0) {
+//                System.out.println("i");
+//            }
+//            
+////                AankoopProduct aankoopProduct = newAankoopproducten.stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(null);
+////                UitgaandeBestelling uitgaandeBestelling = newUitgaandBestellingen.stream().filter(t -> t.getId() == e.getId_bestelbon()).findFirst().orElse(null);
+////                if (uitgaandeBestelling != null && aankoopProduct != null) {
+////                    uitgaandeBestelling.setAankoopProductId(aankoopProduct.getId());
+//                    String query = String.format("UPDATE UitgaandeBestellingen SET AankoopProductId = %d WHERE UitgaandeBestellingId = %d", e.getId_aankoopproduct(), e.getId_bestelbon());
+//                    DB.executeCustomQuery(query);
+////                }
+////            //}
+//            i++;
+//        }
     }
 
     // EERSTE KEER BASISRECEPTEN + Tussen tabel receptproduct-basisrecept
@@ -1529,7 +1559,7 @@ public class Export {
         DB.insert(newVoorraadcorrecties, "Voorraadcorrecties", Voorraadcorrectie.class, true, false);
     }
 
-    //EERSTE KEER BASISPRODUCTEN
+    //EERSTE KEER BASISPRODUCTEN EN BASISPRODUCTVESTIGINGEN
     private static void exportBasisproducten() {
         newBasisproducten = Mapper.oldHalffabrikaatToNewBasisProduct();
         List<Omschrijving> omschrijvingen = new ArrayList();
@@ -1579,9 +1609,21 @@ public class Export {
         DB.insert(removeDuplicates(onrechtStreekseKosten, newOnrechtstreekseKosten), "OnrechtstreekseKosten", OnrechtstreekseKost.class, false, false);
         DB.insert(newBasisproducten, "BasisProduct", BasisProduct.class, true, false);
 
+        List<BasisProductVestiging> tussentabellen = new ArrayList();
         Import.getHalffabrikaten().forEach(e -> {
+            Halffabrikaat fab = (Halffabrikaat) e;
+            BasisProduct basisproduct = newBasisproducten.stream().filter(t -> t.getId() == fab.getId_halffabrikaat()).findFirst().orElse(null);
+            Bedrijf bedrijf = newBedrijven.stream().filter(t -> t.getBedrijfId() == fab.getId_bedrijf()).findFirst().orElse(null);
+            if (basisproduct != null && bedrijf != null && bedrijf.getVestigingen().get(0) != null) {
+                BasisProductVestiging tussen = new BasisProductVestiging(basisproduct, bedrijf.getVestigingen().get(0));
+                bedrijf.getVestigingen().get(0).getBasisProductVestiging().add(tussen);
+                basisproduct.getBasisProductVestigingen().add(tussen);
+                tussentabellen.add(tussen);
+            }
 
         });
+
+        DB.insert(tussentabellen, "BasisProductVestiging", BasisProductVestiging.class, true, true);
     }
 
     //EERSTE KEER KASSABESTELLINGEN
@@ -1612,7 +1654,7 @@ public class Export {
     public static void exportKassabestellingRecords() {
         newKassabestellingRecords = Mapper.oldKassaBestellingDetailToNewKassaBestellingRecord();
         List<Bedrijf> bedrijven = new ArrayList();
-        List<VerkoopProduct> verkoopProducten = new ArrayList();
+        //List<VerkoopProduct> verkoopProducten = new ArrayList();
         List<Variant> varianten = new ArrayList();
         List<VariantGroep> variantGroepen = new ArrayList();
         List<Optie> opties = new ArrayList();
@@ -1621,12 +1663,12 @@ public class Export {
         //gebruiker geskipt wegens aspnetuser
         newKassabestellingRecords.forEach(e -> {
             bedrijven.add(e.getBedrijf());
-            verkoopProducten.add(e.getVerkoopProduct());
+            //verkoopProducten.add(e.getVerkoopProductId()); OBJECT TO INT
             varianten.add(e.getVariant());
             variantGroepen.add(e.getVariantGroep());
             opties.add(e.getOptie());
             optiegroepen.add(e.getOptieGroep());
-            kassabestellingen.add(e.getKassaBestelling());
+            //kassabestellingen.add(e.getKassaBestelling()); OBJECT TO INT
         });
 
         newKassabestellingen.forEach(e -> {
@@ -1635,7 +1677,7 @@ public class Export {
         });
 
         DB.insert(removeDuplicates(bedrijven, newBedrijven), "Bedrijven", Bedrijf.class, false, false);
-        DB.insert(removeDuplicates(verkoopProducten, newVerkoopProducten), "VerkoopProduct", VerkoopProduct.class, false, false);
+        //DB.insert(removeDuplicates(verkoopProducten, newVerkoopProducten), "VerkoopProductId", VerkoopProductId.class, false, false);
         DB.insert(removeDuplicates(variantGroepen, newVariantgroepen), "VariantGroepen", VariantGroep.class, false, false);
         DB.insert(removeDuplicates(varianten, newVarianten), "Varianten", Variant.class, false, false);
         DB.insert(removeDuplicates(optiegroepen, newOptiegroepen), "OptieGroepen", OptieGroep.class, false, false);
@@ -1660,7 +1702,7 @@ public class Export {
         newVerzendbonnen = Mapper.oldVerzendbonToNewVerzendbon();
         List<Bedrijf> bedrijven = new ArrayList();
         List<Bestelbon> bestelbonnen = new ArrayList();
-        List<VerkoopProduct> verkoopProducten = new ArrayList();
+        //List<VerkoopProduct> verkoopProducten = new ArrayList();
         List<Werknemer> werknemers = new ArrayList();
         List<Variant> varianten = new ArrayList();
         List<VariantGroep> variantGroepen = new ArrayList();
@@ -1670,7 +1712,7 @@ public class Export {
         newVerzendbonnen.forEach(e -> {
             bedrijven.add(e.getBedrijf());
             bestelbonnen.add(e.getBestelbon());
-            verkoopProducten.add(e.getVerkoopProduct());
+            //verkoopProducten.add(e.getVerkoopProductId());
             werknemers.add(e.getWerknemer());
             variantGroepen.add(e.getVariantGroep());
             varianten.add(e.getVariant());
@@ -1678,7 +1720,7 @@ public class Export {
             opties.add(e.getOptie());
         });
         DB.insert(removeDuplicates(bedrijven, newBedrijven), "Bedrijven", Bedrijf.class, false, false);
-        DB.insert(removeDuplicates(verkoopProducten, newVerkoopProducten), "VerkoopProduct", VerkoopProduct.class, false, false);
+        //DB.insert(removeDuplicates(verkoopProducten, newVerkoopProducten), "VerkoopProduct", VerkoopProduct.class, false, false);
         DB.insert(removeDuplicates(variantGroepen, newVariantgroepen), "VariantGroepen", VariantGroep.class, false, false);
         DB.insert(removeDuplicates(varianten, newVarianten), "Varianten", Variant.class, false, false);
         DB.insert(removeDuplicates(optiegroepen, newOptiegroepen), "OptieGroepen", OptieGroep.class, false, false);
@@ -1716,21 +1758,21 @@ public class Export {
         newOntvangstbonnen = Mapper.oldLeveringsbonToNewOntvangstbon();
 
         List<Bedrijf> bedrijven = new ArrayList();
-        List<AankoopProduct> aankoopProducten = new ArrayList();
+        //List<AankoopProduct> aankoopProducten = new ArrayList();
         //List<Gebruiker> gebruikers = new ArrayList(); not possible
         List<Leverancier> leveranciers = new ArrayList();
         List<Werkstation> werkstations = new ArrayList();
 
         newOntvangstbonnen.forEach(e -> {
             bedrijven.add(e.getBedrijf());
-            aankoopProducten.add(e.getAankoopProduct());
+            //aankoopProducten.add(e.getAankoopProductId());
             //gebruikers.add(e.getGebruiker());
             leveranciers.add(e.getLeverancier());
             werkstations.add(e.getWerkstation());
         });
 
         DB.insert(removeDuplicates(bedrijven, newBedrijven), "Bedrijven", Bedrijf.class, false, false);
-        DB.insert(removeDuplicates(aankoopProducten, newAankoopproducten), "AankoopProducten", AankoopProduct.class, false, false);
+        //DB.insert(removeDuplicates(aankoopProducten, newAankoopproducten), "AankoopProducten", AankoopProduct.class, false, false);
         //DB.insert(removeDuplicates(gebruikers, newGebruikers), tableName, type, true, true);
         DB.insert(removeDuplicates(leveranciers, newLeveranciers), "Leverancier", Leverancier.class, false, false);
         DB.insert(removeDuplicates(werkstations, newWerkstations), "Werkstations", Werkstation.class, false, false);
@@ -1758,6 +1800,42 @@ public class Export {
         DB.insert(removeDuplicates(verdeelgroepen, newKlantverdeelgroep), "KlantVerdeelGroep", KlantVerdeelGroep.class, false, false);
         DB.insert(klantadressen, "KlantAdres", KlantAdres.class, true, true);
         DB.insert(newKlanten, "Klant", Klant.class, true, false);
+    }
+
+    private static void exportOrderpicking() {
+        newOrderpickings = Mapper.oldOrderpickingToNewOrderpicking();
+        //List<VerkoopProduct> verkoopProducten = new ArrayList();
+        List<VariantGroep> varGroepen = new ArrayList();
+        List<Variant> varianten = new ArrayList();
+        List<OptieGroep> optieGroepen = new ArrayList();
+        List<Optie> opties = new ArrayList();
+        List<Bedrijf> bedrijven = new ArrayList();
+        List<Klant> klanten = new ArrayList();
+        List<Gebruiker> gebruikers = new ArrayList();
+        List<Kassabestelling> bestellingen = new ArrayList();
+
+        newOrderpickings.forEach(e -> {
+            //verkoopProducten.add(e.getVerkoopProductId());
+            varGroepen.add(e.getVariantGroep());
+            varianten.add(e.getVariant());
+            optieGroepen.add(e.getOptieGroep());
+            opties.add(e.getOptie());
+            bedrijven.add(e.getBedrijf());
+            klanten.add(e.getKlant());
+            gebruikers.add(e.getGebruiker());
+            bestellingen.add(e.getKassaBestelling());
+        });
+        //DB.insert(removeDuplicates(verkoopProducten, newVerkoopProducten), "VerkoopProductId", VerkoopProductId.class, false, false);
+        DB.insert(removeDuplicates(varGroepen, newVariantgroepen), "VariantGroepen", VariantGroep.class, false, false);
+        DB.insert(removeDuplicates(varianten, newVarianten), "Varianten", Variant.class, false, false);
+        DB.insert(removeDuplicates(optieGroepen, newOptiegroepen), "OptieGroepen", OptieGroep.class, false, false);
+        DB.insert(removeDuplicates(opties, newOpties), "Opties", Optie.class, false, false);
+        DB.insert(removeDuplicates(klanten, newKlanten), "Klant", Klant.class, false, false);
+        //gebruikers gaat niet aspnetusers
+        DB.insert(removeDuplicates(bedrijven, newBedrijven), "Bedrijven", Bedrijf.class, false, false);
+        DB.insert(removeDuplicates(bestellingen, newKassabestellingen), "KassaBestellingen", Kassabestelling.class, false, false);
+        DB.insert(newOrderpickings, "OrderPickings", OrderPicking.class, true, true);
+
     }
 
 }

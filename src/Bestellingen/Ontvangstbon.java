@@ -26,7 +26,7 @@ public class Ontvangstbon implements New{
     public Bedrijf Bedrijf;
     public int OntvangstbonSamenstellingId;
     public int Volgnummer;
-    public AankoopProduct AankoopProduct;
+    public int AankoopProductId;
     public double Hoeveelheid;
     public double Eenheidsprijd;
     public Date HoudbaarheidsDatum;
@@ -65,12 +65,12 @@ public class Ontvangstbon implements New{
     public Ontvangstbon() {
     }
 
-    public Ontvangstbon(Bedrijf Bedrijf, int OntvangstbonId, int OntvangstbonSamenstellingId, int Volgnummer, AankoopProduct AankoopProduct, double Hoeveelheid, double Eenheidsprijd, Date HoudbaarheidsDatum, BigDecimal Lotnummer, Eenheid Aankoopeenheid, VerpakkingsEenheid VerpakkingsEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, double AantalEenhedenVerpakking, double AantalVerpakkingenColli, double AantalColliPallet, double Totaal, int AantalEtiketten, double LeveringsTemperatuur, double Eenheidsgewicht, boolean IsGefactureerd, String LotnummerExtern, double NettoGewicht, Eenheid GekozenAankoopeenheid, Gebruiker Gebruiker, Date DatumGebruik, double HoeveelheidReden, double HoeveelheidVuilbak, double HoeveelheidGeweigerd, double HoeveelheidTerug, double HoeveelheidInGebruik, boolean Tonen, boolean Gescand, Leverancier Leverancier, Date LeveringDatum, String Referentie, Werkstation Werkstation, Date FactuurDatum, String Factuurnummer) {
+    public Ontvangstbon(Bedrijf Bedrijf, int OntvangstbonId, int OntvangstbonSamenstellingId, int Volgnummer, int AankoopProduct, double Hoeveelheid, double Eenheidsprijd, Date HoudbaarheidsDatum, BigDecimal Lotnummer, Eenheid Aankoopeenheid, VerpakkingsEenheid VerpakkingsEenheid, Eenheid BasisEenheid, MuntEenheid PrijsEenheid, double AantalEenhedenVerpakking, double AantalVerpakkingenColli, double AantalColliPallet, double Totaal, int AantalEtiketten, double LeveringsTemperatuur, double Eenheidsgewicht, boolean IsGefactureerd, String LotnummerExtern, double NettoGewicht, Eenheid GekozenAankoopeenheid, Gebruiker Gebruiker, Date DatumGebruik, double HoeveelheidReden, double HoeveelheidVuilbak, double HoeveelheidGeweigerd, double HoeveelheidTerug, double HoeveelheidInGebruik, boolean Tonen, boolean Gescand, Leverancier Leverancier, Date LeveringDatum, String Referentie, Werkstation Werkstation, Date FactuurDatum, String Factuurnummer) {
         this.Bedrijf = Bedrijf;
         this.OntvangstbonId = OntvangstbonId;
         this.OntvangstbonSamenstellingId = OntvangstbonSamenstellingId;
         this.Volgnummer = Volgnummer;
-        this.AankoopProduct = AankoopProduct;
+        this.AankoopProductId = AankoopProduct;
         this.Hoeveelheid = Hoeveelheid;
         this.Eenheidsprijd = Eenheidsprijd;
         this.HoudbaarheidsDatum = HoudbaarheidsDatum;
@@ -139,12 +139,12 @@ public class Ontvangstbon implements New{
         this.Volgnummer = Volgnummer;
     }
 
-    public AankoopProduct getAankoopProduct() {
-        return AankoopProduct;
+    public int getAankoopProductId() {
+        return AankoopProductId;
     }
 
-    public void setAankoopProduct(AankoopProduct AankoopProduct) {
-        this.AankoopProduct = AankoopProduct;
+    public void setAankoopProductId(int AankoopProductId) {
+        this.AankoopProductId = AankoopProductId;
     }
 
     public double getHoeveelheid() {

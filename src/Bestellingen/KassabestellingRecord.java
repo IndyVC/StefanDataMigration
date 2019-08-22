@@ -23,7 +23,7 @@ public class KassabestellingRecord implements New {
     public Bedrijf Bedrijf;
     public int Volgnummer;
     public double Hoeveelheid;
-    public VerkoopProduct VerkoopProduct;
+    public int VerkoopProductId;
     public int Aantal_Personen;
     public Variant Variant;
     public VariantGroep VariantGroep;
@@ -36,12 +36,12 @@ public class KassabestellingRecord implements New {
     public KassabestellingRecord() {
     }
 
-    public KassabestellingRecord(int KassaBestellingRecordId, Bedrijf Bedrijf, int Volgnummer, double Hoeveelheid, VerkoopProduct VerkoopProductId, int Aantal_Personen, Variant Variant, VariantGroep VariantGroep, Optie Optie, OptieGroep OptieGroep, String Opmerking, boolean VerdeelticketAfdrukken, Kassabestelling KassaBestelling) {
+    public KassabestellingRecord(int KassaBestellingRecordId, Bedrijf Bedrijf, int Volgnummer, double Hoeveelheid, int VerkoopProductId, int Aantal_Personen, Variant Variant, VariantGroep VariantGroep, Optie Optie, OptieGroep OptieGroep, String Opmerking, boolean VerdeelticketAfdrukken, Kassabestelling KassaBestelling) {
         this.KassaBestellingRecordId = KassaBestellingRecordId;
         this.Bedrijf = Bedrijf;
         this.Volgnummer = Volgnummer;
         this.Hoeveelheid = Hoeveelheid;
-        this.VerkoopProduct = VerkoopProductId;
+        this.VerkoopProductId = VerkoopProductId;
         this.Aantal_Personen = Aantal_Personen;
         this.Variant = Variant;
         this.VariantGroep = VariantGroep;
@@ -56,8 +56,8 @@ public class KassabestellingRecord implements New {
         return KassaBestelling;
     }
 
-    public void setKassaBestelling(Kassabestelling KassaBestelling) {
-        this.KassaBestelling = KassaBestelling;
+    public void setKassaBestelling(Kassabestelling KassaBestellingId) {
+        this.KassaBestelling = KassaBestellingId;
     }
 
     public Bedrijf getBedrijf() {
@@ -92,12 +92,12 @@ public class KassabestellingRecord implements New {
         this.Hoeveelheid = Hoeveelheid;
     }
 
-    public VerkoopProduct getVerkoopProduct() {
-        return VerkoopProduct;
+    public int getVerkoopProductId() {
+        return VerkoopProductId;
     }
 
-    public void setVerkoopProduct(VerkoopProduct VerkoopProduct) {
-        this.VerkoopProduct = VerkoopProduct;
+    public void setVerkoopProductId(int VerkoopProductId) {
+        this.VerkoopProductId = VerkoopProductId;
     }
 
     public int getAantal_Personen() {

@@ -15,6 +15,7 @@ import Producten.OptieGroep;
 import Producten.Variant;
 import Producten.VariantGroep;
 import Producten.VerkoopProduct;
+import java.math.BigDecimal;
 
 /**
  *
@@ -24,11 +25,11 @@ public class OrderPicking implements New {
 
     public int OrderipickingId;
     public int SamenstellingOrderpickingsId;
-    public double Lotnummer;
+    public BigDecimal Lotnummer;
     public double Hoeveelheid;
     public int Volgnummer;
     public int VolgnummerVerkoopproduct;
-    public VerkoopProduct VerkoopProduct;
+    public int VerkoopProductId;
     public double Verkoopprijs;
     public double Basisprijs;
     public int AantalPersonen;
@@ -49,7 +50,6 @@ public class OrderPicking implements New {
     public Date DateTeLeveren;
     public String RerentieKlant;
     public Date DateBesteld;
-    public int MyProperty;
     public String Uur;
     public boolean Betaald;
     public double KortingsPercentage;
@@ -68,14 +68,14 @@ public class OrderPicking implements New {
     public OrderPicking() {
     }
 
-    public OrderPicking(int OrderipickingId, int SamenstellingOrderpickingsId, double Lotnummer, double Hoeveelheid, int Volgnummer, int VolgnummerVerkoopproduct, VerkoopProduct VerkoopProduct, double Verkoopprijs, double Basisprijs, int AantalPersonen, VariantGroep VariantGroep, Variant Variant, OptieGroep OptieGroep, Optie Optie, boolean KortingManueelAangepast, boolean MagKortingBerekendWorden, double TotaalBedrag, String Tekst, double VerwerkteEenheid, double HoeveelheidWinkelbestelling, Bedrijf Bedrijf, Klant Klant, Date DateOrderpicking, Date DateLeveringsbon, Date DateTeLeveren, String RerentieKlant, Date DateBesteld, int MyProperty, String Uur, boolean Betaald, double KortingsPercentage, double BedragBetaald, double BedragBestelling, double BedragKorting, String RedenKorting, boolean Levering, boolean Express, boolean FactuurGewenst, String Referentie, String Opmerking, Gebruiker Gebruiker, Kassabestelling KassaBestelling) {
+    public OrderPicking(int OrderipickingId, int SamenstellingOrderpickingsId, BigDecimal Lotnummer, double Hoeveelheid, int Volgnummer, int VolgnummerVerkoopproduct, int VerkoopProduct, double Verkoopprijs, double Basisprijs, int AantalPersonen, VariantGroep VariantGroep, Variant Variant, OptieGroep OptieGroep, Optie Optie, boolean KortingManueelAangepast, boolean MagKortingBerekendWorden, double TotaalBedrag, String Tekst, double VerwerkteEenheid, double HoeveelheidWinkelbestelling, Bedrijf Bedrijf, Klant Klant, Date DateOrderpicking, Date DateLeveringsbon, Date DateTeLeveren, String RerentieKlant, Date DateBesteld, String Uur, boolean Betaald, double KortingsPercentage, double BedragBetaald, double BedragBestelling, double BedragKorting, String RedenKorting, boolean Levering, boolean Express, boolean FactuurGewenst, String Referentie, String Opmerking, Gebruiker Gebruiker, Kassabestelling KassaBestelling) {
         this.OrderipickingId = OrderipickingId;
         this.SamenstellingOrderpickingsId = SamenstellingOrderpickingsId;
         this.Lotnummer = Lotnummer;
         this.Hoeveelheid = Hoeveelheid;
         this.Volgnummer = Volgnummer;
         this.VolgnummerVerkoopproduct = VolgnummerVerkoopproduct;
-        this.VerkoopProduct = VerkoopProduct;
+        this.VerkoopProductId = VerkoopProduct;
         this.Verkoopprijs = Verkoopprijs;
         this.Basisprijs = Basisprijs;
         this.AantalPersonen = AantalPersonen;
@@ -96,7 +96,6 @@ public class OrderPicking implements New {
         this.DateTeLeveren = DateTeLeveren;
         this.RerentieKlant = RerentieKlant;
         this.DateBesteld = DateBesteld;
-        this.MyProperty = MyProperty;
         this.Uur = Uur;
         this.Betaald = Betaald;
         this.KortingsPercentage = KortingsPercentage;
@@ -129,11 +128,11 @@ public class OrderPicking implements New {
         this.SamenstellingOrderpickingsId = SamenstellingOrderpickingsId;
     }
 
-    public double getLotnummer() {
+    public BigDecimal getLotnummer() {
         return Lotnummer;
     }
 
-    public void setLotnummer(double Lotnummer) {
+    public void setLotnummer(BigDecimal Lotnummer) {
         this.Lotnummer = Lotnummer;
     }
 
@@ -161,12 +160,12 @@ public class OrderPicking implements New {
         this.VolgnummerVerkoopproduct = VolgnummerVerkoopproduct;
     }
 
-    public VerkoopProduct getVerkoopProduct() {
-        return VerkoopProduct;
+    public int getVerkoopProductId() {
+        return VerkoopProductId;
     }
 
-    public void setVerkoopProduct(VerkoopProduct VerkoopProduct) {
-        this.VerkoopProduct = VerkoopProduct;
+    public void setVerkoopProductId(int VerkoopProductId) {
+        this.VerkoopProductId = VerkoopProductId;
     }
 
     public double getVerkoopprijs() {
@@ -327,14 +326,6 @@ public class OrderPicking implements New {
 
     public void setDateBesteld(Date DateBesteld) {
         this.DateBesteld = DateBesteld;
-    }
-
-    public int getMyProperty() {
-        return MyProperty;
-    }
-
-    public void setMyProperty(int MyProperty) {
-        this.MyProperty = MyProperty;
     }
 
     public String getUur() {

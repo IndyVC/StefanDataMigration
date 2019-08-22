@@ -1,9 +1,5 @@
 
-import Bedrijven.Bedrijf;
-import Import.Import;
 import New.Export;
-import New.Mapper;
-import java.util.List;
 
 
 
@@ -20,6 +16,6 @@ public class Start {
 
     public static void main(String[] args) {
         System.out.println("STARTED");
-        Export.export();
+        new Export().export();
     }
 }

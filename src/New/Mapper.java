@@ -55,6 +55,8 @@ import Materialen.Verpakking;
 import Materialen.Weegschaal;
 import Materialen.Werkstation;
 import Old.Boekhouding.Bankinstelling;
+import Old.Boekhouding.OrderpickingDetail;
+import Old.Boekhouding.OrderpickingHoofding;
 import Old.Boekhouding.VerzendbonDetail;
 import Old.Boekhouding.VerzendbonHoofding;
 import Old.Etiket.EtiketTekst;
@@ -389,7 +391,8 @@ public class Mapper {
         for (Old.Bestelling.BestelbonHoofding hoofding : bestelbonnenhoofding) {
             Bedrijven.Vestiging vestiging = oldBedrijfToNewBedrijf().stream().filter(e -> e.getBedrijfId() == hoofding.getId_bedrijf()).findFirst().get().Vestigingen.get(0);
             Adressen.OntvangstAdres ontvangstAdres = oldLeveringsAdresToOntvangstAdres().stream().filter(e -> e.getId() == hoofding.getId_leveradres()).findFirst().get();
-            newBestelbonnen.add(new Bestellingen.Bestelbon(hoofding.getId_bestelbon(), vestiging, ontvangstAdres));
+            Leverancier leverancier = oldLeverantierToNewLeverancier().stream().filter(t->t.getId()==hoofding.getId_leverancier()).findFirst().orElse(new Leverancier());
+            newBestelbonnen.add(new Bestellingen.Bestelbon(hoofding.getId_bestelbon(), vestiging, ontvangstAdres,leverancier));
         }
 
         return newBestelbonnen;
@@ -1243,29 +1246,21 @@ public class Mapper {
         List<Bestellingen.UitgaandeBestelling> newUitgaandeBestelling = new ArrayList();
         List<Old.Bestelling.BestelbonDetail> bestelbonnendetails = Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList());
 
+        //BIGDATA, CHANGED OBJECT TO ID ONLY
         int l = 0;
         for (Old.Bestelling.BestelbonDetail detail : bestelbonnendetails) {
-            if (l <= 20) {
-                AankoopProduct aankoopProduct = oldAankoopproductToNewAankoopproduct().stream().filter(r -> r.getId() == detail.getId_aankoopproduct()).findFirst().orElse(new AankoopProduct());
-                aankoopProduct.setId(detail.getId_aankoopproduct());
-                newUitgaandeBestelling.add(new UitgaandeBestelling(0, detail.getUpdated(), detail.getUpdated(), detail.getOpmerking(), detail.getAfgewerkt(), detail.getVolgnummer(), detail.getHoeveelheid(), convertVerpakkingsEenheid(detail.getEenheid()), detail.getEenheidsprijs(), detail.getAantal_eenheden_verpakking(), detail.getAantal_verpakkingen_colli(), detail.getEenheidsgewicht(), detail.getTotaal(), detail.getGeleverde_hoeveelheid(), aankoopProduct, false, true));
+//            if (l <= 20) {
+                int AankoopProductId = detail.getId_aankoopproduct();
+//                AankoopProduct aankoopProduct = oldAankoopproductToNewAankoopproduct().stream().filter(r -> r.getId() == detail.getId_aankoopproduct()).findFirst().orElse(new AankoopProduct());
+//                aankoopProduct.setId(detail.getId_aankoopproduct());
+                newUitgaandeBestelling.add(new UitgaandeBestelling(0, detail.getUpdated(), detail.getUpdated(), detail.getOpmerking(), detail.getAfgewerkt(), detail.getVolgnummer(), detail.getHoeveelheid(), convertVerpakkingsEenheid(detail.getEenheid()), detail.getEenheidsprijs(), detail.getAantal_eenheden_verpakking(), detail.getAantal_verpakkingen_colli(), detail.getEenheidsgewicht(), detail.getTotaal(), detail.getGeleverde_hoeveelheid(), AankoopProductId, false, true));
 
-                System.out.println(l);
-            }
-            l++;
+//                System.out.println(l);
+//            }
+//            l++;
         }
 
-        //Bestelbon zijn List opvullen.
-        oldBestelbonHoofdingToNewBestelbon().forEach(bon -> {
-            List<UitgaandeBestelling> bestellingen = new ArrayList();
-
-            for (int i = 0; i < newUitgaandeBestelling.size(); i++) {
-                if (bestelbonnendetails.get(i).getId_bestelbon() == bon.getId()) {
-                    bestellingen.add(newUitgaandeBestelling.get(i));
-                }
-            }
-            bon.setUitgaandeBestellingen(bestellingen);
-        });
+      
 
         return newUitgaandeBestelling;
 
@@ -1582,8 +1577,9 @@ public class Mapper {
         for (Old.Boekhouding.KassabestellingDetail e : details) {
             Bedrijf bedrijf = oldBedrijfToNewBedrijf().stream().filter(t -> t.getId() == e.getId_bedrijf()).findFirst().orElse(new Bedrijf());
             bedrijf.setId(e.getId_bedrijf());
-            Producten.VerkoopProduct verkoopProduct = oldVerkoopProductenToNewVerkoopProducten().stream().filter(t -> t.getId() == e.getId_verkoopproduct()).findFirst().orElse(new VerkoopProduct());
-            verkoopProduct.setId(e.getId_verkoopproduct());
+            int VerkoopProductId = e.getId_verkoopproduct();
+//            Producten.VerkoopProduct verkoopProduct = oldVerkoopProductenToNewVerkoopProducten().stream().filter(t -> t.getId() == e.getId_verkoopproduct()).findFirst().orElse(new VerkoopProduct());
+//            verkoopProduct.setId(e.getId_verkoopproduct());
             Variant variant = oldVariantDetailToNewVariant().stream().filter(t -> t.getId() == e.getId_variant_detail()).findFirst().orElse(new Variant());
             variant.setId(e.getId_variant_detail());
             VariantGroep variantGroep = oldVariantHoofdingToNewVariantGroep().stream().filter(t -> t.getId() == e.getId_variant_header()).findFirst().orElse(new VariantGroep());
@@ -1596,13 +1592,13 @@ public class Mapper {
             kassaBestelling.setId(e.getId_kassabestelling());
 
             Bestellingen.KassabestellingRecord record = new Bestellingen.KassabestellingRecord(-1, bedrijf, e.getVolgnummer(), e.getHoeveelheid(),
-                    verkoopProduct, e.getAantal_personen(), variant, variantGroep, optie, optieGroep, e.getOpmerking(), e.getVerdeelticket_afgedrukt(), kassaBestelling);
+                    VerkoopProductId, e.getAantal_personen(), variant, variantGroep, optie, optieGroep, e.getOpmerking(), e.getVerdeelticket_afgedrukt(), kassaBestelling);
 
             newKassabestellingRecords.add(record);
-            if (i == 20) {
+            //if (i == 20) {
                 return newKassabestellingRecords;
-            }
-            i++;
+            //}
+            //i++;
         }
 
         return newKassabestellingRecords;
@@ -1631,8 +1627,9 @@ public class Mapper {
             bedrijf.setId(e.getId_bedrijf());
             Bestelbon bon = oldBestelbonHoofdingToNewBestelbon().stream().filter(t -> t.getId() == e.getId_verzendbon()).findFirst().orElse(new Bestelbon());
             bon.setId(e.getId_bestelbon_klant());
-            VerkoopProduct verkoopProduct = oldVerkoopProductenToNewVerkoopProducten().stream().filter(t -> t.getId() == e.getId_verkoopproduct()).findFirst().orElse(new VerkoopProduct());
-            verkoopProduct.setId(e.getId_verkoopproduct());
+            int VerkoopProductId = e.getId_verkoopproduct();
+//            VerkoopProduct verkoopProduct = oldVerkoopProductenToNewVerkoopProducten().stream().filter(t -> t.getId() == e.getId_verkoopproduct()).findFirst().orElse(new VerkoopProduct());
+//            verkoopProduct.setId(e.getId_verkoopproduct());
             Werknemer werknemer = oldWerknemersToNewWerknemer().stream().filter(t -> t.getId() == e.getId_werknemer()).findFirst().orElse(new Werknemer());
             werknemer.setId(e.getId_werknemer());
             VariantGroep vargroep = oldVariantHoofdingToNewVariantGroep().stream().filter(t -> t.getId() == e.getId_variant_header()).findFirst().orElse(new VariantGroep());
@@ -1645,15 +1642,15 @@ public class Mapper {
             optie.setId(e.getId_option_detail());
 
             Bestellingen.Verzendbon verzendbon = new Verzendbon(bedrijf, -1, e.getId_verzendbon(), e.getVolgnummer(), bon,
-                    verkoopProduct, e.getHoeveelheid(), Util.BigDecimal(e.getLotnummer_verzendbon()), werknemer,
+                    VerkoopProductId, e.getHoeveelheid(), Util.BigDecimal(e.getLotnummer_verzendbon()), werknemer,
                     e.getVerkoopprijs(), e.getBasisprijs(), Eenheid.values()[e.getEenheid()], e.getAantal_personen(), vargroep, variant, e.getBedrag_variant(), e.getBedrag_variant_per_eenheid(), optieGroep, optie,
                     e.getBedrag_option(), e.getBedrag_option_per_eenheid(), e.getKortingsbedrag(), e.getKorting_manueel_aangepast(), e.getMag_korting_berekend_worden(), e.getLeveringskost(), e.getLeveringskosten_berekenen(), e.getTotaal_bedrag(), e.getTekst());
 
             newVerzendbonnen.add(verzendbon);
-            if (i == 20) {
+//            if (i == 20) {
                 return newVerzendbonnen;
-            }
-            i++;
+//            }
+//            i++;
         }
 
         return newVerzendbonnen;
@@ -1703,8 +1700,9 @@ public class Mapper {
 
             Bedrijf bedrijf = oldBedrijfToNewBedrijf().stream().filter(t -> t.getId() == e.getId_bedrijf()).findFirst().orElse(new Bedrijf());
             bedrijf.setId(e.getId_bedrijf());
-            AankoopProduct aankoopProduct = oldAankoopproductToNewAankoopproduct().stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(new AankoopProduct());
-            aankoopProduct.setId(e.getId_aankoopproduct());
+            int AankoopProductId = e.getId_aankoopproduct();
+//            AankoopProduct aankoopProduct = oldAankoopproductToNewAankoopproduct().stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(new AankoopProduct());
+//            aankoopProduct.setId(e.getId_aankoopproduct());
             Gebruiker gebruiker = oldGebruikersToNewGebruikers().stream().filter(t -> t.getId() == e.getId_gebruik()).findFirst().orElse(new Gebruiker());
             gebruiker.setId(e.getId_gebruik());
             Leverancier leverancier = oldLeverantierToNewLeverancier().stream().filter(t -> t.getId() == hoofd.getId_leverancier()).findFirst().orElse(new Leverancier());
@@ -1713,7 +1711,7 @@ public class Mapper {
             werkstation.setId(Util.Int(hoofd.getId_werkstation()));
 
             Ontvangstbon onvangstbon = new Ontvangstbon(bedrijf, -1, e.getId_leveringsbon(),
-                    e.getVolgnummer(), aankoopProduct, e.getHoeveelheid(), e.getEenheidsprijs(), e.getDatum_houdbaarheid(), Util.BigDecimal(e.getLotnummer()),
+                    e.getVolgnummer(), AankoopProductId, e.getHoeveelheid(), e.getEenheidsprijs(), e.getDatum_houdbaarheid(), Util.BigDecimal(e.getLotnummer()),
                     Eenheid.values()[e.getId_aankoopeenheid()], convertVerpakkingsEenheid(e.getId_verpakkingseenheid()), Eenheid.values()[e.getId_basiseenheid()], MuntEenheid.values()[e.getId_prijseenheid()],
                     e.getAantal_eenheden_verpakking(), e.getAantal_verpakkingen_colli(), e.getAantal_colli_palet(), e.getTotaal(), e.getAantal_etiketten(), e.getLeveringstemperatuur(), e.getEenheidsgewicht(),
                     e.getIs_gefactureerd(), e.getLotnummer_extern(), e.getNetto_gewicht(), Eenheid.values()[e.getGekozen_aankoopeenheid()], gebruiker, e.getDatum_gebruik(),
@@ -1721,10 +1719,10 @@ public class Mapper {
                     leverancier, hoofd.getDatum_leveringsbon(), hoofd.getReferentie(), werkstation, hoofd.getFactuurdatum(), hoofd.getFactuurnummer());
 
             newOntvangstbonnen.add(onvangstbon);
-            if (i == 20) {
+//            if (i == 20) {
                 return newOntvangstbonnen;
-            }
-            i++;
+//            }
+//            i++;
 
         }
 
@@ -1764,8 +1762,52 @@ public class Mapper {
         return newBereikbaarheden;
 
     }
-    
-    public static List<OrderPicking> oldOrderpickingToNewOrderpicking(){
-        return null;
+
+    public static List<OrderPicking> oldOrderpickingToNewOrderpicking() {
+        List<OrderPicking> newOrderpicking = new ArrayList();
+        List<OrderpickingDetail> orderpickingdetails = Import.getOrderpickingdetail().stream().map(old -> (OrderpickingDetail) old).collect(Collectors.toList());
+        List<OrderpickingHoofding> orderpickinghoofding = Import.getOrderpickinghoofding().stream().map(old -> (OrderpickingHoofding) old).collect(Collectors.toList());
+
+        //BIGDATA
+        int i=0;
+        System.out.println(orderpickingdetails.size());
+        for (OrderpickingDetail e : orderpickingdetails) {
+                OrderpickingHoofding hoofd = orderpickinghoofding.stream().filter(t -> t.getId_orderpicking() == e.getId_orderpicking()).findFirst().orElse(null);
+                if (hoofd != null) {
+                    int VerkoopProductId = e.getId_verkoopproduct();
+//                    VerkoopProduct verkoopProduct = oldVerkoopProductenToNewVerkoopProducten().stream().filter(t -> t.getId() == e.getId_verkoopproduct()).findFirst().orElse(new VerkoopProduct());
+//                    verkoopProduct.setId(e.getId_verkoopproduct());
+                    VariantGroep varGroep = oldVariantHoofdingToNewVariantGroep().stream().filter(t -> t.getId() == e.getId_variant_header()).findFirst().orElse(new VariantGroep());
+                    varGroep.setId(e.getId_variant_header());
+                    Variant variant = oldVariantDetailToNewVariant().stream().filter(t -> t.getId() == e.getId_variant_detail()).findFirst().orElse(new Variant());
+                    variant.setId(e.getId_variant_detail());
+                    OptieGroep opGroep = oldOptieHoofdingToNewOptiegroep().stream().filter(t -> t.getId() == e.getId_option_header()).findFirst().orElse(new OptieGroep());
+                    opGroep.setId(e.getId_option_header());
+                    Optie optie = oldOptieDetailsToNewOpties().stream().filter(t -> t.getId() == e.getId_option_detail()).findFirst().orElse(new Optie());
+                    optie.setId(e.getId_option_detail());
+                    Bedrijf bedrijf = oldBedrijfToNewBedrijf().stream().filter(t -> t.getId() == e.getId_bedrijf()).findFirst().orElse(new Bedrijf());
+                    bedrijf.setId(e.getId_bedrijf());
+                    Klant klant = oldKlantToNewKlant().stream().filter(t -> t.getId() == hoofd.getId_klant()).findFirst().orElse(new Klant());
+                    klant.setId(hoofd.getId_klant());
+                    Gebruiker gebruiker = oldGebruikersToNewGebruikers().stream().filter(t -> t.getUserName() == hoofd.getGebruiker_probak()).findFirst().orElse(new Gebruiker());
+                    gebruiker.setUserName(hoofd.getGebruiker_probak());
+                    Kassabestelling bestelling = oldKassaBestellingHoofdingToNewKassaBestelling().stream().filter(t -> t.getId() == hoofd.getId_kassabestelling()).findFirst().orElse(new Kassabestelling());
+                    bestelling.setId(hoofd.getId_kassabestelling());
+
+                    OrderPicking order = new OrderPicking(-1, e.getId_orderpicking(), Util.BigDecimal(e.getLotnummer()), e.getHoeveelheid(), e.getVolgnummer(), e.getVolgnummer_verkoopproduct(), VerkoopProductId,
+                            e.getVerkoopprijs(), e.getBasisprijs(), e.getAantal_personen(), varGroep, variant, opGroep, optie, e.getKorting_manueel_aangepast(), e.getMag_korting_berekend_worden(),
+                            e.getTotaal_bedrag(), e.getTekst(), e.getVerwerkte_hoeveelheid(), e.getHoeveelheid_winkelbestelling(), bedrijf, klant,
+                            hoofd.getDatum_orderpicking(), hoofd.getDatum_leveringsbon(), hoofd.getDatum_te_leveren(), hoofd.getReferentie_klant(), hoofd.getDatum_besteld(),
+                            hoofd.getUur(), hoofd.getBetaald(), hoofd.getKortingspercentage(), hoofd.getBedrag_betaald(), hoofd.getBedrag_bestelling(), hoofd.getBedrag_korting(), hoofd.getReden_korting(),
+                            hoofd.getLevering(), hoofd.getExpress(), hoofd.getFactuur_gewenst(), hoofd.getReferentie(), hoofd.getOpmerking(), gebruiker, bestelling);
+
+                    newOrderpicking.add(order);
+                }
+                if(i%100==0)
+                    System.out.printf("exported %d orders",i);
+                i++;
+
+        }
+        return newOrderpicking;
     }
 }

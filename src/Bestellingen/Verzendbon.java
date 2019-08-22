@@ -26,7 +26,7 @@ public class Verzendbon implements New {
     public int VerzendbonSamenstellingId;
     public int Volgnummer;
     public Bestelbon Bestelbon;
-    public VerkoopProduct VerkoopProduct;
+    public int VerkoopProductId;
     public double Hoeveelheid;
     public BigDecimal Lotnummer;
     public Werknemer Werknemer;
@@ -53,13 +53,13 @@ public class Verzendbon implements New {
     public Verzendbon() {
     }
 
-    public Verzendbon(Bedrijf Bedrijf, int VerzendbonId, int VerzendbonSamenstellingId, int Volgnummer, Bestelbon Bestelbon, VerkoopProduct VerkoopProduct, double Hoeveelheid, BigDecimal Lotnummer, Werknemer Werknemer, double Verkoopprijs, double Basisprijs, Eenheid Eenheid, int AantalPersonen, VariantGroep VariantGroep, Variant Variant, double BedragVariant, boolean BedragVariantPerEenheid, OptieGroep OptieGroep, Optie Optie, double BedragOptie, boolean BedragOptiePerEenheid, double KortingBedrag, boolean KortingManueel, boolean KortingMagBerekendWorden, double Leveringskost, boolean LeveringskostBerekend, double TotaalBedrag, String Opmerking) {
+    public Verzendbon(Bedrijf Bedrijf, int VerzendbonId, int VerzendbonSamenstellingId, int Volgnummer, Bestelbon Bestelbon, int VerkoopProduct, double Hoeveelheid, BigDecimal Lotnummer, Werknemer Werknemer, double Verkoopprijs, double Basisprijs, Eenheid Eenheid, int AantalPersonen, VariantGroep VariantGroep, Variant Variant, double BedragVariant, boolean BedragVariantPerEenheid, OptieGroep OptieGroep, Optie Optie, double BedragOptie, boolean BedragOptiePerEenheid, double KortingBedrag, boolean KortingManueel, boolean KortingMagBerekendWorden, double Leveringskost, boolean LeveringskostBerekend, double TotaalBedrag, String Opmerking) {
         this.Bedrijf = Bedrijf;
         this.VerzendbonId = VerzendbonId;
         this.VerzendbonSamenstellingId = VerzendbonSamenstellingId;
         this.Volgnummer = Volgnummer;
         this.Bestelbon = Bestelbon;
-        this.VerkoopProduct = VerkoopProduct;
+        this.VerkoopProductId = VerkoopProduct;
         this.Hoeveelheid = Hoeveelheid;
         this.Lotnummer = Lotnummer;
         this.Werknemer = Werknemer;
@@ -124,12 +124,12 @@ public class Verzendbon implements New {
         this.Bestelbon = Bestelbon;
     }
 
-    public VerkoopProduct getVerkoopProduct() {
-        return VerkoopProduct;
+    public int getVerkoopProductId() {
+        return VerkoopProductId;
     }
 
-    public void setVerkoopProduct(VerkoopProduct VerkoopProduct) {
-        this.VerkoopProduct = VerkoopProduct;
+    public void setVerkoopProductId(int VerkoopProductId) {
+        this.VerkoopProductId = VerkoopProductId;
     }
 
     public double getHoeveelheid() {

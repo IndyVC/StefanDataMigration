@@ -5,6 +5,8 @@
  */
 package Bestellingen;
 
+import Adressen.OntvangstAdres;
+import Leveringen.Leverancier;
 import New.New;
 import Producten.AankoopProduct;
 import enums.Eenheid;
@@ -31,14 +33,17 @@ public class UitgaandeBestelling implements New {
     public double Eenheidsgewicht;
     public double Totaal;
     public double GeleverdeHoeveelheid;
-    public AankoopProduct AankoopProduct;
+    public int AankoopProductId;
     public boolean Geleverd;
     public boolean InOpmaak;
+    public OntvangstAdres OntvangstAdres;
+    public Leverancier Leverancier;
+    public int BestelbonId;
     
     public UitgaandeBestelling() {
     }
 
-    public UitgaandeBestelling(int UitgaandeBestellingId, Date DatumBestelbon, Date DatumGewensteLevering, String Opmerking, boolean Afgewerkt, int Volgnummer, double Hoeveelheid, VerpakkingsEenheid VerpakkingsEenheid, double Eenheidsprijs, double AantalEenhedenVerpakking, double AantalVerpakkingenColi, double Eenheidsgewicht, double Totaal, double GeleverdeHoeveelheid, AankoopProduct AankoopProduct, boolean Geleverd, boolean InOpmaak) {
+    public UitgaandeBestelling(int UitgaandeBestellingId, Date DatumBestelbon, Date DatumGewensteLevering, String Opmerking, boolean Afgewerkt, int Volgnummer, double Hoeveelheid, VerpakkingsEenheid VerpakkingsEenheid, double Eenheidsprijs, double AantalEenhedenVerpakking, double AantalVerpakkingenColi, double Eenheidsgewicht, double Totaal, double GeleverdeHoeveelheid, int AankoopProduct, boolean Geleverd, boolean InOpmaak) {
         this.UitgaandeBestellingId = UitgaandeBestellingId;
         this.DatumBestelbon = DatumBestelbon;
         this.DatumGewensteLevering = DatumGewensteLevering;
@@ -53,9 +58,35 @@ public class UitgaandeBestelling implements New {
         this.Eenheidsgewicht = Eenheidsgewicht;
         this.Totaal = Totaal;
         this.GeleverdeHoeveelheid = GeleverdeHoeveelheid;
-        this.AankoopProduct = AankoopProduct;
+        this.AankoopProductId = AankoopProduct;
         this.Geleverd = Geleverd;
         this.InOpmaak = InOpmaak;
+    }
+
+    public int getBestelbonId() {
+        return BestelbonId;
+    }
+
+    public void setBestelbonId(int BestelbonId) {
+        this.BestelbonId = BestelbonId;
+    }
+
+    
+    public Leverancier getLeverancier() {
+        return Leverancier;
+    }
+
+    public void setLeverancier(Leverancier Leverancier) {
+        this.Leverancier = Leverancier;
+    }
+
+    
+    public OntvangstAdres getOntvangstAdres() {
+        return OntvangstAdres;
+    }
+
+    public void setOntvangstAdres(OntvangstAdres OntvangstAdres) {
+        this.OntvangstAdres = OntvangstAdres;
     }
 
     public boolean isGeleverd() {
@@ -73,8 +104,6 @@ public class UitgaandeBestelling implements New {
     public void setInOpmaak(boolean InOpmaak) {
         this.InOpmaak = InOpmaak;
     }
-
-   
 
     public int getUitgaandeBestellingId() {
         return UitgaandeBestellingId;
@@ -196,17 +225,14 @@ public class UitgaandeBestelling implements New {
         this.VerpakkingsEenheid = VerpakkingsEenheid;
     }
 
-    public AankoopProduct getAankoopProduct() {
-        return AankoopProduct;
+    public int getAankoopProductId() {
+        return AankoopProductId;
     }
 
-    public void setAankoopProduct(AankoopProduct AankoopProduct) {
-        this.AankoopProduct = AankoopProduct;
+    public void setAankoopProductId(int AankoopProductId) {
+        this.AankoopProductId = AankoopProductId;
     }
 
-  
-
-  
     @Override
     public void setId(int id) {
         this.UitgaandeBestellingId = id;

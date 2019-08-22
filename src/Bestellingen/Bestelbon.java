@@ -8,6 +8,7 @@ package Bestellingen;
 import Adressen.Adres;
 import Adressen.OntvangstAdres;
 import Bedrijven.Vestiging;
+import Leveringen.Leverancier;
 import New.New;
 import Producten.ReceptProduct;
 import java.util.ArrayList;
@@ -18,21 +19,31 @@ import java.util.List;
  * @author stefa
  */
 public class Bestelbon implements New {
-    
+
     public int BestelbonId;
     public Vestiging Vestiging;
     public OntvangstAdres OntvangstAdres;
+    public Leverancier Leverancier;
     public List<UitgaandeBestelling> UitgaandeBestellingen;
-            
+
     public Bestelbon() {
         UitgaandeBestellingen = new ArrayList();
     }
 
-    public Bestelbon(int BestelbonId, Vestiging Vestgiging, OntvangstAdres LeveringsAdres) {
+    public Bestelbon(int BestelbonId, Vestiging Vestgiging, OntvangstAdres LeveringsAdres, Leverancier leverancier) {
         this();
         this.BestelbonId = BestelbonId;
         this.Vestiging = Vestgiging;
         this.OntvangstAdres = LeveringsAdres;
+        this.Leverancier=leverancier;
+    }
+
+    public Leverancier getLeverancier() {
+        return Leverancier;
+    }
+
+    public void setLeverancier(Leverancier Leverancier) {
+        this.Leverancier = Leverancier;
     }
 
     public int getBestelbonId() {
@@ -67,14 +78,14 @@ public class Bestelbon implements New {
         this.UitgaandeBestellingen = UitgaandeBestellingen;
     }
 
-
     @Override
     public void setId(int id) {
-        this.BestelbonId=id;
+        this.BestelbonId = id;
     }
-     @Override
+
+    @Override
     public int getId() {
         return this.BestelbonId;
     }
-    
+
 }
