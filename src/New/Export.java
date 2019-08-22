@@ -557,21 +557,20 @@ public class Export {
         DB.insert(newLeveranciers, "Leverancier", Leverancier.class, true, false);
 
         //SKIPBIG
-        /*
-        newLeveranciers.forEach(leverancier -> {
-            leverancier.getVerloven().forEach(verlof -> {
-                String query = String.format("UPDATE %s set LeverancierId = %d where VerlofId = %d;", "Verlof", leverancier.getId(), verlof.getId());
-                DB.executeCustomQuery(query);
-            });
-            leverancier.getOpeningstijden().forEach(openingstijd -> {
-                String query = String.format("UPDATE %s set LeverancierId = %d where OpeningsTijdId = %d;", "Openingstijd", leverancier.getId(), openingstijd.getId());
-                DB.executeCustomQuery(query);
-            });
-            leverancier.getLeveringsDagen().forEach(leveringsdag -> {
-                String query = String.format("UPDATE %s set LeverancierId = %d where LeveringsDagId = %d;", "LeveringsDag", leverancier.getId(), leveringsdag.getId());
-                DB.executeCustomQuery(query);
-            });
-        });*/
+//        newLeveranciers.forEach(leverancier -> {
+//            leverancier.getVerloven().forEach(verlof -> {
+//                String query = String.format("UPDATE %s set LeverancierId = %d where VerlofId = %d;", "Verlof", leverancier.getId(), verlof.getId());
+//                DB.executeCustomQuery(query);
+//            });
+//            leverancier.getOpeningstijden().forEach(openingstijd -> {
+//                String query = String.format("UPDATE %s set LeverancierId = %d where OpeningsTijdId = %d;", "Openingstijd", leverancier.getId(), openingstijd.getId());
+//                DB.executeCustomQuery(query);
+//            });
+//            leverancier.getLeveringsDagen().forEach(leveringsdag -> {
+//                String query = String.format("UPDATE %s set LeverancierId = %d where LeveringsDagId = %d;", "LeveringsDag", leverancier.getId(), leveringsdag.getId());
+//                DB.executeCustomQuery(query);
+//            });
+//        });
     }
 
     //EERSTE KEER BESTELGROEPEN
@@ -825,24 +824,6 @@ public class Export {
         DB.insert(vestigingAankoopproducten, "VestigingAankoopProduct", VestigingAankoopProduct.class, true, true);
         DB.insert(aankoopProductenLeveranciers, "AankoopProductLeverancier", AankoopProductLeverancier.class, true, true);
 
-//        //BIGDATA
-//        int i = 0;
-//        System.out.println(Import.getBestelbonnendetail().size());
-//        for (Old.Bestelling.BestelbonDetail e : Import.getBestelbonnendetail().stream().map(old -> (Old.Bestelling.BestelbonDetail) old).collect(Collectors.toList())) {
-//            if (i %100==0) {
-//                System.out.println("i");
-//            }
-//            
-////                AankoopProduct aankoopProduct = newAankoopproducten.stream().filter(t -> t.getId() == e.getId_aankoopproduct()).findFirst().orElse(null);
-////                UitgaandeBestelling uitgaandeBestelling = newUitgaandBestellingen.stream().filter(t -> t.getId() == e.getId_bestelbon()).findFirst().orElse(null);
-////                if (uitgaandeBestelling != null && aankoopProduct != null) {
-////                    uitgaandeBestelling.setAankoopProductId(aankoopProduct.getId());
-//                    String query = String.format("UPDATE UitgaandeBestellingen SET AankoopProductId = %d WHERE UitgaandeBestellingId = %d", e.getId_aankoopproduct(), e.getId_bestelbon());
-//                    DB.executeCustomQuery(query);
-////                }
-////            //}
-//            i++;
-//        }
     }
 
     // EERSTE KEER BASISRECEPTEN + Tussen tabel receptproduct-basisrecept
@@ -1812,7 +1793,7 @@ public class Export {
         List<Bedrijf> bedrijven = new ArrayList();
         List<Klant> klanten = new ArrayList();
         List<Gebruiker> gebruikers = new ArrayList();
-        List<Kassabestelling> bestellingen = new ArrayList();
+        //List<Kassabestelling> bestellingen = new ArrayList();
 
         newOrderpickings.forEach(e -> {
             //verkoopProducten.add(e.getVerkoopProductId());
@@ -1823,7 +1804,7 @@ public class Export {
             bedrijven.add(e.getBedrijf());
             klanten.add(e.getKlant());
             gebruikers.add(e.getGebruiker());
-            bestellingen.add(e.getKassaBestelling());
+            //bestellingen.add(e.getKassaBestelling());
         });
         //DB.insert(removeDuplicates(verkoopProducten, newVerkoopProducten), "VerkoopProductId", VerkoopProductId.class, false, false);
         DB.insert(removeDuplicates(varGroepen, newVariantgroepen), "VariantGroepen", VariantGroep.class, false, false);
@@ -1833,7 +1814,7 @@ public class Export {
         DB.insert(removeDuplicates(klanten, newKlanten), "Klant", Klant.class, false, false);
         //gebruikers gaat niet aspnetusers
         DB.insert(removeDuplicates(bedrijven, newBedrijven), "Bedrijven", Bedrijf.class, false, false);
-        DB.insert(removeDuplicates(bestellingen, newKassabestellingen), "KassaBestellingen", Kassabestelling.class, false, false);
+        //DB.insert(removeDuplicates(bestellingen, newKassabestellingen), "KassaBestellingen", Kassabestelling.class, false, false);
         DB.insert(newOrderpickings, "OrderPickings", OrderPicking.class, true, true);
 
     }

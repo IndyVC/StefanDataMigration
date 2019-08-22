@@ -20,6 +20,7 @@ public class Openingstijd implements New {
     public String SluitUurVoormiddag;
     public String StartUurNamiddag;
     public String SluitUurNamiddag;
+    public int LeverancierId;
 
     public Openingstijd() {
     }
@@ -33,6 +34,15 @@ public class Openingstijd implements New {
         this.SluitUurNamiddag = SluitUurNamiddag;
     }
 
+    public int getLeverancierId() {
+        return LeverancierId;
+    }
+
+    public void setLeverancierId(int LeverancierId) {
+        this.LeverancierId = LeverancierId;
+    }
+
+    
     public int getOpeningsTijdId() {
         return OpeningsTijdId;
     }

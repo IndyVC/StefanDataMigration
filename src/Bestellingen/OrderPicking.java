@@ -63,12 +63,12 @@ public class OrderPicking implements New {
     public String Referentie;
     public String Opmerking;
     public Gebruiker Gebruiker;
-    public Kassabestelling KassaBestelling;
+    public int KassaBestellingId;
 
     public OrderPicking() {
     }
 
-    public OrderPicking(int OrderipickingId, int SamenstellingOrderpickingsId, BigDecimal Lotnummer, double Hoeveelheid, int Volgnummer, int VolgnummerVerkoopproduct, int VerkoopProduct, double Verkoopprijs, double Basisprijs, int AantalPersonen, VariantGroep VariantGroep, Variant Variant, OptieGroep OptieGroep, Optie Optie, boolean KortingManueelAangepast, boolean MagKortingBerekendWorden, double TotaalBedrag, String Tekst, double VerwerkteEenheid, double HoeveelheidWinkelbestelling, Bedrijf Bedrijf, Klant Klant, Date DateOrderpicking, Date DateLeveringsbon, Date DateTeLeveren, String RerentieKlant, Date DateBesteld, String Uur, boolean Betaald, double KortingsPercentage, double BedragBetaald, double BedragBestelling, double BedragKorting, String RedenKorting, boolean Levering, boolean Express, boolean FactuurGewenst, String Referentie, String Opmerking, Gebruiker Gebruiker, Kassabestelling KassaBestelling) {
+    public OrderPicking(int OrderipickingId, int SamenstellingOrderpickingsId, BigDecimal Lotnummer, double Hoeveelheid, int Volgnummer, int VolgnummerVerkoopproduct, int VerkoopProduct, double Verkoopprijs, double Basisprijs, int AantalPersonen, VariantGroep VariantGroep, Variant Variant, OptieGroep OptieGroep, Optie Optie, boolean KortingManueelAangepast, boolean MagKortingBerekendWorden, double TotaalBedrag, String Tekst, double VerwerkteEenheid, double HoeveelheidWinkelbestelling, Bedrijf Bedrijf, Klant Klant, Date DateOrderpicking, Date DateLeveringsbon, Date DateTeLeveren, String RerentieKlant, Date DateBesteld, String Uur, boolean Betaald, double KortingsPercentage, double BedragBetaald, double BedragBestelling, double BedragKorting, String RedenKorting, boolean Levering, boolean Express, boolean FactuurGewenst, String Referentie, String Opmerking, Gebruiker Gebruiker, int KassaBestelling) {
         this.OrderipickingId = OrderipickingId;
         this.SamenstellingOrderpickingsId = SamenstellingOrderpickingsId;
         this.Lotnummer = Lotnummer;
@@ -109,7 +109,7 @@ public class OrderPicking implements New {
         this.Referentie = Referentie;
         this.Opmerking = Opmerking;
         this.Gebruiker = Gebruiker;
-        this.KassaBestelling = KassaBestelling;
+        this.KassaBestellingId = KassaBestelling;
     }
 
     public int getOrderipickingId() {
@@ -432,12 +432,12 @@ public class OrderPicking implements New {
         this.Gebruiker = Gebruiker;
     }
 
-    public Kassabestelling getKassaBestelling() {
-        return KassaBestelling;
+    public int getKassaBestelling() {
+        return KassaBestellingId;
     }
 
-    public void setKassaBestelling(Kassabestelling KassaBestelling) {
-        this.KassaBestelling = KassaBestelling;
+    public void setKassaBestelling(int KassaBestelling) {
+        this.KassaBestellingId = KassaBestelling;
     }
     
     

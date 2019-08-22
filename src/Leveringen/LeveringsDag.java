@@ -18,6 +18,7 @@ public class LeveringsDag implements New{
     public int LeveringsDagId;
     public DayOfWeek DayOfWeek;
     public boolean IsEenLeveringsDag;
+    public int LeverancierId;
 
     public LeveringsDag() {
     }
@@ -28,6 +29,15 @@ public class LeveringsDag implements New{
         this.IsEenLeveringsDag = IsEenLeveringsDag;
     }
 
+    public int getLeverancierId() {
+        return LeverancierId;
+    }
+
+    public void setLeverancierId(int LeverancierId) {
+        this.LeverancierId = LeverancierId;
+    }
+
+    
     public int getLeveringsDagId() {
         return LeveringsDagId;
     }

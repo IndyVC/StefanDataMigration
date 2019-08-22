@@ -19,7 +19,7 @@ public class Verlof implements New{
     public int VerlofId;
     public Date StartDatum;
     public Date EindDatum;
-    
+    public int LeverancierId;
     public List<KlantVerlof> VerlofKlanten;
     public List<Klant> Klanten;
 
@@ -32,6 +32,15 @@ public class Verlof implements New{
         this.EindDatum = EindDatum;
     }
 
+    public int getLeverancierId() {
+        return LeverancierId;
+    }
+
+    public void setLeverancierId(int LeverancierId) {
+        this.LeverancierId = LeverancierId;
+    }
+
+    
     public int getVerlofId() {
         return VerlofId;
     }
