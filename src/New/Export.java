@@ -339,9 +339,9 @@ public class Export {
         System.out.println("EXPORT VOORRAADCORRECTIES");
         exportVoorraadcorrecties(); //done
         System.out.println("EXPORT BASISPRODUCTEN");
-        exportBasisproducten();//OPVULLEN: BasisProductVestigingen; [BasisProductBasisRecepten; BasisProductTaken; BasisProductMaterielen; BESTAAT NIET]
+        exportBasisproducten();// done [BasisProductBasisRecepten; BasisProductTaken; BasisProductMaterielen; BESTAAT NIET]
         System.out.println("EXPORT KASSABESTELLING");
-        exportKassabestellingen(); //GEBRUIKERS EN KLANTEN WERKEN HIER NOG NIET!!! Lijst van KassabestellingenRecords zijn ook nog niet opgevuld
+        exportKassabestellingen(); //GEBRUIKERS werkt niet
         System.out.println("EXPORT KASSABESTELLING RECORDS");
         exportKassabestellingRecords(); //done
         System.out.println("EXPORT KLANTVERDEELGROEPEN");
@@ -358,6 +358,8 @@ public class Export {
         exportKlanten(); //Op te vullen= Alle lijsten behalve KlantAdres, maar de andere bestaan allemaal niet?
         System.out.println("EXPORT ORDERPICKING");
         exportOrderpicking();
+        System.out.println("VERPLICHTE VELDEN INVULLEN A.D.H.V CUSTOM QUERIES");
+        fillFields();
 
     }
 
@@ -556,21 +558,6 @@ public class Export {
         DB.insert(leveringsdagen, "LeveringsDag", LeveringsDag.class, true, true);
         DB.insert(newLeveranciers, "Leverancier", Leverancier.class, true, false);
 
-        //SKIPBIG
-//        newLeveranciers.forEach(leverancier -> {
-//            leverancier.getVerloven().forEach(verlof -> {
-//                String query = String.format("UPDATE %s set LeverancierId = %d where VerlofId = %d;", "Verlof", leverancier.getId(), verlof.getId());
-//                DB.executeCustomQuery(query);
-//            });
-//            leverancier.getOpeningstijden().forEach(openingstijd -> {
-//                String query = String.format("UPDATE %s set LeverancierId = %d where OpeningsTijdId = %d;", "Openingstijd", leverancier.getId(), openingstijd.getId());
-//                DB.executeCustomQuery(query);
-//            });
-//            leverancier.getLeveringsDagen().forEach(leveringsdag -> {
-//                String query = String.format("UPDATE %s set LeverancierId = %d where LeveringsDagId = %d;", "LeveringsDag", leverancier.getId(), leveringsdag.getId());
-//                DB.executeCustomQuery(query);
-//            });
-//        });
     }
 
     //EERSTE KEER BESTELGROEPEN
@@ -656,11 +643,12 @@ public class Export {
     public static void exportEtiketten() {
         newEtiketten = Mapper.oldEtiketToNewEtiket();
         List<Printer> printers = new ArrayList();
-
+        List<Omschrijving> omschrijvingen = new ArrayList();
         newEtiketten.forEach(e -> {
             printers.add(e.getPrinter());
+            omschrijvingen.add(e.getOmschrijving());
         });
-
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(printers, newPrinters), "Printers", Printer.class, false, false);
         DB.insert(newEtiketten, "Etiketten", Etiket.class, true, false);
     }
@@ -726,8 +714,8 @@ public class Export {
         DB.insert(removeDuplicates(fabrikanten, newFabrikanten), "Fabrikanten", Fabrikant.class, false, false);
         DB.insert(removeDuplicates(bestelGroepen, newBestelgroepen), "BestelGroepen", BestelGroep.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
-        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, true, false);
-        DB.insert(removeDuplicates(analytischeRekeningen, newAnalytischeRekeningen), "AnalytischeRekeningen", AnalytischeRekening.class, true, false);
+        DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
+        DB.insert(newAnalytischeRekeningen, "AnalytischeRekeningen", AnalytischeRekening.class, true, false);
 
         DB.insert(newProductcategorieën, "ProductCategorie", ProductCategorie.class, true, false);
 
@@ -1011,11 +999,10 @@ public class Export {
         });
 
         newJobs = jobs;
-
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
         DB.insert(removeDuplicates(receptGroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
-        DB.insert(deleteDuplicates(voorraadProduct), "VoorraadProducten", VoorraadProduct.class, true, true);
+        DB.insert(voorraadProduct, "VoorraadProducten", VoorraadProduct.class, true, true);
         DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
@@ -1206,6 +1193,7 @@ public class Export {
         List<LotnummerAanbrenger> lotnummerAanbrengers = new ArrayList(); //has id
         List<Winstmarge> winstmarges = new ArrayList(); // has id
         List<DistributieWijze> distributiewijzes = new ArrayList(); //has id
+        List<VoorstellingOpProductielijst> voorstellingen = new ArrayList(); //no id
 
         newVerkoopProducten.forEach(e -> {
             omschrijvingen.add(e.getOmschrijving());
@@ -1245,9 +1233,11 @@ public class Export {
             winstmarges.add(e.getWinstmarge());
             distributiewijzes.add(e.getDistributieWijze());
             omschrijvingen.add(e.getIngrediëntenOmschrijving());
+            voorstellingen.add(e.getVoorstellingOpProductielijst());
+                    
         });
         DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
-        DB.insert(deleteDuplicates(voorraadProducten), "VoorraadProducten", VoorraadProduct.class, false, true);
+        DB.insert(voorraadProducten, "VoorraadProducten", VoorraadProduct.class, false, true);
         DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
@@ -1270,6 +1260,7 @@ public class Export {
         DB.insert(removeDuplicates(lotnummerAanbrengers, newLotnummerAanbrengers), "LotnummerAanbrengers", LotnummerAanbrenger.class, false, false);
         DB.insert(removeDuplicates(winstmarges, newWinstmarges), "Winstmarges", Winstmarge.class, false, false);
         DB.insert(removeDuplicates(distributiewijzes, newDistributiewijzes), "DistributieWijzes", DistributieWijze.class, false, false);
+        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
 
         DB.insert(newVerkoopProducten, "VerkoopProduct", VerkoopProduct.class, true, false);
 
@@ -1326,7 +1317,7 @@ public class Export {
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
         DB.insert(removeDuplicates(receptgroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
-        DB.insert(deleteDuplicates(voorraadProducten), "VoorraadProducten", VoorraadProduct.class, false, true);
+        DB.insert(voorraadProducten, "VoorraadProducten", VoorraadProduct.class, false, true);
         DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
@@ -1578,7 +1569,7 @@ public class Export {
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
         DB.insert(removeDuplicates(productiegroepen, newProductiegroepen), "Productiegroepen", Productiegroep.class, false, false);
         DB.insert(removeDuplicates(receptgroepen, newReceptengroepen), "Receptgroepen", Receptgroep.class, false, false);
-        DB.insert(deleteDuplicates(voorraadProducten), "VoorraadProducten", VoorraadProduct.class, false, true);
+        DB.insert(voorraadProducten, "VoorraadProducten", VoorraadProduct.class, false, true);
         DB.insert(removeDuplicates(voorraadPlaatsen, newVoorraadPlaatsen), "VoorraadPlaatsen", VoorraadPlaats.class, false, false);
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
@@ -1817,6 +1808,16 @@ public class Export {
         //DB.insert(removeDuplicates(bestellingen, newKassabestellingen), "KassaBestellingen", Kassabestelling.class, false, false);
         DB.insert(newOrderpickings, "OrderPickings", OrderPicking.class, true, true);
 
+    }
+
+    public static void fillFields() {
+        Omschrijving omschrijvingEmpty = new Omschrijving(-1, "Geen omschrijving", "Pas de description", "No description");
+        DB.insert(List.of(omschrijvingEmpty), "Omschrijvingen", Omschrijving.class, false, false);
+        FunctieVanPersoon functieVanPersoonEmpty = new FunctieVanPersoon(-1, omschrijvingEmpty, 0);
+        DB.insert(List.of(functieVanPersoonEmpty), "FunctieVanPersoonen", FunctieVanPersoon.class, false, false);
+        DB.executeCustomQuery("UPDATE Leverancier SET BoekhoudingCode = 'empty'");
+        DB.executeCustomQuery("UPDATE Leverancier SET KlantCode = -1 WHERE KlantCode = ''");
+        DB.executeCustomQuery("UPDATE OntvangstAdressen SET Telefoonnummer = '/' WHERE Telefoonnummer = ''");
     }
 
 }

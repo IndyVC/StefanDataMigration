@@ -315,13 +315,13 @@ public class Mapper {
         for (Old.Bedrijf.Bedrijf old : oldBedrijven) {
             newVestigingen = new ArrayList();
 
-            Adres adres = new Adres(0, old.getStraat(), old.getHuisnummer(), "", old.getPostcode(), old.getWoonplaats(), Land.België);
+            Adres adres = new Adres(-1, old.getStraat(), old.getHuisnummer(), "", old.getPostcode(), old.getWoonplaats(), Land.België);
             Bedrijven.Bedrijf bedrijf = new Bedrijven.Bedrijf(old.getId_bedrijf(), old.getNaam(), old.getTelefoonnummer(), old.getEmailadres(), adres, null);
             Bank bank = oldBankinstellingToNewBank().stream().filter(e -> e.getBankId() == old.getId_bank()).findFirst().orElse(new Bank());
             bank.setId(old.getId_bank());
 
-            BankRekeningNummer bankRekeningNummer = new BankRekeningNummer(0, old.getIban(), bank);
-            newVestigingen.add(new Vestiging(0, bedrijf, new Omschrijving(0, old.getNaam(), old.getNaam(), old.getNaam()), adres, old.getTelefoonnummer(), old.getEmailadres(), bankRekeningNummer, old.getOndernemingsnummer(), old.getVestigingsnummer()));
+            BankRekeningNummer bankRekeningNummer = new BankRekeningNummer(-1, old.getIban(), bank);
+            newVestigingen.add(new Vestiging(-1, bedrijf, new Omschrijving(-1, old.getNaam(), old.getNaam(), old.getNaam()), adres, old.getTelefoonnummer(), old.getEmailadres(), bankRekeningNummer, old.getOndernemingsnummer(), old.getVestigingsnummer()));
             bedrijf.setVestigingen(newVestigingen);
             newBedrijven.add(bedrijf);
         }
@@ -345,7 +345,7 @@ public class Mapper {
         List<Old.Levering.Leveringsadres> leveringsadressen = Import.getLeveringsadressen().stream().map(old -> (Old.Levering.Leveringsadres) old).collect(Collectors.toList());
 
         for (Old.Levering.Leveringsadres bean : leveringsadressen) {
-            newOntvangstAdressen.add(new OntvangstAdres(bean.getId_leveradres(), new Adres(0, bean.getStraat(), bean.getHuisnummer(), "", bean.getPostcode(), bean.getWoonplaats(), Land.België), bean.getRoepnaam(), bean.getTelefoonnummer()));
+            newOntvangstAdressen.add(new OntvangstAdres(bean.getId_leveradres(), new Adres(-1, bean.getStraat(), bean.getHuisnummer(), "", bean.getPostcode(), bean.getWoonplaats(), Land.België), bean.getRoepnaam(), bean.getTelefoonnummer()));
         }
 
         return newOntvangstAdressen;
@@ -356,7 +356,7 @@ public class Mapper {
         List<Old.Recept.Receptproduct> receptProducten = Import.getReceptproducten().stream().map(old -> (Old.Recept.Receptproduct) old).collect(Collectors.toList());
 
         for (Old.Recept.Receptproduct bean : receptProducten) {
-            newReceptproducten.add(new ReceptProduct(bean.getId_receptproduct(), new Omschrijving(0, bean.getOmschrijvingn(), bean.getOmschrijvingf(), bean.getOmschrijvinge()), convertRecepteenheid(bean.getId_recepteenheid()),
+            newReceptproducten.add(new ReceptProduct(bean.getId_receptproduct(), new Omschrijving(-1, bean.getOmschrijvingn(), bean.getOmschrijvingf(), bean.getOmschrijvinge()), convertRecepteenheid(bean.getId_recepteenheid()),
                     false, bean.getVoorbereide_producten(), bean.getAfgewerkte_producten(), bean.getVerkoopproducten(), bean.getHulpstof(), bean.getMoet_gewogen_worden(), bean.getMaximaal_meetgewicht(), bean.getRelatieve_marge(), bean.getAbsolute_marge(), bean.getBlokkeren()));
         }
         return newReceptproducten;
@@ -378,7 +378,7 @@ public class Mapper {
                 return adr.getId() == bean.getId_leveradres();
             }).findFirst().get();
 
-            newBestelvoorstellen.add(new Bestellingen.BestelVoorstel(0, newBedrijf.Vestigingen.get(0), adres, receptProduct));
+            newBestelvoorstellen.add(new Bestellingen.BestelVoorstel(-1, newBedrijf.Vestigingen.get(0), adres, receptProduct));
         }
         return newBestelvoorstellen;
     }
@@ -406,7 +406,7 @@ public class Mapper {
         for (Old.Leverancier l : leveranciers) {
             String aanspreking = aansprekingen.stream().filter(a -> a.getId_aanspreektitel() == l.getId_aanspreking()).findFirst().get().getOmschrijvingn();
             //GENERATE ID voor ADRES
-            Adressen.Adres adres = new Adres(0, l.getStraat(), l.getHuisnummer(), "", l.getPostcode(), l.getWoonplaats(), Land.values()[l.getId_land() - 1]);
+            Adressen.Adres adres = new Adres(-1, l.getStraat(), l.getHuisnummer(), "", l.getPostcode(), l.getWoonplaats(), Land.values()[l.getId_land() - 1]);
             Leveringen.LeveranciersGroep leveranciersgroep = oldLeveranciersgroepToNewLeveranciersgroep().stream().filter(groep -> groep.getId() == l.getId_leveranciersgroep()).findFirst().get();
             BetalingsVoorwaarde betalingsVoorwaarde = oldBetalingsVoorwaardeToNewBetalingsVoorwaarde().stream().filter(voorwaarde -> voorwaarde.getBetalingsVoorwaardeId() == l.getId_betalingsvoorwaarde()).findFirst().get();
             Boekhouding.Dagboek dagboek = oldDagboekToNewDagboek().stream().filter(boek -> boek.getId() == l.getId_dagboek()).findFirst().get();
@@ -427,38 +427,38 @@ public class Mapper {
             List<LeveringsDag> leveringsdagen = new ArrayList();
             //GEEN LINKEN, bestaat niet!
             //LIST VERLOVEN
-            verloven.add(new Verlof(0, l.getBegindatum_verlofperiode1(), l.getEinddatum_verlofperiode1()));
-            verloven.add(new Verlof(0, l.getBegindatum_verlofperiode2(), l.getEinddatum_verlofperiode2()));
-            verloven.add(new Verlof(0, l.getBegindatum_verlofperiode3(), l.getEinddatum_verlofperiode3()));
+            verloven.add(new Verlof(-1, l.getBegindatum_verlofperiode1(), l.getEinddatum_verlofperiode1()));
+            verloven.add(new Verlof(-1, l.getBegindatum_verlofperiode2(), l.getEinddatum_verlofperiode2()));
+            verloven.add(new Verlof(-1, l.getBegindatum_verlofperiode3(), l.getEinddatum_verlofperiode3()));
             //GEEN OPENINGUREN, ALLEEN DAGEN.
             if (!l.getGesloten1()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Monday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Monday, "", "", "", ""));
             }
             if (!l.getGesloten2()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Tuesday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Tuesday, "", "", "", ""));
             }
             if (!l.getGesloten3()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Wednesday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Wednesday, "", "", "", ""));
             }
             if (!l.getGesloten4()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Thursday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Thursday, "", "", "", ""));
             }
             if (!l.getGesloten5()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Friday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Friday, "", "", "", ""));
             }
             if (!l.getGesloten6()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Saturday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Saturday, "", "", "", ""));
             }
             if (!l.getGesloten7()) {
-                openingstijden.add(new Openingstijd(0, DayOfWeek.Sunday, "", "", "", ""));
+                openingstijden.add(new Openingstijd(-1, DayOfWeek.Sunday, "", "", "", ""));
             }
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Monday, l.getLevering1()));
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Tuesday, l.getLevering2()));
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Wednesday, l.getLevering3()));
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Thursday, l.getLevering4()));
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Friday, l.getLevering5()));
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Saturday, l.getLevering6()));
-            leveringsdagen.add(new LeveringsDag(0, DayOfWeek.Sunday, l.getLevering7()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Monday, l.getLevering1()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Tuesday, l.getLevering2()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Wednesday, l.getLevering3()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Thursday, l.getLevering4()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Friday, l.getLevering5()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Saturday, l.getLevering6()));
+            leveringsdagen.add(new LeveringsDag(-1, DayOfWeek.Sunday, l.getLevering7()));
             
             verloven.forEach(e->e.setLeverancierId(l.getId_leverancier()));
             openingstijden.forEach(e->e.setLeverancierId(l.getId_leverancier()));
@@ -480,7 +480,7 @@ public class Mapper {
         List<Leveringen.LeveranciersGroep> newLeveranciersGroepen = new ArrayList();
 
         leveranciersgroepen.forEach(groep -> {
-            newLeveranciersGroepen.add(new LeveranciersGroep(groep.getId_leveranciersgroep(), new Omschrijving(0, groep.getOmschrijvingn(), groep.getOmschrijvingf(), "")));
+            newLeveranciersGroepen.add(new LeveranciersGroep(groep.getId_leveranciersgroep(), new Omschrijving(-1, groep.getOmschrijvingn(), groep.getOmschrijvingf(), "")));
         });
 
         return newLeveranciersGroepen;
@@ -491,7 +491,7 @@ public class Mapper {
         List<Boekhouding.BetalingsVoorwaarde> newBetalingsVoorwaardes = new ArrayList();
 
         betalingsvoorwaardes.forEach(v -> {
-            newBetalingsVoorwaardes.add(new BetalingsVoorwaarde(new Omschrijving(0, v.getOmschrijvingn(), v.getOmschrijvingf(), ""), v.getId_betalingsvoorwaarde(), v.getCodeboekhouding(), "/", v.getAantaldagen(), Boolean.valueOf(v.getCodeberekenenvervaldatum())));
+            newBetalingsVoorwaardes.add(new BetalingsVoorwaarde(new Omschrijving(-1, v.getOmschrijvingn(), v.getOmschrijvingf(), ""), v.getId_betalingsvoorwaarde(), v.getCodeboekhouding(), "/", v.getAantaldagen(), Boolean.valueOf(v.getCodeberekenenvervaldatum())));
         });
 
         return newBetalingsVoorwaardes;
@@ -503,7 +503,7 @@ public class Mapper {
         List<Boekhouding.Dagboek> newDagboeken = new ArrayList();
 
         dagboeken.forEach(dagboek -> {
-            newDagboeken.add(new Dagboek(dagboek.getId_dagboek(), new Omschrijving(0, dagboek.getOmschrijvingn(), dagboek.getOmschrijvingf(), ""), dagboek.getCodeboekhouding(), new AlgemeneRekening(), new AlgemeneRekening(), new AlgemeneRekening(), new AlgemeneRekening(), false));
+            newDagboeken.add(new Dagboek(dagboek.getId_dagboek(), new Omschrijving(-1, dagboek.getOmschrijvingn(), dagboek.getOmschrijvingf(), ""), dagboek.getCodeboekhouding(), new AlgemeneRekening(), new AlgemeneRekening(), new AlgemeneRekening(), new AlgemeneRekening(), false));
         });
 
         return newDagboeken;
@@ -515,7 +515,7 @@ public class Mapper {
         List<Boekhouding.AlgemeneRekening> newAlgemeneRekeningen = new ArrayList();
 
         boekhoudrekeningen.forEach(b -> {
-            AlgemeneRekening rek = new AlgemeneRekening(new Omschrijving(0, b.getOmschrijvingn(), b.getOmschrijvingf(), "/"), b.getId_boekhoudrekening(), b.getBoekhoudrekening(), b.getHoeveelheid_verplicht(), b.getIs_aankoop(), b.getIs_korting(), b.getIs_diverse(), b.getIs_btw());
+            AlgemeneRekening rek = new AlgemeneRekening(new Omschrijving(-1, b.getOmschrijvingn(), b.getOmschrijvingf(), "/"), b.getId_boekhoudrekening(), b.getBoekhoudrekening(), b.getHoeveelheid_verplicht(), b.getIs_aankoop(), b.getIs_korting(), b.getIs_diverse(), b.getIs_btw());
             newAlgemeneRekeningen.add(rek);
         });
 
@@ -527,7 +527,7 @@ public class Mapper {
         List<Producten.AankoopProduct> newAankoopproducten = new ArrayList();
 
         for (Old.Aankoopproducten.Aankoopproduct a : aankoopproducten) {
-            Omschrijving omschrijving = new Omschrijving(0, a.getOmschrijvingn(), a.getOmschrijvingf(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, a.getOmschrijvingn(), a.getOmschrijvingf(), "");
             ProductCategorie productCategorie = oldProductcategorieToNewProductcategorie().stream().filter(pc -> pc.getId() == a.getId_productcategorie()).findFirst().orElse(new ProductCategorie());
             productCategorie.setId(a.getId_productcategorie());
             ProductGroep productGroep = oldProductgroepToNewProductGroep().stream().filter(pg -> pg.getId() == a.getId_productgroep()).findFirst().orElse(new ProductGroep());
@@ -601,7 +601,7 @@ public class Mapper {
         List<Old.Product.Productgroep> productgroepen = Import.getProductgroepen().stream().map(e -> (Old.Product.Productgroep) e).collect(Collectors.toList());
 
         productgroepen.forEach(p -> {
-            Omschrijving omschrijving = new Omschrijving(0, p.getOmschrijvingn(), p.getOmschrijvingf(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, p.getOmschrijvingn(), p.getOmschrijvingf(), "");
             AlgemeneRekening rekening = oldBoekhoudrekeningToAlgemeneRekening().stream().filter(r -> r.getId() == p.getId_algemene_rekening()).findFirst().orElse(new AlgemeneRekening());
             rekening.setId(p.getId_algemene_rekening());
             newProductgroepen.add(new ProductGroep(p.getId_productgroep(), omschrijving, rekening, null));
@@ -615,7 +615,7 @@ public class Mapper {
         List<Old.Product.Productsubgroep> productsubgroepen = Import.getProductsubgroepen().stream().map(e -> (Old.Product.Productsubgroep) e).collect(Collectors.toList());
 
         productsubgroepen.forEach(p -> {
-            Omschrijving omschrijving = new Omschrijving(0, p.getOmschrijvingn(), p.getOmschrijvingf(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, p.getOmschrijvingn(), p.getOmschrijvingf(), "");
             AlgemeneRekening rek = oldBoekhoudrekeningToAlgemeneRekening().stream().filter(r -> r.getId() == p.getId_algemene_rekening()).findFirst().orElse(new AlgemeneRekening());
             rek.setId(p.getId_algemene_rekening());
             newProductSubgroepen.add(new ProductSubGroep(p.getId_productsubgroep(), omschrijving, rek, null));
@@ -629,7 +629,7 @@ public class Mapper {
         List<Old.Bestelling.Bestelgroep> bestelgroepen = Import.getBestelgroepen().stream().map(e -> (Old.Bestelling.Bestelgroep) e).collect(Collectors.toList());
 
         bestelgroepen.forEach(b -> {
-            Omschrijving omschrijving = new Omschrijving(0, b.getOmschrijvingn(), b.getOmschrijvingf(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, b.getOmschrijvingn(), b.getOmschrijvingf(), "");
             newBestelgroepen.add(new BestelGroep(b.getId_bestelgroep(), omschrijving, false));
         });
 
@@ -666,7 +666,7 @@ public class Mapper {
             if (types.size() > 0 && types != null) {
                 type = types.get(0);
             }
-            Omschrijving omschrijving = new Omschrijving(0, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), "");
             newEtiketten.add(new Etiket(e.getId_etiket(), e.getNaam(),
                     omschrijving, type, printer));
         }
@@ -679,8 +679,8 @@ public class Mapper {
         List<Old.Printer> printers = Import.getPrinters().stream().map(p -> (Old.Printer) p).collect(Collectors.toList());
 
         printers.forEach(p -> {
-            Omschrijving locatie = new Omschrijving(0, p.getLocatien(), p.getLocatief(), "");
-            Omschrijving omschrijving = new Omschrijving(0, p.getNaam(), "", "");
+            Omschrijving locatie = new Omschrijving(-1, p.getLocatien(), p.getLocatief(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, p.getNaam(), "", "");
             newPrinters.add(new Printer(p.getId_printer(),
                     locatie,
                     omschrijving,
@@ -694,7 +694,7 @@ public class Mapper {
         List<Old.Voorraad.Voorraadplaats> voorraadPlaatsen = Import.getVoorraadplaatsen().stream().map(e -> (Old.Voorraad.Voorraadplaats) e).collect(Collectors.toList());
 
         voorraadPlaatsen.forEach(vp -> {
-            Omschrijving omschrijving = new Omschrijving(0, vp.getOmschrijvingn(), vp.getOmschrijvingf(), "");
+            Omschrijving omschrijving = new Omschrijving(-1, vp.getOmschrijvingn(), vp.getOmschrijvingf(), "");
             newVoorraadPlaatsen.add(new VoorraadPlaats(vp.getId_voorraadplaats(),
                     omschrijving, 0.0));
         });
@@ -720,7 +720,7 @@ public class Mapper {
         });
 
         for (Old.Product.Productcategorie e : productcategorie) {
-            Omschrijving omschrijving = new Omschrijving(0, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
             ProductGroep productGroep = newProductgroepen.stream().filter(groep -> groep.getId() == e.getDefault_aankoopproduct_productgroep()).findFirst().orElse(new ProductGroep());
             productGroep.setId(e.getDefault_aankoopproduct_productgroep());
             ProductSubGroep productSubGroep = newProductSubgroepen.stream().filter(subgroep -> subgroep.getId() == e.getDefault_aankoopproduct_productsubgroep()).findFirst().orElse(new ProductSubGroep());
@@ -1154,9 +1154,9 @@ public class Mapper {
             prefix.setId(e.getId_barcodeprefix());
             PrivateLabel label = oldKlantPrivateLabelToNewPrivateLabel().stream().filter(t -> t.getId() == e.getId_private_label()).findFirst().orElse(new PrivateLabel());
             label.setId(e.getId_private_label());
-            VerkoopsBarcode verpakkingsBarcode = new VerkoopsBarcode(0, Util.BigDecimal(e.getGtin_verpakking()), e.getAfdrukken_etiket_verpakking());
-            VerkoopsBarcode colliBarcode = new VerkoopsBarcode(0, Util.BigDecimal(e.getGtin_colli()), e.getAfdrukken_etiket_colli());
-            VerkoopsBarcode palletBarcode = new VerkoopsBarcode(0, Util.BigDecimal(e.getGtin_palet()), e.getAfdrukken_etiket_palet());
+            VerkoopsBarcode verpakkingsBarcode = new VerkoopsBarcode(-1, Util.BigDecimal(e.getGtin_verpakking()), e.getAfdrukken_etiket_verpakking());
+            VerkoopsBarcode colliBarcode = new VerkoopsBarcode(-1, Util.BigDecimal(e.getGtin_colli()), e.getAfdrukken_etiket_colli());
+            VerkoopsBarcode palletBarcode = new VerkoopsBarcode(-1, Util.BigDecimal(e.getGtin_palet()), e.getAfdrukken_etiket_palet());
             Verkoopsverpakking vermeldingLeveringsbon = oldVerkoopsverpakkingToNewVerkoopsverpakking().stream().filter(t -> t.getId() == e.getId_verkoopsverpakking()).findFirst().orElse(new Verkoopsverpakking());
             vermeldingLeveringsbon.setId(e.getId_verkoopsverpakking());
             FysischeEigenschap gewicht = new FysischeEigenschap(-1, SoortFysischeEigenschap.Gewicht, e.getFysische_eigenschappen_gewicht_doel(), Eenheid.values()[returnEenheidindex(e.getFysische_eigenschappen_gewicht_eenheid())], e.getFysische_eigenschappen_gewicht_variatie());
@@ -1209,7 +1209,7 @@ public class Mapper {
         List<Old.Voorbereideproducten.Voorbereidproduct> voorbereideProducten = Import.getVoorbereideproducten().stream().map(e -> (Old.Voorbereideproducten.Voorbereidproduct) e).collect(Collectors.toList());
 
         voorbereideProducten.forEach(e -> {
-            Omschrijving omschrijving = new Omschrijving(0, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
+            Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
             Productiegroep productiegroep = oldProductiegroepToNewProductiegroep().stream().filter(t -> t.getId() == e.getId_produktiegroep()).findFirst().orElse(new Productiegroep());
             productiegroep.setId(e.getId_produktiegroep());
             Receptgroep receptGroep = oldReceptengroepToNewReceptenGroep().stream().filter(t -> t.getId() == e.getId_receptgroep()).findFirst().orElse(new Receptgroep());
@@ -1253,7 +1253,7 @@ public class Mapper {
         //BIGDATA, CHANGED OBJECT TO ID ONLY
         for (Old.Bestelling.BestelbonDetail detail : bestelbonnendetails) {
                 int AankoopProductId = detail.getId_aankoopproduct();
-                UitgaandeBestelling bestelling = new UitgaandeBestelling(0, detail.getUpdated(), detail.getUpdated(), detail.getOpmerking(), detail.getAfgewerkt(), detail.getVolgnummer(), detail.getHoeveelheid(), convertVerpakkingsEenheid(detail.getEenheid()), detail.getEenheidsprijs(), detail.getAantal_eenheden_verpakking(), detail.getAantal_verpakkingen_colli(), detail.getEenheidsgewicht(), detail.getTotaal(), detail.getGeleverde_hoeveelheid(), AankoopProductId, false, true);
+                UitgaandeBestelling bestelling = new UitgaandeBestelling(-1, detail.getUpdated(), detail.getUpdated(), detail.getOpmerking(), detail.getAfgewerkt(), detail.getVolgnummer(), detail.getHoeveelheid(), convertVerpakkingsEenheid(detail.getEenheid()), detail.getEenheidsprijs(), detail.getAantal_eenheden_verpakking(), detail.getAantal_verpakkingen_colli(), detail.getEenheidsgewicht(), detail.getTotaal(), detail.getGeleverde_hoeveelheid(), AankoopProductId, false, true);
                 bestelling.setAankoopProductId(detail.getId_aankoopproduct());
                 newUitgaandeBestelling.add(bestelling);
 
@@ -1296,7 +1296,6 @@ public class Mapper {
         List<Old.Werknemer> werknemers = Import.getWerknemers().stream().map(old -> (Old.Werknemer) old).collect(Collectors.toList());
 
         werknemers.forEach(e -> {
-
             Gebruikers.Werknemer werknemer = new Werknemer(e.getId_werknemer(), e.getNaam(), e.getNaam(), "", null);
             newWerknemers.add(werknemer);
         });
@@ -1693,7 +1692,9 @@ public class Mapper {
         List<LeveringsbonHoofding> hoofding = Import.getLeveringsbonnenhoofding().stream().map(old -> (LeveringsbonHoofding) old).collect(Collectors.toList());
         Import.getLeveringsbonnenhoofdingb().forEach(e -> hoofding.add((LeveringsbonHoofding) e));
         //BIGDATA
-        int i = 0;;
+        int i = 0;
+        
+        
         for (LeveringsbonDetail e : details) {
             LeveringsbonHoofding hoofd = hoofding.stream().filter(t -> t.getId_leveringsbon() == e.getId_leveringsbon()).findFirst().get();
 

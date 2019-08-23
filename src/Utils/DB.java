@@ -68,6 +68,21 @@ public class DB {
         
     }
     
+    /**
+     * Deze methode insert de List<T> objects die je meegeeft in de nieuwe databank. 
+     * Het genereert dynamisch de SQL-insert statement. 
+     * Om het dynamisch deel te laten werken is het van groot belang dat je Class<T> type meegeeft, 
+     * hierop worden de Fields gevraagd om zo de SQL statement te genereren. 
+     * 
+     * @param <T> GENERIC
+     * @param objects Lijst van NIEUWE objecten
+     * @param tableName NAAM van tabel in de nieuwe databank
+     * @param type TYPE van de objecten in je lijst van NIEUWE objecten
+     * @param deletePreviousData Geeft aan of het de eerste keer is dat je dit TYPE insert. Indien TRUE, wordt de tabel eerst opgekuisd. 
+     * Indien FALSE, bouwt het verderop.
+     * @param generateId  Geeft aan of er een ID aanwezig is in de EXCEL File, indien TRUE, wordt dit ID gebruikt in de DB. Indien FALSE, zal 
+     * Identity Framework van .NET een ID toewijzen en dit wordt dan ook inegsteld in de JAVA Objecten.
+     */
     public static <T> void insert(List<T> objects, String tableName, Class<T> type, boolean deletePreviousData, boolean generateId) {
         System.out.printf("START INSERTING %S%n", tableName);
         String cols = "(";
@@ -220,7 +235,7 @@ public class DB {
                             }
                             statement.setInt(i, id);
                         } else {
-                            throw new IllegalArgumentException("DATA TYPE IS NOT SUPPORTED YET, ADD IT!!!");
+                            throw new IllegalArgumentException("DATA TYPE IS NOT SUPPORTED YET, ADD IT OR ADD INTERFACE NEW TO NEW CLASS!!!");
                         }
                         i++;
                         
