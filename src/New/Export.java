@@ -34,6 +34,7 @@ import Boekhouding.AnalytischeRekening;
 import Boekhouding.BTWPercentage;
 import Boekhouding.Bank;
 import Boekhouding.BetalingsVoorwaarde;
+import Boekhouding.BoekhoudRekening;
 import Boekhouding.Dagboek;
 import Boekhouding.OnrechtstreekseKost;
 import Boekhouding.VasteKost;
@@ -1818,11 +1819,21 @@ public class Export {
         DB.insert(List.of(functieVanPersoonEmpty), "FunctieVanPersoonen", FunctieVanPersoon.class, false, false);
         ReceptProduct receptProductEmpty = new ReceptProduct(-1, omschrijvingEmpty, Eenheid.Stuk, false, false, false, false, false, false, 0, 0, 0, true);
         DB.insert(List.of(receptProductEmpty), "ReceptProducten", ReceptProduct.class, false, false);
+        AlgemeneRekening algemeneRekeningEmpty = new AlgemeneRekening(omschrijvingEmpty, -1, "0000", false, false, false, false, false);
+        DB.insert(List.of(algemeneRekeningEmpty), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
+        BankRekeningNummer bankRekEmpty = new BankRekeningNummer(-1, "BE00 0000 0000 0000", newBanken.get(0));
+        DB.insert(List.of(bankRekEmpty), "BankRekeningNummers", BankRekeningNummer.class, false, false);
+        ProductGroep productGroepEmpty = new ProductGroep(-1, omschrijvingEmpty, algemeneRekeningEmpty, null);
+        DB.insert(List.of(productGroepEmpty), "ProductGroep", ProductGroep.class, false, false);
+        BoekhoudRekening boekhoudRekeningEmpty = new BoekhoudRekening(-1,"/","Geen geldige boekhouding");
+        DB.insert(List.of(boekhoudRekeningEmpty), "BoekhoudRekeningen", BoekhoudRekening.class, false, false);
+        
         DB.executeCustomQuery("UPDATE Leverancier SET BoekhoudingCode = 'empty'");
         DB.executeCustomQuery("UPDATE Leverancier SET KlantCode = -1 WHERE KlantCode = ''");
         DB.executeCustomQuery("UPDATE OntvangstAdressen SET Telefoonnummer = '/' WHERE Telefoonnummer = ''");
         DB.executeCustomQuery("UPDATE Klant SET TelefoonNr1 = '/'");
-        DB.executeCustomQuery("UPDATE Klant SET TitelverdeellijstenRaster = '/'");
+        DB.executeCustomQuery("UPDATE Klant SET TitelverdeellijstenRaster = '/' WHERE TitelverdeellijstenRaster IS NULL");
+        DB.executeCustomQuery("UPDATE Klant SET TitelVerdeellijst = '/' WHERE TitelVerdeellijst IS NULL");
     }
 
 }

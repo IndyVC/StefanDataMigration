@@ -57,8 +57,8 @@ public class Leverancier implements New {
     public String UrlWebshop;
     public Webshop_API WebshopApi;
     public String TekstBestelbon;
-    public Date Begindatum;
-    public Date Einddatum;
+//    public Date Begindatum;
+//    public Date Einddatum;
     public LeveringsFrequenties Leveringsfrequentie;
     public MuntEenheid Munteenheid;
     public BetalingsVoorwaarde BetalingsVoorwaarde;
@@ -116,8 +116,8 @@ public class Leverancier implements New {
         this.UrlWebshop = UrlWebshop;
         this.WebshopApi = WebshopApi;
         this.TekstBestelbon = TekstBestelbon;
-        this.Begindatum = Begindatum;
-        this.Einddatum = Einddatum;
+//        this.Begindatum = Begindatum;
+//        this.Einddatum = Einddatum;
         this.Leveringsfrequentie = Leveringsfrequentie;
         this.Munteenheid = Munteenheid;
         this.BetalingsVoorwaarde = BetalingsVoorwaarde;
@@ -361,21 +361,21 @@ public class Leverancier implements New {
         this.TekstBestelbon = TekstBestelbon;
     }
 
-    public Date getBegindatum() {
-        return Begindatum;
-    }
-
-    public void setBegindatum(Date Begindatum) {
-        this.Begindatum = Begindatum;
-    }
-
-    public Date getEinddatum() {
-        return Einddatum;
-    }
-
-    public void setEinddatum(Date Einddatum) {
-        this.Einddatum = Einddatum;
-    }
+//    public Date getBegindatum() {
+//        return Begindatum;
+//    }
+//
+//    public void setBegindatum(Date Begindatum) {
+//        this.Begindatum = Begindatum;
+//    }
+//
+//    public Date getEinddatum() {
+//        return Einddatum;
+//    }
+//
+//    public void setEinddatum(Date Einddatum) {
+//        this.Einddatum = Einddatum;
+//    }
 
     public LeveringsFrequenties getLeveringsfrequentie() {
         return Leveringsfrequentie;
