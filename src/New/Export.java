@@ -108,6 +108,7 @@ import Voorraden.Bewaarconditie;
 import Voorraden.VoorraadPlaats;
 import Voorraden.VoorraadProduct;
 import Voorraden.Voorraadcorrectie;
+import enums.Eenheid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1008,7 +1009,7 @@ public class Export {
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
         DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
         DB.insert(bereidingswijzes, "Omschrijvingen", Omschrijving.class, false, true);
-        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, true, true);
+        DB.insert(voorstellingen, "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, true, true);
         DB.insert(deleteDuplicates(jobs), "Jobs", Job.class, true, false);
         DB.insert(removeDuplicates(verkoopsverpakkingen, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
         DB.insert(removeDuplicates(vasteKosten, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
@@ -1260,7 +1261,7 @@ public class Export {
         DB.insert(removeDuplicates(lotnummerAanbrengers, newLotnummerAanbrengers), "LotnummerAanbrengers", LotnummerAanbrenger.class, false, false);
         DB.insert(removeDuplicates(winstmarges, newWinstmarges), "Winstmarges", Winstmarge.class, false, false);
         DB.insert(removeDuplicates(distributiewijzes, newDistributiewijzes), "DistributieWijzes", DistributieWijze.class, false, false);
-        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
+        DB.insert(voorstellingen, "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
 
         DB.insert(newVerkoopProducten, "VerkoopProduct", VerkoopProduct.class, true, false);
 
@@ -1322,7 +1323,7 @@ public class Export {
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
         DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
-        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
+        DB.insert(voorstellingen, "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
         DB.insert(removeDuplicates(jobs, newJobs), "Jobs", Job.class, false, false);
         DB.insert(removeDuplicates(verkoopverpakking, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
         DB.insert(removeDuplicates(vasteKosten, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
@@ -1574,7 +1575,7 @@ public class Export {
         DB.insert(removeDuplicates(etiketten, newEtiketten), "Etiketten", Etiket.class, false, false);
         DB.insert(removeDuplicates(bewaarcondities, newBewaarcondities), "Bewaarconditie", Bewaarconditie.class, false, false);
         DB.insert(removeDuplicates(bewaarTemperaturen, newBewaarTemperaturen), "BewaarTemperatuur", BewaarTemperatuur.class, false, false);
-        DB.insert(deleteDuplicates(voorstellingen), "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
+        DB.insert(voorstellingen, "VoorstellingOpProductielijst", VoorstellingOpProductielijst.class, false, true);
         DB.insert(removeDuplicates(jobs, newJobs), "Jobs", Job.class, false, false);
         DB.insert(removeDuplicates(verpakkingen, newVerkoopsverpakking), "Verkoopsverpakkingen", Verkoopsverpakking.class, false, false);
         DB.insert(removeDuplicates(vasteKoste, newVasteKosten), "VasteKosten", VasteKost.class, false, false);
@@ -1815,9 +1816,13 @@ public class Export {
         DB.insert(List.of(omschrijvingEmpty), "Omschrijvingen", Omschrijving.class, false, false);
         FunctieVanPersoon functieVanPersoonEmpty = new FunctieVanPersoon(-1, omschrijvingEmpty, 0);
         DB.insert(List.of(functieVanPersoonEmpty), "FunctieVanPersoonen", FunctieVanPersoon.class, false, false);
+        ReceptProduct receptProductEmpty = new ReceptProduct(-1, omschrijvingEmpty, Eenheid.Stuk, false, false, false, false, false, false, 0, 0, 0, true);
+        DB.insert(List.of(receptProductEmpty), "ReceptProducten", ReceptProduct.class, false, false);
         DB.executeCustomQuery("UPDATE Leverancier SET BoekhoudingCode = 'empty'");
         DB.executeCustomQuery("UPDATE Leverancier SET KlantCode = -1 WHERE KlantCode = ''");
         DB.executeCustomQuery("UPDATE OntvangstAdressen SET Telefoonnummer = '/' WHERE Telefoonnummer = ''");
+        DB.executeCustomQuery("UPDATE Klant SET TelefoonNr1 = '/'");
+        DB.executeCustomQuery("UPDATE Klant SET TitelverdeellijstenRaster = '/'");
     }
 
 }
