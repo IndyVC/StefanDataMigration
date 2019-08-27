@@ -19,6 +19,7 @@ public class Omschrijving implements New{
     public String EngelseOmschrijving;
 
     public Omschrijving() {
+        this.OmschrijvingId=-1;
     }
 
     public Omschrijving(int OmschrijvingId, String NederlandseOmschrijving, String FranseOmschrijving, String EngelseOmschrijving) {
