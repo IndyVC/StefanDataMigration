@@ -25,7 +25,7 @@ public class Bedrijf implements New{
     public Bedrijf() {
     }
 
-    public Bedrijf(int BedrijfId, String Naam, String TelefoonNummer, String Email, Adres Adres, List<Vestiging> Vestigingen) {
+    public Bedrijf(int BedrijfId, String Naam, String TelefoonNummer, String Email, Adres Adres) {
         this.BedrijfId = BedrijfId;
         this.Naam = Naam;
         this.TelefoonNummer = TelefoonNummer;

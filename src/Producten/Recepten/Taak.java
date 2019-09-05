@@ -4,8 +4,11 @@
  * and open the template in the editor.
  */
 package Producten.Recepten;
-
+import java.sql.Date;
 import Algemeen.Omschrijving;
+import Algemeen.DagSchema;
+import Bedrijven.FunctieVanPersoon;
+import Gebruikers.Werknemer;
 import New.New;
 import Producten.AfgewerktProduct;
 import Producten.BasisProduct;
@@ -17,18 +20,32 @@ import TussenTabellen.BasisProductTaak;
 import TussenTabellen.ReceptProductTaak;
 import TussenTabellen.VerkoopProductTaak;
 import TussenTabellen.VoorbereidProductTaak;
+import enums.Status;
+import enums.TaakFrequentie;
 import java.util.List;
 
 /**
  *
  * @author stefa
  */
-public class Taak implements New{
+public class Taak implements New {
 
     public int TaakId;
-    public String Tijdsduur;
+    public int TijdsduurUren;
+    public int TijdsduurMinuten;
     public boolean Blokkeren;
     public Omschrijving Omschrijving;
+    public boolean TijdsduurAfhankelijkVanHoeveelheid;
+    public FunctieVanPersoon BevoegdeFunctieFunctieVanPersoon;
+    public Omschrijving TitelOmschrijving;
+    public boolean TijdsGebonden;
+    public Werknemer Werknemer;
+    public DagSchema WerknemerDagSchema;
+    public TaakFrequentie Frequentie;
+    public Status Status;
+    public Date Startuur;
+    public Date Einduur;
+    
     public List<BasisProductTaak> TaakBasisProducten;
     public List<AfgewerktProductTaak> TaakAfgewerkteProducten;
     public List<VerkoopProductTaak> TaakVerkoopProducten;
@@ -38,17 +55,69 @@ public class Taak implements New{
     public Taak() {
     }
 
-    public Taak(int TaakId, String Tijdsduur, boolean Blokkeren, Omschrijving Omschrijving) {
+    public Taak(int TaakId, int TijdsduurUren, int TijdsduurMinuten, boolean Blokkeren, Omschrijving Omschrijving, boolean TijdsduurAfhankelijkVanHoeveelheid, FunctieVanPersoon BevoegdeFunctieFunctieVanPersoon, Omschrijving TitelOmschrijving, boolean TijdsGebonden, Werknemer Werknemer, DagSchema WerknemerDagSchema, TaakFrequentie Frequentie, Status Status, Date Startuur, Date Einduur) {
         this.TaakId = TaakId;
-        this.Tijdsduur = Tijdsduur;
+        this.TijdsduurUren = TijdsduurUren;
+        this.TijdsduurMinuten = TijdsduurMinuten;
         this.Blokkeren = Blokkeren;
         this.Omschrijving = Omschrijving;
-        this.TaakBasisProducten = TaakBasisProducten;
-        this.TaakAfgewerkteProducten = TaakAfgewerkteProducten;
-        this.TaakVerkoopProducten = TaakVerkoopProducten;
-        this.TaakVoorbereidProducten = TaakVoorbereidProducten;
-        this.TaakReceptProducten = TaakReceptProducten;
+        this.TijdsduurAfhankelijkVanHoeveelheid = TijdsduurAfhankelijkVanHoeveelheid;
+        this.BevoegdeFunctieFunctieVanPersoon = BevoegdeFunctieFunctieVanPersoon;
+        this.TitelOmschrijving = TitelOmschrijving;
+        this.TijdsGebonden = TijdsGebonden;
+        this.Werknemer = Werknemer;
+        this.WerknemerDagSchema = WerknemerDagSchema;
+        this.Frequentie = Frequentie;
+        this.Status = Status;
+        this.Startuur = Startuur;
+        this.Einduur = Einduur;
     }
+
+    
+
+    public DagSchema getWerknemerDagSchema() {
+        return WerknemerDagSchema;
+    }
+
+    public void setWerknemerDagSchema(DagSchema WerknemerDagSchema) {
+        this.WerknemerDagSchema = WerknemerDagSchema;
+    }
+
+    public TaakFrequentie getFrequentie() {
+        return Frequentie;
+    }
+
+    public void setFrequentie(TaakFrequentie Frequentie) {
+        this.Frequentie = Frequentie;
+    }
+
+    public Status getStatus() {
+        return Status;
+    }
+
+    public void setStatus(Status Status) {
+        this.Status = Status;
+    }
+
+    public Date getStartuur() {
+        return Startuur;
+    }
+
+    public void setStartuur(Date Startuur) {
+        this.Startuur = Startuur;
+    }
+
+    public Date getEinduur() {
+        return Einduur;
+    }
+
+    public void setEinduur(Date Einduur) {
+        this.Einduur = Einduur;
+    }
+    
+   
+
+    
 
     public int getTaakId() {
         return TaakId;
@@ -58,13 +127,63 @@ public class Taak implements New{
         this.TaakId = TaakId;
     }
 
-    public String getTijdsduur() {
-        return Tijdsduur;
+    public int getTijdsduurUren() {
+        return TijdsduurUren;
     }
 
-    public void setTijdsduur(String Tijdsduur) {
-        this.Tijdsduur = Tijdsduur;
+    public void setTijdsduurUren(int TijdsduurUren) {
+        this.TijdsduurUren = TijdsduurUren;
     }
+
+    public int getTijdsduurMinuten() {
+        return TijdsduurMinuten;
+    }
+
+    public void setTijdsduurMinuten(int TijdsduurMinuten) {
+        this.TijdsduurMinuten = TijdsduurMinuten;
+    }
+
+    public boolean isTijdsduurAfhankelijkVanHoeveelheid() {
+        return TijdsduurAfhankelijkVanHoeveelheid;
+    }
+
+    public void setTijdsduurAfhankelijkVanHoeveelheid(boolean TijdsduurAfhankelijkVanHoeveelheid) {
+        this.TijdsduurAfhankelijkVanHoeveelheid = TijdsduurAfhankelijkVanHoeveelheid;
+    }
+
+    public FunctieVanPersoon getBevoegdeFunctieFunctieVanPersoon() {
+        return BevoegdeFunctieFunctieVanPersoon;
+    }
+
+    public void setBevoegdeFunctieFunctieVanPersoon(FunctieVanPersoon BevoegdeFunctieFunctieVanPersoon) {
+        this.BevoegdeFunctieFunctieVanPersoon = BevoegdeFunctieFunctieVanPersoon;
+    }
+
+    public Omschrijving getTitelOmschrijving() {
+        return TitelOmschrijving;
+    }
+
+    public void setTitelOmschrijving(Omschrijving TitelOmschrijving) {
+        this.TitelOmschrijving = TitelOmschrijving;
+    }
+
+    public boolean isTijdsGebonden() {
+        return TijdsGebonden;
+    }
+
+    public void setTijdsGebonden(boolean TijdsGebonden) {
+        this.TijdsGebonden = TijdsGebonden;
+    }
+
+    public Werknemer getWerknemer() {
+        return Werknemer;
+    }
+
+    public void setWerknemer(Werknemer Werknemer) {
+        this.Werknemer = Werknemer;
+    }
+
+
 
     public boolean isBlokkeren() {
         return Blokkeren;
@@ -98,7 +217,6 @@ public class Taak implements New{
         this.TaakAfgewerkteProducten = TaakAfgewerkteProducten;
     }
 
-
     public List<VerkoopProductTaak> getTaakVerkoopProducten() {
         return TaakVerkoopProducten;
     }
@@ -107,7 +225,6 @@ public class Taak implements New{
         this.TaakVerkoopProducten = TaakVerkoopProducten;
     }
 
-
     public List<VoorbereidProductTaak> getTaakVoorbereidProducten() {
         return TaakVoorbereidProducten;
     }
@@ -115,7 +232,7 @@ public class Taak implements New{
     public void setTaakVoorbereidProducten(List<VoorbereidProductTaak> TaakVoorbereidProducten) {
         this.TaakVoorbereidProducten = TaakVoorbereidProducten;
     }
-    
+
     public List<ReceptProductTaak> getTaakReceptProducten() {
         return TaakReceptProducten;
     }
@@ -126,10 +243,10 @@ public class Taak implements New{
 
     @Override
     public void setId(int id) {
-        this.TaakId=id;
+        this.TaakId = id;
     }
-    
-     @Override
+
+    @Override
     public int getId() {
         return this.TaakId;
     }

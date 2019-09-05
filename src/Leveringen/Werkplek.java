@@ -6,6 +6,7 @@
 package Leveringen;
 
 import Algemeen.Omschrijving;
+import Bedrijven.Vestiging;
 import New.New;
 
 /**
@@ -17,6 +18,7 @@ public class Werkplek implements New{
     public int WerkplekId;
     public Omschrijving Omschrijving;
     public boolean Blokkeren;
+    public Vestiging Vestiging;
 
     public Werkplek() {
     }
@@ -51,6 +53,15 @@ public class Werkplek implements New{
         this.Blokkeren = Blokkeren;
     }
 
+    public Vestiging getVestiging() {
+        return Vestiging;
+    }
+
+    public void setVestiging(Vestiging Vestiging) {
+        this.Vestiging = Vestiging;
+    }
+
+    
     @Override
     public void setId(int id) {
         this.WerkplekId=id;

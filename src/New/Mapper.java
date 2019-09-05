@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package New;
-
+import java.sql.Date;
 import Adressen.Adres;
 import Adressen.OntvangstAdres;
 import Algemeen.BereikbaarheidOpDag;
@@ -316,7 +316,7 @@ public class Mapper {
             newVestigingen = new ArrayList();
 
             Adres adres = new Adres(-1, old.getStraat(), old.getHuisnummer(), "", old.getPostcode(), old.getWoonplaats(), Land.België);
-            Bedrijven.Bedrijf bedrijf = new Bedrijven.Bedrijf(old.getId_bedrijf(), old.getNaam(), old.getTelefoonnummer(), old.getEmailadres(), adres, null);
+            Bedrijven.Bedrijf bedrijf = new Bedrijven.Bedrijf(old.getId_bedrijf(), old.getNaam(), old.getTelefoonnummer(), old.getEmailadres(), adres);
             Bank bank = oldBankinstellingToNewBank().stream().filter(e -> e.getBankId() == old.getId_bank()).findFirst().orElse(new Bank());
             bank.setId(old.getId_bank());
 
@@ -1296,7 +1296,7 @@ public class Mapper {
         List<Old.Werknemer> werknemers = Import.getWerknemers().stream().map(old -> (Old.Werknemer) old).collect(Collectors.toList());
 
         werknemers.forEach(e -> {
-            Gebruikers.Werknemer werknemer = new Werknemer(e.getId_werknemer(), e.getNaam(), e.getNaam(), "", null);
+            Gebruikers.Werknemer werknemer = new Werknemer(e.getId_werknemer(), e.getNaam(), e.getNaam(), "", null,"/",new Date(1970,1,1),new Date(1970,1,1),0);
             newWerknemers.add(werknemer);
         });
         return newWerknemers;

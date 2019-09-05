@@ -35,6 +35,8 @@ import enums.SoortFeestdag;
 import enums.SoortFysischeEigenschap;
 import enums.SoortLink;
 import enums.StandaardTekstVoorType;
+import enums.Status;
+import enums.TaakFrequentie;
 import enums.Taal;
 import enums.VerpakkingsEenheid;
 import enums.Webshop_API;
@@ -208,6 +210,10 @@ public class DB {
                                 statement.setInt(i, WeegschaalModel.valueOf(field.get(obj).toString()).ordinal());
                             }else if (field.get(obj) instanceof BereikbaarOpDag) {
                                 statement.setInt(i, BereikbaarOpDag.valueOf(field.get(obj).toString()).ordinal());
+                            }else if (field.get(obj) instanceof TaakFrequentie) {
+                                statement.setInt(i, TaakFrequentie.valueOf(field.get(obj).toString()).ordinal());
+                            }else if (field.get(obj) instanceof Status) {
+                                statement.setInt(i, Status.valueOf(field.get(obj).toString()).ordinal());
                             }
                         } else if (field.getType() == int.class) {
                             statement.setInt(i, field.getInt(obj));
