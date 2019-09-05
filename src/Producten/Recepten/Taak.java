@@ -40,7 +40,7 @@ public class Taak implements New {
     public Omschrijving TitelOmschrijving;
     public boolean TijdsGebonden;
     public Werknemer Werknemer;
-    public DagSchema WerknemerDagSchema;
+    public DagSchema DagSchema;
     public TaakFrequentie Frequentie;
     public Status Status;
     public Date Startuur;
@@ -66,7 +66,7 @@ public class Taak implements New {
         this.TitelOmschrijving = TitelOmschrijving;
         this.TijdsGebonden = TijdsGebonden;
         this.Werknemer = Werknemer;
-        this.WerknemerDagSchema = WerknemerDagSchema;
+        this.DagSchema = WerknemerDagSchema;
         this.Frequentie = Frequentie;
         this.Status = Status;
         this.Startuur = Startuur;
@@ -75,12 +75,12 @@ public class Taak implements New {
 
     
 
-    public DagSchema getWerknemerDagSchema() {
-        return WerknemerDagSchema;
+    public DagSchema getDagSchema() {
+        return DagSchema;
     }
 
-    public void setWerknemerDagSchema(DagSchema WerknemerDagSchema) {
-        this.WerknemerDagSchema = WerknemerDagSchema;
+    public void setDagSchema(DagSchema DagSchema) {
+        this.DagSchema = DagSchema;
     }
 
     public TaakFrequentie getFrequentie() {

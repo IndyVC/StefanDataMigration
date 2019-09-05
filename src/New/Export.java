@@ -2004,8 +2004,8 @@ public class Export {
         DB.insert(functies, "FunctieVanPersoonen", FunctieVanPersoon.class, false, false);
         DB.insert(werknemers, "Werknemers", Werknemer.class, false, false);
         DB.insert(taken, "Taken", Taak.class, true, false);
-        DB.insert(dagSchemas, "WerknemerDagSchemas", DagSchema.class, false, false);
-        DB.insert(List.of(weekSchema), "WerknemerWeekSchemas", WeekSchema.class, false, false);
+        DB.insert(dagSchemas, "DagSchemas", DagSchema.class, false, false);
+        DB.insert(List.of(weekSchema), "WeekSchemas", WeekSchema.class, false, false);
 
     }
 
