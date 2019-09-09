@@ -1296,7 +1296,7 @@ public class Mapper {
         List<Old.Werknemer> werknemers = Import.getWerknemers().stream().map(old -> (Old.Werknemer) old).collect(Collectors.toList());
 
         werknemers.forEach(e -> {
-            Gebruikers.Werknemer werknemer = new Werknemer(e.getId_werknemer(), e.getNaam(), e.getNaam(), "", null,"/",new Date(1970,1,1),new Date(1970,1,1),0);
+            Gebruikers.Werknemer werknemer = new Werknemer(e.getId_werknemer(), e.getNaam(), e.getNaam(), "/","/",new Date(1970,1,1),new Date(1970,1,1),0);
             newWerknemers.add(werknemer);
         });
         return newWerknemers;
@@ -1333,8 +1333,10 @@ public class Mapper {
         List<Old.Werkplek> werkplekken = Import.getWerkplek().stream().map(old -> (Old.Werkplek) old).collect(Collectors.toList());
 
         werkplekken.forEach(e -> {
+            Bedrijf bedrijf = oldBedrijfToNewBedrijf().stream().filter(t->t.getBedrijfId() == e.getId_bedrijf()).findFirst().orElse(new Bedrijf());
+            bedrijf.setId(e.getId_bedrijf());
             Omschrijving omschrijving = new Omschrijving(-1, e.getOmschrijvingn(), e.getOmschrijvingf(), e.getOmschrijvinge());
-            Leveringen.Werkplek werkplek = new Werkplek(e.getId_werkplek(), omschrijving, e.getBlokkeren());
+            Leveringen.Werkplek werkplek = new Werkplek(e.getId_werkplek(), omschrijving, e.getBlokkeren(), bedrijf.Vestigingen.get(0));
             newWerkplekken.add(werkplek);
         });
 

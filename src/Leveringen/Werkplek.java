@@ -23,10 +23,11 @@ public class Werkplek implements New{
     public Werkplek() {
     }
 
-    public Werkplek(int WerkplekId, Omschrijving Omschrijving, boolean Blokkeren) {
+    public Werkplek(int WerkplekId, Omschrijving Omschrijving, boolean Blokkeren, Vestiging vestiging) {
         this.WerkplekId = WerkplekId;
         this.Omschrijving = Omschrijving;
         this.Blokkeren = Blokkeren;
+        this.Vestiging = vestiging;
     }
 
     public int getWerkplekId() {

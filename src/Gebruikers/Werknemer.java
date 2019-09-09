@@ -4,10 +4,14 @@
  * and open the template in the editor.
  */
 package Gebruikers;
+
+import Algemeen.Planning;
 import java.sql.Date;
 import Bedrijven.FunctieVanPersoon;
 import Leveringen.Werkplek;
 import New.New;
+import TussenTabellen.WerknemerFunctie;
+import java.util.List;
 
 /**
  *
@@ -16,25 +20,24 @@ import New.New;
 public class Werknemer implements New {
 
     public int WerknemerId;
-    public String LoginId;
+    public String Voornaam;
     public String Naam;
     public String Email;
-    public FunctieVanPersoon FunctieVanPersoon;
-    public Werkplek Werkplek;
     public String Rijksregisternummer;
     public Date GeboorteDatum;
     public int Regime;
     public Date DatumInDienst;
-    
+    public List<WerknemerFunctie> Functies;
+    public List<Planning> Planningen;
+
     public Werknemer() {
     }
 
-    public Werknemer(int WerknemerId, String LoginId, String Naam, String Email, FunctieVanPersoon FunctieVanPersoon, String rijksregisternummer, Date datumInDienst, Date geboorteDatum, int regime) {
+    public Werknemer(int WerknemerId, String Voornaam, String Naam, String Email, String rijksregisternummer, Date datumInDienst, Date geboorteDatum, int regime) {
         this.WerknemerId = WerknemerId;
-        this.LoginId = LoginId;
+        this.Voornaam = Voornaam;
         this.Naam = Naam;
         this.Email = Email;
-        this.FunctieVanPersoon = FunctieVanPersoon;
     }
 
     public String getRijksregisternummer() {
@@ -69,7 +72,6 @@ public class Werknemer implements New {
         this.DatumInDienst = DatumInDienst;
     }
 
-    
     public int getWerknemerId() {
         return WerknemerId;
     }
@@ -78,12 +80,20 @@ public class Werknemer implements New {
         this.WerknemerId = WerknemerId;
     }
 
-    public String getLoginId() {
-        return LoginId;
+    public String getVoornaam() {
+        return Voornaam;
     }
 
-    public void setLoginId(String LoginId) {
-        this.LoginId = LoginId;
+    public void setVoornaam(String Voornaam) {
+        this.Voornaam = Voornaam;
+    }
+
+    public List<WerknemerFunctie> getFuncties() {
+        return Functies;
+    }
+
+    public void setFuncties(List<WerknemerFunctie> Functie) {
+        this.Functies = Functie;
     }
 
     public String getNaam() {
@@ -102,21 +112,14 @@ public class Werknemer implements New {
         this.Email = Email;
     }
 
-    public FunctieVanPersoon getFunctieVanPersoon() {
-        return FunctieVanPersoon;
+    public List<Planning> getPlanningen() {
+        return Planningen;
     }
 
-    public void setFunctieVanPersoon(FunctieVanPersoon FunctieVanPersoon) {
-        this.FunctieVanPersoon = FunctieVanPersoon;
+    public void setPlanningen(List<Planning> Planningen) {
+        this.Planningen = Planningen;
     }
 
-    public Werkplek getWerkplek() {
-        return Werkplek;
-    }
-
-    public void setWerkplek(Werkplek Werkplek) {
-        this.Werkplek = Werkplek;
-    }
 
     @Override
     public void setId(int id) {

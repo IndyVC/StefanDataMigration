@@ -11,8 +11,6 @@ import Algemeen.BereikbaarheidOpDag;
 import Algemeen.Klacht;
 import Algemeen.Omschrijving;
 import Algemeen.Openingstijd;
-import Algemeen.DagSchema;
-import Algemeen.WeekSchema;
 import Bedrijven.BankRekeningNummer;
 import Bedrijven.Bedrijf;
 import Bedrijven.Eigenaar;
@@ -107,6 +105,7 @@ import TussenTabellen.BasisProductVestiging;
 import TussenTabellen.KlantAdres;
 import TussenTabellen.ReceptProductBasisRecept;
 import TussenTabellen.VestigingAankoopProduct;
+import TussenTabellen.WerknemerFunctie;
 import Utils.DB;
 import Voorraden.BewaarTemperatuur;
 import Voorraden.Bewaarconditie;
@@ -1357,7 +1356,7 @@ public class Export {
             omschrijvingen.add(e.getOmschrijving());
         });
         DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
-        DB.insert(deleteDuplicates(newFunctieVanPersonen), "FunctieVanPersoonen", FunctieVanPersoon.class, true, false);
+        DB.insert(deleteDuplicates(newFunctieVanPersonen), "FunctieVanPersonen", FunctieVanPersoon.class, true, false);
     }
 
     //EERSTE KEER WERKNEMERS
@@ -1412,7 +1411,7 @@ public class Export {
         newAllergeenGroepen.forEach(e -> {
             omschrijvingen.add(e.getOmschrijving());
         });
-        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, true);
+        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, false);
         DB.insert(newAllergeenGroepen, "AllergeenGroepen", AllergeenGroep.class, true, false);
     }
 
@@ -1824,10 +1823,11 @@ public class Export {
     }
 
     public static void fillFields() {
+        DB.executeCustomQuery("delete from Omschrijvingen where OmschrijvingId = -1");
         Omschrijving omschrijvingEmpty = new Omschrijving(-1, "Geen omschrijving", "Pas de description", "No description");
         DB.insert(List.of(omschrijvingEmpty), "Omschrijvingen", Omschrijving.class, false, false);
         FunctieVanPersoon functieVanPersoonEmpty = new FunctieVanPersoon(-1, omschrijvingEmpty, 0);
-        DB.insert(List.of(functieVanPersoonEmpty), "FunctieVanPersoonen", FunctieVanPersoon.class, false, false);
+        DB.insert(List.of(functieVanPersoonEmpty), "FunctieVanPersonen", FunctieVanPersoon.class, false, false);
         ReceptProduct receptProductEmpty = new ReceptProduct(-1, omschrijvingEmpty, Eenheid.Stuk, false, false, false, false, false, false, 0, 0, 0, true);
         DB.insert(List.of(receptProductEmpty), "ReceptProducten", ReceptProduct.class, false, false);
         AlgemeneRekening algemeneRekeningEmpty = new AlgemeneRekening(omschrijvingEmpty, -1, "0000", false, false, false, false, false);
@@ -1847,166 +1847,8 @@ public class Export {
         DB.executeCustomQuery("UPDATE Klant SET TitelverdeellijstenRaster = '/' WHERE TitelverdeellijstenRaster IS NULL");
         DB.executeCustomQuery("UPDATE Klant SET TitelVerdeellijst = '/' WHERE TitelVerdeellijst IS NULL");
 
-        initDataPatStefan();
-        fillDashboardMock();
-        fillUurroosterMock();
+        //initDataPatStefan();
+        //fillDashboardMock();
+        //fillUurroosterMock();
     }
-
-    public static void initDataPatStefan() {
-        List<Omschrijving> omschrijvingen = new ArrayList();
-        List<Adres> adressen = new ArrayList();
-        List<Werkplek> werkplekken = new ArrayList();
-        List<Vestiging> vestigingen = new ArrayList();
-
-        // --- werkplekken ---
-        Omschrijving o1v1 = new Omschrijving(-4, "Atelier", "Atelier", "Atelier");
-        omschrijvingen.add(o1v1);
-        Werkplek w1v1 = new Werkplek(1, o1v1, false);
-        werkplekken.add(w1v1);
-
-        Omschrijving o2v1 = new Omschrijving(-5, "Chocolade", "Chocolade", "Chocolade");
-        omschrijvingen.add(o2v1);
-        Werkplek w2v1 = new Werkplek(2, o2v1, false);
-        werkplekken.add(w2v1);
-
-        Werkplek w1v2 = new Werkplek(3, o1v1, false);
-        werkplekken.add(w1v2);
-
-        Werkplek w2v2 = new Werkplek(4, o2v1, false);
-        werkplekken.add(w2v2);
-
-        // --- vestingen ---
-        Omschrijving omschrijvingVestiging1 = new Omschrijving(-2, "Raapstraat", "Raapstraat", "Raapstraat");
-        omschrijvingen.add(omschrijvingVestiging1);
-        Adres adresVestiging1 = new Adres(-2, "Raapstraat", "55", "", "9100", "Sint-Niklaas", Land.België);
-        adressen.add(adresVestiging1);
-        BankRekeningNummer bankRekEmpty = new BankRekeningNummer(-1, "BE00 0000 0000 0000", newBanken.get(0));
-        Vestiging vestiging1 = new Vestiging(-2, newBedrijven.get(0), omschrijvingVestiging1, adresVestiging1, "037807727", "stefan@stefan.be", bankRekEmpty, "0876-220-301", "");
-        vestigingen.add(vestiging1);
-        Omschrijving omschrijvingVestiging2 = new Omschrijving(-3, "Plezantstraat", "Plezantstraat", "Plezantstraat");
-        omschrijvingen.add(omschrijvingVestiging2);
-        Adres adresVestiging2 = new Adres(-3, "Plezantstraat", "78", "", "9100", "Sint-Niklaas", Land.België);
-        adressen.add(adresVestiging2);
-        Vestiging vestiging2 = new Vestiging(-3, newBedrijven.get(0), omschrijvingVestiging2, adresVestiging2, "037807721", "stefan@stefan.be", bankRekEmpty, "0876-220-301", "");
-        vestigingen.add(vestiging2);
-
-        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, false);
-        DB.insert(adressen, "Adressen", Adres.class, false, false);
-        DB.insert(werkplekken, "Werkplekken", Werkplek.class, true, false);
-        DB.insert(vestigingen, "Vestiging", Vestiging.class, true, false);
-
-        DB.executeCustomQuery("UPDATE Werkplekken SET VestigingId = -2 WHERE VestigingId IS NULL AND WerkplekId <= 2");
-        DB.executeCustomQuery("UPDATE Werkplekken SET VestigingId = -3 WHERE VestigingId IS NULL AND WerkplekId > 2");
-    }
-
-    public static void fillDashboardMock() {
-        Omschrijving omschrijving = new Omschrijving(-69, "MOCK", "MOCK", "MOCK");
-        Adres adres = new Adres(-69, "theDocks", "123", "", "9240", "Birmingham", Land.België);
-
-        Werknemer werknemer = new Werknemer(-2, "ItzIndy", "Indy", "indyvqncqnegem@hotmail.com", new FunctieVanPersoon(-2, omschrijving, 15), "1684646", new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), 2);
-        List<Klacht> klachten = new ArrayList();
-        for (int i = 0; i < 20; i++) {
-            Klacht klacht;
-            if (i < 13) {
-                klacht = new Klacht(-1, "Mock Klacht", omschrijving, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), werknemer, true);
-            } else {
-                klacht = new Klacht(-1, "Mock Klacht", omschrijving, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), werknemer, false);
-
-            }
-            klachten.add(klacht);
-        }
-
-        Werkplek werkplek = new Werkplek(-69, omschrijving, true);
-        Bedrijf bedrijf = new Bedrijf(-69, "Shelby Company Ltd", "0483060043", "indyvancanegem@hotmail.com", adres);
-        Vestiging vestiging = new Vestiging(-69, bedrijf, omschrijving, adres, "0483060043", "indyvancanegem@hotmail.com", null, "04864", "123");
-
-        vestiging.setBedrijf(bedrijf);
-        werkplek.setVestiging(vestiging);
-        werknemer.setWerkplek(werkplek);
-
-        DB.insert(List.of(adres), "Adressen", Adres.class, false, false);
-        DB.insert(List.of(omschrijving), "Omschrijvingen", Omschrijving.class, false, false);
-        DB.insert(klachten, "Klacht", Klacht.class, true, true);
-        DB.insert(List.of(werknemer), "Werknemers", Werknemer.class, false, false);
-        DB.insert(List.of(werkplek), "Werkplekken", Werkplek.class, false, false);
-        DB.insert(List.of(vestiging), "Vestiging", Vestiging.class, false, false);
-        DB.insert(List.of(bedrijf), "Bedrijven", Bedrijf.class, false, false);
-
-    }
-
-    public static void fillUurroosterMock() {
-        Werkplek werkplek = new Werkplek(-69, new Omschrijving(-69, "MOCK", "MOCK", "MOCK"), true);
-
-        Omschrijving functieOmschrijving1 = new Omschrijving(-1001, "Bakker", "Boulanger", "Baker");
-        Omschrijving functieOmschrijving2 = new Omschrijving(-1002, "Pattissier", "Pattissier", "Pastry Baker");
-        Omschrijving functieOmschrijving3 = new Omschrijving(-1003, "Afwasser", "Afwasser", "Afwasser");
-        Omschrijving functieOmschrijving4 = new Omschrijving(-1004, "Knecht", "knecht", "knecht");
-        Omschrijving functieOmschrijving5 = new Omschrijving(-1005, "Kuisvrouw", "Kuisvrouw", "Kuisvrouw");
-        List<Omschrijving> omschrijvingen = new ArrayList();
-        omschrijvingen.addAll(Arrays.asList(functieOmschrijving1, functieOmschrijving2, functieOmschrijving3, functieOmschrijving4, functieOmschrijving5));
-
-        FunctieVanPersoon functie1 = new FunctieVanPersoon(-1001, functieOmschrijving1, 30);
-        FunctieVanPersoon functie2 = new FunctieVanPersoon(-1002, functieOmschrijving2, 30);
-        FunctieVanPersoon functie3 = new FunctieVanPersoon(-1003, functieOmschrijving3, 12);
-        FunctieVanPersoon functie4 = new FunctieVanPersoon(-1004, functieOmschrijving4, 13);
-        FunctieVanPersoon functie5 = new FunctieVanPersoon(-1005, functieOmschrijving5, 12);
-        List<FunctieVanPersoon> functies = new ArrayList();
-        functies.addAll(Arrays.asList(functie1, functie2, functie3, functie4, functie5));
-
-        Werknemer werknemer1 = new Werknemer(-1001, "Roger", "Roger Bakker ", "indyvqncqnegem@hotmail.com", functie1, "1684646", new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), 2);
-        Werknemer werknemer2 = new Werknemer(-1002, "Jean", "Jean Pattisier", "indyvqncqnegem@hotmail.com", functie2, "1684646", new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), 2);
-        Werknemer werknemer3 = new Werknemer(-1003, "Filip", "Filip Afwasser", "indyvqncqnegem@hotmail.com", functie3, "1684646", new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), 2);
-        Werknemer werknemer4 = new Werknemer(-1004, "Thomas", "Thomas Knecht", "indyvqncqnegem@hotmail.com", functie4, "1684646", new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), 2);
-        Werknemer werknemer5 = new Werknemer(-1005, "Glenn", "Glenn Afwasser", "indyvqncqnegem@hotmail.com", functie5, "1684646", new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), 2);
-        List<Werknemer> werknemers = new ArrayList();
-        werknemers.addAll(Arrays.asList(werknemer1, werknemer2, werknemer3, werknemer4, werknemer5));
-        werknemers.forEach(w->{
-            w.setWerkplek(werkplek);
-        });
-        
-        WeekSchema weekSchema = new WeekSchema(-1001, new java.sql.Date(new java.util.Date().getTime()));
-        DagSchema dagSchema1 = new DagSchema(-1001, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Maandag);
-        DagSchema dagSchema2 = new DagSchema(-1002, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Dinsdag);
-        DagSchema dagSchema3 = new DagSchema(-1003, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Woensdag);
-        DagSchema dagSchema4 = new DagSchema(-1004, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Donderdag);
-        DagSchema dagSchema5 = new DagSchema(-1005, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Vrijdag);
-        DagSchema dagSchema6 = new DagSchema(-1006, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Zaterdag);
-        DagSchema dagSchema7 = new DagSchema(-1007, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()), BereikbaarOpDag.Zondag);
-        List<DagSchema> dagSchemas = new ArrayList();
-        dagSchemas.addAll(Arrays.asList(dagSchema1, dagSchema2, dagSchema3, dagSchema4, dagSchema5, dagSchema6, dagSchema7));
-
-        List<Taak> taken = new ArrayList();
-        int id = -2000;
-        for (DagSchema dagSchema : dagSchemas) {
-            int i = 1;
-            for (int l = 0; l < werknemers.size(); l++) {
-                Omschrijving taakOmschrijving = new Omschrijving(id, "Taak omschrijving " + i, " Taak omschrijving " + i, "Taak omschrijving " + i);
-                id--;
-                Omschrijving titelOmschrijving = new Omschrijving(id, "Taak " + i + " voor Bakker", "Taak " + i + " voor Bakker ", "Taak " + i + " voor Bakker");
-                id--;
-                i++;
-
-                Taak taak = new Taak(id, 1, 15, true, taakOmschrijving, true, functies.get(l), titelOmschrijving, true, werknemers.get(l), dagSchema, TaakFrequentie.Wekelijks, Status.ToDo, new java.sql.Date(new java.util.Date().getTime()), new java.sql.Date(new java.util.Date().getTime()));
-                id--;
-                taken.add(taak);
-                omschrijvingen.add(taakOmschrijving);
-                omschrijvingen.add(titelOmschrijving);
-            }
-        }
-
-        dagSchemas.forEach(e -> {
-            e.setWeekSchema(weekSchema);
-        });
-
-        weekSchema.setDagSchemas(dagSchemas);
-
-        DB.insert(omschrijvingen, "Omschrijvingen", Omschrijving.class, false, false);
-        DB.insert(functies, "FunctieVanPersoonen", FunctieVanPersoon.class, false, false);
-        DB.insert(werknemers, "Werknemers", Werknemer.class, false, false);
-        DB.insert(taken, "Taken", Taak.class, true, false);
-        DB.insert(dagSchemas, "DagSchemas", DagSchema.class, false, false);
-        DB.insert(List.of(weekSchema), "WeekSchemas", WeekSchema.class, false, false);
-
-    }
-
 }

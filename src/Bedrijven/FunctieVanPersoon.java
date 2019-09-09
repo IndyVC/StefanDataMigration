@@ -7,16 +7,18 @@ package Bedrijven;
 
 import Algemeen.Omschrijving;
 import New.New;
+import java.util.List;
 
 /**
  *
  * @author stefa
  */
-public class FunctieVanPersoon implements New{
-    
+public class FunctieVanPersoon implements New {
+
     public int FunctieVanPersoonId;
     public Omschrijving Omschrijving;
     public double Uurloon;
+    public List<FunctieVanPersoon> Functies;
 
     public FunctieVanPersoon() {
     }
@@ -51,6 +53,14 @@ public class FunctieVanPersoon implements New{
         this.Uurloon = Uurloon;
     }
 
+    public List<FunctieVanPersoon> getFuncties() {
+        return Functies;
+    }
+
+    public void setFuncties(List<FunctieVanPersoon> Functies) {
+        this.Functies = Functies;
+    }
+
     @Override
     public void setId(int id) {
         this.FunctieVanPersoonId = id;
@@ -60,5 +70,5 @@ public class FunctieVanPersoon implements New{
     public int getId() {
         return this.FunctieVanPersoonId;
     }
-    
+
 }
