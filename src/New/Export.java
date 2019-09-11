@@ -37,6 +37,7 @@ import Boekhouding.Bank;
 import Boekhouding.BetalingsVoorwaarde;
 import Boekhouding.BoekhoudRekening;
 import Boekhouding.Dagboek;
+import Boekhouding.FacturatiePeriode;
 import Boekhouding.OnrechtstreekseKost;
 import Boekhouding.VasteKost;
 import Boekhouding.Winstmarge;
@@ -1831,15 +1832,23 @@ public class Export {
         ReceptProduct receptProductEmpty = new ReceptProduct(-1, omschrijvingEmpty, Eenheid.Stuk, false, false, false, false, false, false, 0, 0, 0, true);
         DB.insert(List.of(receptProductEmpty), "ReceptProducten", ReceptProduct.class, false, false);
         AlgemeneRekening algemeneRekeningEmpty = new AlgemeneRekening(omschrijvingEmpty, -1, "0000", false, false, false, false, false);
-        // DB.insert(List.of(algemeneRekeningEmpty), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
+        DB.insert(List.of(algemeneRekeningEmpty), "AlgemeneRekeningen", AlgemeneRekening.class, false, false);
+        Productiegroep productiegroepEmpty = new Productiegroep(0, omschrijvingEmpty, algemeneRekeningEmpty, false, false);
+        DB.insert(List.of(productiegroepEmpty), "Productiegroepen", Productiegroep.class, false, false);
         BankRekeningNummer bankRekEmpty = new BankRekeningNummer(-1, "BE00 0000 0000 0000", newBanken.get(0));
         DB.insert(List.of(bankRekEmpty), "BankRekeningNummers", BankRekeningNummer.class, false, false);
         ProductGroep productGroepEmpty = new ProductGroep(-1, omschrijvingEmpty, algemeneRekeningEmpty, null);
         DB.insert(List.of(productGroepEmpty), "ProductGroep", ProductGroep.class, false, false);
         BoekhoudRekening boekhoudRekeningEmpty = new BoekhoudRekening(-1, "/", "Geen geldige boekhouding");
-        //DB.insert(List.of(boekhoudRekeningEmpty), "BoekhoudRekeningen", BoekhoudRekening.class, false, false);
+        DB.insert(List.of(boekhoudRekeningEmpty), "BoekhoudRekeningen", BoekhoudRekening.class, false, false);
         Receptgroep receptgroepEMPTY = new Receptgroep(-1, omschrijvingEmpty);
         DB.insert(List.of(receptgroepEMPTY), "Receptgroepen", Receptgroep.class, false, false);
+        Dagboek dagboekEmpty = new Dagboek(-1, omschrijvingEmpty, "/", algemeneRekeningEmpty, algemeneRekeningEmpty, algemeneRekeningEmpty, algemeneRekeningEmpty, true);
+        DB.insert(List.of(dagboekEmpty), "Dagboeken", Dagboek.class, false, false);
+        FacturatiePeriode facturatiePeriodeEmpty = new FacturatiePeriode(-1, "/", "/");
+        DB.insert(List.of(facturatiePeriodeEmpty), "FacturatiePeriodes", FacturatiePeriode.class, false, false);
+        BetalingsVoorwaarde betalinsgVoorwaardeEmpty = new BetalingsVoorwaarde(omschrijvingEmpty, -1, "/", "/", 0, true);
+        DB.insert(List.of(betalinsgVoorwaardeEmpty), "Betalingsvoorwaarden", BetalingsVoorwaarde.class, false, false);
         DB.executeCustomQuery("UPDATE Leverancier SET BoekhoudingCode = 'empty'");
         DB.executeCustomQuery("UPDATE Leverancier SET KlantCode = -1 WHERE KlantCode = ''");
         DB.executeCustomQuery("UPDATE OntvangstAdressen SET Telefoonnummer = '/' WHERE Telefoonnummer = ''");
@@ -1850,5 +1859,13 @@ public class Export {
         //initDataPatStefan();
         //fillDashboardMock();
         //fillUurroosterMock();
+    }
+
+    public static void fillQuick() {
+        Omschrijving omschrijvingEmpty = new Omschrijving(-1, "Geen omschrijving", "Pas de description", "No description");
+        FacturatiePeriode facturatiePeriodeEmpty = new FacturatiePeriode(-1, "/", "/");
+        DB.insert(List.of(facturatiePeriodeEmpty), "FacturatiePeriodes", FacturatiePeriode.class, false, false);
+        BetalingsVoorwaarde betalinsgVoorwaardeEmpty = new BetalingsVoorwaarde(omschrijvingEmpty, -1, "/", "/", 0, true);
+        DB.insert(List.of(betalinsgVoorwaardeEmpty), "Betalingsvoorwaarden", BetalingsVoorwaarde.class, false, false);
     }
 }
